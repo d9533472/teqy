@@ -415,6 +415,99 @@
     .carousel-inner { padding: 24px; }
     .carousel-shell { min-height: 280px; }
   }
+
+  /* YouTube playlist */
+  .yt-playlist {
+    max-height: min(560px, 80vh);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .yt-playlist::-webkit-scrollbar { width: 6px; }
+  .yt-playlist::-webkit-scrollbar-track { background: var(--paper-deep); border-radius: 3px; }
+  .yt-playlist::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+  .yt-playlist-item {
+    display: flex; gap: 12px; width: 100%;
+    padding: 8px; margin-bottom: 8px;
+    background: var(--paper-warm); border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 6px; cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+    text-align: left;
+  }
+  .yt-playlist-item:hover {
+    border-color: var(--gold); transform: translateX(-2px);
+    box-shadow: 0 6px 20px -8px rgba(94,23,20,0.2);
+  }
+  .yt-playlist-item.active {
+    border-color: var(--temple-red); background: var(--paper-warm);
+    box-shadow: 0 0 0 2px rgba(139,36,33,0.1);
+  }
+  .yt-thumb {
+    flex-shrink: 0; width: 120px; aspect-ratio: 16/9;
+    border-radius: 4px; overflow: hidden; position: relative;
+    background: var(--ink);
+  }
+  .yt-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .yt-now-playing {
+    position: absolute; inset: 0;
+    background: rgba(139,36,33,0.85); color: var(--paper-warm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+  }
+  .yt-info { flex: 1; min-width: 0; padding: 4px 0; }
+  .yt-title {
+    font-family: 'Noto Serif TC', serif; font-size: 13px;
+    font-weight: 500; color: var(--ink); line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .yt-duration {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 11px; color: var(--gold); margin-top: 4px;
+  }
+  @media (max-width: 1024px) {
+    .yt-playlist { max-height: 360px; margin-top: 16px; }
+  }
+
+  /* Visitor counter (in footer) */
+  .visit-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(245,239,228,0.06);
+    border: 1px solid rgba(184,134,11,0.25);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px; letter-spacing: 0.1em;
+    color: var(--gold-light);
+  }
+  .visit-badge .num {
+    font-weight: 500; color: var(--paper-warm);
+    font-feature-settings: 'tnum';
+  }
+
+  /* Floating admin settings button */
+  .admin-fab {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(26,20,16,0.7);
+    color: rgba(245,239,228,0.85);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    z-index: 40;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(184,134,11,0.25);
+    opacity: 0.45;
+  }
+  .admin-fab:hover {
+    opacity: 1;
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    transform: rotate(45deg);
+    border-color: var(--gold);
+    box-shadow: 0 8px 24px -8px rgba(94,23,20,0.5);
+  }
+
+  /* Logo image rendering — keep crisp, no background wash */
+  .logo-img { background: transparent; }
 </style>
 </head>
 <body>
@@ -493,26 +586,28 @@ function navTargetUrl(item) {
 
 function HeroSection({ data, isFirst }) {
   const bg = data.backgroundImage
-    ? `linear-gradient(180deg, rgba(26,20,16,0.55) 0%, rgba(26,20,16,0.35) 40%, rgba(245,239,228,0) 70%, var(--paper) 100%), url('${data.backgroundImage}')`
+    ? `linear-gradient(180deg, rgba(26,20,16,0.7) 0%, rgba(26,20,16,0.55) 40%, rgba(26,20,16,0.4) 70%, var(--paper) 100%), url('${data.backgroundImage}')`
     : 'linear-gradient(180deg, var(--ink) 0%, var(--paper) 100%)';
   const subtitleHtml = (data.subtitle || '').replace(/\n/g, '<br>');
+  const textShadowStrong = '0 2px 12px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.4)';
+  const textShadowMedium = '0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.35)';
   return (
     <section className="relative min-h-screen flex items-center" style={{ backgroundImage: bg, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {data.verticalAccent && (
-        <div className="hidden lg:flex vertical-rl absolute right-12 top-1/2 -translate-y-1/2 text-sm font-serif-tc delay-5" style={{ color: 'rgba(245,239,228,0.55)' }}>
+        <div className="hidden lg:flex vertical-rl absolute right-12 top-1/2 -translate-y-1/2 text-sm font-serif-tc delay-5" style={{ color: 'rgba(245,239,228,0.7)', textShadow: textShadowMedium }}>
           {data.verticalAccent.split('').join('\u00a0')}
         </div>
       )}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-32 pb-24 w-full relative">
         <div className="max-w-3xl">
-          {data.eyebrow && <div className="eyebrow delay-1 mb-6">{data.eyebrow}</div>}
-          <h1 className="font-serif-tc font-light leading-[1.05] mb-8" style={{ color: 'var(--paper-warm)', fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
+          {data.eyebrow && <div className="eyebrow delay-1 mb-6" style={{ textShadow: textShadowMedium }}>{data.eyebrow}</div>}
+          <h1 className="font-serif-tc font-light leading-[1.05] mb-8" style={{ color: 'var(--paper-warm)', fontSize: 'clamp(3rem, 7vw, 6rem)', textShadow: textShadowStrong }}>
             {data.titleLine1 && <span className="block delay-2">{data.titleLine1}</span>}
-            {data.titleLine2 && <span className="block delay-3" style={{ color: 'var(--gold-glow)' }}>{data.titleLine2}</span>}
+            {data.titleLine2 && <span className="block delay-3" style={{ color: 'var(--gold-glow)', textShadow: textShadowStrong }}>{data.titleLine2}</span>}
           </h1>
           {data.subtitle && (
             <p className="delay-4 font-serif-tc text-lg lg:text-xl mb-12 leading-relaxed max-w-xl"
-               style={{ color: 'rgba(245,239,228,0.92)' }}
+               style={{ color: 'rgba(245,239,228,0.95)', textShadow: textShadowMedium }}
                dangerouslySetInnerHTML={{ __html: subtitleHtml }} />
           )}
           <div className="delay-5 flex flex-wrap gap-4">
@@ -531,8 +626,8 @@ function HeroSection({ data, isFirst }) {
         </div>
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 scroll-ind">
           <div className="flex flex-col items-center gap-2">
-            <span className="font-cormorant italic text-xs tracking-[0.3em]" style={{ color: 'rgba(245,239,228,0.7)' }}>SCROLL</span>
-            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke="rgba(245,239,228,0.7)" strokeWidth="1">
+            <span className="font-cormorant italic text-xs tracking-[0.3em]" style={{ color: 'rgba(245,239,228,0.85)', textShadow: textShadowMedium }}>SCROLL</span>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke="rgba(245,239,228,0.85)" strokeWidth="1" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))' }}>
               <path d="M8 4v16M3 15l5 5 5-5"/>
             </svg>
           </div>
@@ -758,17 +853,91 @@ function ImageSection({ data, anchorId }) {
   );
 }
 
+// Parse YouTube ID from URL or raw ID
+function parseYouTubeId(input) {
+  if (!input) return '';
+  const s = String(input).trim();
+  // Already an ID (11 chars, no slashes)
+  if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
+  // Various URL patterns
+  const patterns = [
+    /[?&]v=([A-Za-z0-9_-]{11})/,           // watch?v=ID
+    /youtu\.be\/([A-Za-z0-9_-]{11})/,      // youtu.be/ID
+    /youtube\.com\/embed\/([A-Za-z0-9_-]{11})/,  // embed/ID
+    /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/, // shorts/ID
+    /youtube\.com\/v\/([A-Za-z0-9_-]{11})/       // v/ID
+  ];
+  for (const p of patterns) {
+    const m = s.match(p);
+    if (m) return m[1];
+  }
+  return s; // fall back to whatever was given
+}
+
 function VideoSection({ data, anchorId }) {
-  if (!data.youtubeId) return null;
+  const id = parseYouTubeId(data.youtubeId);
+  if (!id) return null;
   return (
     <section id={anchorId} className="py-12 lg:py-20">
       <div className="max-w-5xl mx-auto px-6 lg:px-12 reveal">
         {data.title && <h3 className="font-serif-tc text-2xl mb-6 text-center">{data.title}</h3>}
         <div className="relative" style={{ paddingBottom: '56.25%', height: 0 }}>
           <iframe className="absolute inset-0 w-full h-full"
-                  src={`https://www.youtube.com/embed/${data.youtubeId}`}
+                  src={`https://www.youtube.com/embed/${id}`}
                   frameBorder="0" allowFullScreen
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   style={{ borderRadius: '4px', boxShadow: '0 24px 48px -16px rgba(26,20,16,0.2)' }}/>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function YoutubePlaylistSection({ data, anchorId }) {
+  const items = (data.videos || []).map(v => ({ ...v, id: parseYouTubeId(v.youtubeId) })).filter(v => v.id);
+  const [active, setActive] = useState(0);
+  if (!items.length) return null;
+  const cur = items[active] || items[0];
+  return (
+    <section id={anchorId} className="py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {(data.eyebrow || data.titleHtml) && (
+          <div className="text-center mb-12 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light mb-4" html={data.titleHtml} />}
+            {data.description && <p className="max-w-2xl mx-auto text-base" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+          </div>
+        )}
+        <div className="grid lg:grid-cols-3 gap-6 reveal">
+          {/* Player: 2/3 width on desktop */}
+          <div className="lg:col-span-2">
+            <div className="relative" style={{ paddingBottom: '56.25%', height: 0 }}>
+              <iframe key={cur.id} className="absolute inset-0 w-full h-full"
+                      src={`https://www.youtube.com/embed/${cur.id}?rel=0`}
+                      frameBorder="0" allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      style={{ borderRadius: '4px', boxShadow: '0 24px 48px -16px rgba(26,20,16,0.2)', background: 'var(--ink)' }}/>
+            </div>
+            {cur.title && <h4 className="font-serif-tc text-xl mt-4" style={{ color: 'var(--ink)' }}>{cur.title}</h4>}
+            {cur.description && <p className="text-sm mt-2" style={{ color: 'var(--ink-light)' }}>{cur.description}</p>}
+          </div>
+          {/* Playlist: 1/3 width */}
+          <div className="lg:col-span-1">
+            <div className="yt-playlist">
+              {items.map((v, i) => (
+                <button key={i} className={`yt-playlist-item ${i === active ? 'active' : ''}`} onClick={() => setActive(i)}>
+                  <div className="yt-thumb">
+                    <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt={v.title || ''} loading="lazy" />
+                    {i === active && <div className="yt-now-playing">▶ 播放中</div>}
+                  </div>
+                  <div className="yt-info">
+                    <div className="yt-title">{v.title || `影片 ${i+1}`}</div>
+                    {v.duration && <div className="yt-duration">{v.duration}</div>}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1105,6 +1274,7 @@ const SECTION_RENDERERS = {
   richtext: RichTextSection,
   image: ImageSection,
   video: VideoSection,
+  'youtube-playlist': YoutubePlaylistSection,
   divider: DividerSection,
   carousel: CarouselSection,
   gallery: GallerySection,
@@ -1203,8 +1373,10 @@ function MobileMenu({ open, onClose, navigation, ctaButton }) {
   );
 }
 
-function Footer({ site, footer, navigation }) {
+function Footer({ site, footer, navigation, visits }) {
   const year = new Date().getFullYear();
+  const showVisits = footer.showVisits !== false; // default on
+  const visitLabel = footer.visitLabel || '累計訪客';
   return (
     <footer className="pt-20 pb-10" style={{ background: 'var(--ink)', color: 'var(--paper-deep)' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -1251,9 +1423,20 @@ function Footer({ site, footer, navigation }) {
             )}
           </div>
         </div>
-        <div className="pt-8 border-t flex flex-col md:flex-row justify-between gap-4 text-xs" style={{ borderColor: 'rgba(184,134,11,0.2)', color: 'rgba(237,228,210,0.5)' }}>
+        <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs" style={{ borderColor: 'rgba(184,134,11,0.2)', color: 'rgba(237,228,210,0.5)' }}>
           <div>© {year} {footer.copyrightOwner || site.title}　All Rights Reserved</div>
-          {footer.accentText && <div className="font-cormorant italic tracking-widest">{footer.accentText}</div>}
+          <div className="flex items-center gap-4 flex-wrap">
+            {showVisits && typeof visits === 'number' && (
+              <div className="visit-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span>{visitLabel}</span>
+                <span className="num">{visits.toLocaleString()}</span>
+              </div>
+            )}
+            {footer.accentText && <div className="font-cormorant italic tracking-widest">{footer.accentText}</div>}
+          </div>
         </div>
       </div>
     </footer>
@@ -1266,6 +1449,7 @@ function Footer({ site, footer, navigation }) {
 
 function App() {
   const [content, setContent] = useState(null);
+  const [visits, setVisits] = useState(null);
   const [error, setError] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const route = useHashRoute();
@@ -1274,11 +1458,33 @@ function App() {
   useEffect(() => {
     gasGet('getContent')
       .then(r => {
-        if (r.ok) setContent(r.content);
+        if (r.ok) {
+          setContent(r.content);
+          if (typeof r.visits === 'number') setVisits(r.visits);
+        }
         else setError(r.error || 'load failed');
       })
       .catch(e => setError(String(e)));
   }, []);
+
+  // Increment visit counter once per session
+  useEffect(() => {
+    if (!content) return;
+    if (sessionStorage.getItem('jc_visit_counted')) return;
+    sessionStorage.setItem('jc_visit_counted', '1');
+    // Fire & forget — don't block UI
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', GAS_URL);
+    xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xhr.onload = () => {
+      try {
+        const r = JSON.parse(xhr.responseText);
+        if (r.ok && typeof r.visits === 'number') setVisits(r.visits);
+      } catch (e) {}
+    };
+    xhr.onerror = () => {};
+    xhr.send(JSON.stringify({ action: 'incrementVisits' }));
+  }, [content]);
 
   // After content loads + route change, scroll to anchor or top
   useEffect(() => {
@@ -1332,12 +1538,22 @@ function App() {
     );
   }
 
+  const showAdminFab = content.site.showAdminFab !== false; // default on
+
   return (
     <>
       <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} />
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} />
       <PageRenderer page={currentPage} />
-      <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
+      <Footer site={content.site} footer={content.footer} navigation={content.navigation} visits={visits} />
+      {showAdminFab && (
+        <a href="admin.html" className="admin-fab" title="後台管理" aria-label="管理後台">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </a>
+      )}
     </>
   );
 }
