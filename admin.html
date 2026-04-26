@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>淨慈寺 CMS · 後台管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+<style>
+  :root {
+    --bg: #f7f5f1;
+    --bg-card: #ffffff;
+    --border: #e5dfd2;
+    --border-strong: #d4cab7;
+    --ink: #1a1410;
+    --ink-soft: #57463a;
+    --ink-mute: #8a7a6a;
+    --temple-red: #8b2421;
+    --temple-red-deep: #5e1714;
+    --gold: #b8860b;
+    --gold-light: #d4a849;
+    --paper: #faf6ec;
+    --success: #4a7c4f;
+    --danger: #a83838;
+  }
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .font-serif { font-family: 'Noto Serif TC', serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .seal {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: var(--temple-red); color: var(--paper);
+    font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1rem;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 2px var(--paper), 0 0 0 1px var(--temple-red);
+    transform: rotate(-3deg);
+  }
+
+  /* Form styling */
+  input[type="text"], input[type="password"], input[type="url"], textarea, select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    transition: all 0.2s ease;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--temple-red);
+    box-shadow: 0 0 0 3px rgba(139,36,33,0.08);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  label.field-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--ink-soft); }
+  .field-help { font-size: 12px; color: var(--ink-mute); margin-top: 4px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s ease; cursor: pointer; border: 1px solid transparent; }
+  .btn-primary { background: var(--temple-red); color: white; border-color: var(--temple-red); }
+  .btn-primary:hover { background: var(--temple-red-deep); border-color: var(--temple-red-deep); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary { background: var(--bg-card); color: var(--ink); border-color: var(--border-strong); }
+  .btn-secondary:hover { background: var(--bg); border-color: var(--ink-mute); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border-color: transparent; }
+  .btn-ghost:hover { background: var(--bg-card); color: var(--ink); }
+  .btn-danger { background: var(--bg-card); color: var(--danger); border-color: var(--border-strong); }
+  .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+  /* Card */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  /* Sidebar nav */
+  .sidebar-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .sidebar-link:hover { background: rgba(139,36,33,0.04); color: var(--ink); }
+  .sidebar-link.active { background: rgba(139,36,33,0.08); color: var(--temple-red); font-weight: 500; }
+  .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-mute); padding: 0 14px; margin: 16px 0 6px; font-weight: 600; }
+
+  /* Section card in editor */
+  .section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .section-card.expanded { border-color: var(--temple-red); }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    background: var(--bg-card);
+    transition: background 0.15s;
+  }
+  .section-header:hover { background: var(--bg); }
+  .section-card.expanded .section-header { border-bottom: 1px solid var(--border); background: var(--bg); }
+  .section-body { padding: 20px; background: var(--bg); border-top: 1px solid var(--border); }
+
+  /* Repeater item */
+  .repeater-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .repeater-controls { position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; }
+
+  /* Quill */
+  .ql-toolbar.ql-snow { border-color: var(--border); border-radius: 6px 6px 0 0; background: var(--bg-card); }
+  .ql-container.ql-snow { border-color: var(--border); border-radius: 0 0 6px 6px; background: white; min-height: 140px; font-family: inherit; }
+  .ql-editor { font-size: 14px; line-height: 1.7; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 12px 20px;
+    background: var(--ink); color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    box-shadow: 0 16px 40px -12px rgba(0,0,0,0.3);
+    z-index: 100;
+    animation: slideIn 0.3s ease;
+  }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.5);
+    z-index: 90;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    max-width: 520px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 24px 60px -16px rgba(0,0,0,0.3);
+  }
+
+  /* Type picker grid */
+  .type-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .type-picker-card {
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .type-picker-card:hover { border-color: var(--temple-red); background: var(--bg-card); transform: translateY(-2px); }
+  .type-picker-card .icon { font-size: 24px; margin-bottom: 6px; }
+  .type-picker-card .name { font-size: 13px; font-weight: 500; }
+
+  /* Image preview */
+  .image-preview {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg) center/cover no-repeat;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  /* Drag-handle */
+  .drag-handle { cursor: grab; color: var(--ink-mute); }
+
+  /* Login screen */
+  .login-bg {
+    background:
+      linear-gradient(180deg, rgba(26,20,16,0.4) 0%, rgba(245,239,228,0.95) 100%),
+      url('https://teqy.weebly.com/uploads/1/1/7/4/117421609/published/jcc.jpg?1715482972');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Save indicator */
+  .dirty-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); display: inline-block;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Anchor for inputs grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+
+// ============================================================
+// CONFIG — change this to your GAS Web App URL
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzjSa-FA9S8U4Z8MqBc81btmXG118_k3K_cLoDxBOxDSV2KJyjLXrSRcQStDhIyzcYP/exec';
+
+// ============================================================
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+// ============================================================
+// API
+// ============================================================
+function gasPost(payload) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', GAS_URL);
+    xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xhr.onload = () => {
+      try { resolve(JSON.parse(xhr.responseText)); }
+      catch (e) { reject(e); }
+    };
+    xhr.onerror = () => reject(new Error('network'));
+    xhr.send(JSON.stringify(payload));
+  });
+}
+
+function gasGetContent() {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `${GAS_URL}?action=getContent`);
+    xhr.onload = () => {
+      try { resolve(JSON.parse(xhr.responseText)); }
+      catch (e) { reject(e); }
+    };
+    xhr.onerror = () => reject(new Error('network'));
+    xhr.send();
+  });
+}
+
+function uid() {
+  return 'id-' + Math.random().toString(36).slice(2, 10);
+}
+
+// ============================================================
+// Section Schemas — defines fields for each section type
+// ============================================================
+const SECTION_SCHEMAS = {
+  hero: {
+    label: 'Hero 主視覺',
+    icon: '🎯',
+    summary: (d) => d.titleLine1 || d.titleLine2 || 'Hero',
+    fields: [
+      { key: 'eyebrow', label: '小標 (英文/裝飾)', type: 'text', help: '例: Established · 新北土城' },
+      { key: 'titleLine1', label: '主標第一行', type: 'text' },
+      { key: 'titleLine2', label: '主標第二行 (高亮)', type: 'text' },
+      { key: 'subtitle', label: '副標', type: 'textarea', help: '可換行' },
+      { key: 'backgroundImage', label: '背景圖', type: 'image' },
+      { key: 'verticalAccent', label: '右側直行裝飾文字', type: 'text', help: '例: 清淨慈悲・廣結善緣' },
+      { key: 'ctaPrimaryLabel', label: '主按鈕文字', type: 'text' },
+      { key: 'ctaPrimaryUrl', label: '主按鈕連結', type: 'text' },
+      { key: 'ctaSecondaryLabel', label: '次按鈕文字', type: 'text' },
+      { key: 'ctaSecondaryUrl', label: '次按鈕連結', type: 'text', help: '可填 #anchor 或完整 URL' }
+    ]
+  },
+  'cards-corner': {
+    label: '角框卡片區塊',
+    icon: '▢',
+    summary: (d) => d.eyebrow || '角框卡片',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html', help: '可用 <span class="accent">字</span> 來高亮' },
+      { key: 'description', label: '左側說明文字', type: 'textarea' },
+      { key: 'quote', label: '引文 (支援 HTML)', type: 'html', help: '可用 <br> 換行' },
+      { key: 'cards', label: '卡片清單', type: 'repeater', itemFields: [
+        { key: 'number', label: '編號', type: 'text', placeholder: '01' },
+        { key: 'englishLabel', label: '英文標籤', type: 'text', placeholder: 'Vow' },
+        { key: 'title', label: '標題', type: 'text' },
+        { key: 'body', label: '內文', type: 'textarea' }
+      ]}
+    ]
+  },
+  timeline: {
+    label: '時間軸',
+    icon: '┃',
+    summary: (d) => d.eyebrow || '時間軸',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'description', label: '說明文字', type: 'textarea' },
+      { key: 'background', label: '背景', type: 'select', options: [{ value: '', label: '預設(米色)' }, { value: 'cream-deep', label: '深米色' }] },
+      { key: 'items', label: '時間軸項目', type: 'repeater', itemFields: [
+        { key: 'phase', label: '階段', type: 'text', placeholder: 'Phase 01' },
+        { key: 'title', label: '標題', type: 'text' },
+        { key: 'body', label: '內文', type: 'textarea' }
+      ]}
+    ]
+  },
+  'cards-gradient': {
+    label: '漸層卡片區塊',
+    icon: '⊞',
+    summary: (d) => d.eyebrow || '漸層卡片',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'description', label: '說明文字', type: 'textarea' },
+      { key: 'cards', label: '卡片清單', type: 'repeater', itemFields: [
+        { key: 'englishLabel', label: '英文標籤', type: 'text' },
+        { key: 'title', label: '標題', type: 'text' },
+        { key: 'body', label: '內文', type: 'textarea' }
+      ]}
+    ]
+  },
+  'year-archive': {
+    label: '年份檔案',
+    icon: '📅',
+    summary: (d) => d.eyebrow || '年份檔案',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'description', label: '說明文字', type: 'textarea' },
+      { key: 'background', label: '背景', type: 'select', options: [{ value: '', label: '預設' }, { value: 'cream-deep', label: '深米色' }] },
+      { key: 'years', label: '年份卡', type: 'repeater', itemFields: [
+        { key: 'year', label: '年份', type: 'text', placeholder: '2025' },
+        { key: 'label', label: '標籤', type: 'text', placeholder: 'Activities' },
+        { key: 'url', label: '連結', type: 'text' }
+      ]},
+      { key: 'extraTile', label: '附加格子 (例: YouTube)', type: 'group', subFields: [
+        { key: 'type', label: '類型', type: 'select', options: [{ value: '', label: '無' }, { value: 'youtube', label: 'YouTube' }, { value: 'link', label: '一般連結' }] },
+        { key: 'label', label: '主文字', type: 'text' },
+        { key: 'sublabel', label: '副文字', type: 'text' },
+        { key: 'url', label: '連結', type: 'text' }
+      ]}
+    ]
+  },
+  donate: {
+    label: '捐款卡片',
+    icon: '🪷',
+    summary: (d) => d.eyebrow || '捐款',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'description', label: '說明文字 (支援 HTML/換行)', type: 'html' },
+      { key: 'cards', label: '捐款卡片', type: 'repeater', itemFields: [
+        { key: 'englishLabel', label: '英文標籤', type: 'text' },
+        { key: 'sealText', label: '印章字', type: 'text', placeholder: '捐' },
+        { key: 'title', label: '標題', type: 'text' },
+        { key: 'body', label: '說明', type: 'textarea' },
+        { key: 'linkLabel', label: '按鈕文字', type: 'text' },
+        { key: 'url', label: '連結', type: 'text' }
+      ]},
+      { key: 'extraLink', label: '額外連結 (例: Q&A)', type: 'group', subFields: [
+        { key: 'label', label: '文字', type: 'text' },
+        { key: 'url', label: '連結', type: 'text' }
+      ]}
+    ]
+  },
+  richtext: {
+    label: '富文字段落',
+    icon: '📝',
+    summary: (d) => d.eyebrow || d.titleHtml?.replace(/<[^>]+>/g,'').slice(0,30) || '文字段落',
+    fields: [
+      { key: 'eyebrow', label: '小標 (選填)', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'body', label: '內文 (富文字)', type: 'richtext' },
+      { key: 'layout', label: '排版', type: 'select', options: [
+        { value: 'centered', label: '置中' },
+        { value: 'split', label: '雙欄 (標題左/內文右)' }
+      ]}
+    ]
+  },
+  image: {
+    label: '單張圖片',
+    icon: '🖼️',
+    summary: (d) => d.alt || (d.src ? '圖片' : '空圖片'),
+    fields: [
+      { key: 'src', label: '圖片', type: 'image' },
+      { key: 'alt', label: '替代文字 (alt)', type: 'text' },
+      { key: 'caption', label: '圖說', type: 'text' },
+      { key: 'fullWidth', label: '全寬顯示', type: 'select', options: [{ value: '', label: '否 (限寬)' }, { value: '1', label: '是' }] }
+    ]
+  },
+  video: {
+    label: 'YouTube 影片',
+    icon: '▶',
+    summary: (d) => d.title || 'YouTube 影片',
+    fields: [
+      { key: 'youtubeId', label: 'YouTube 影片 ID', type: 'text', help: '例: dQw4w9WgXcQ (網址 v= 後面那串)' },
+      { key: 'title', label: '影片標題 (選填)', type: 'text' }
+    ]
+  },
+  divider: {
+    label: '分隔線',
+    icon: '—',
+    summary: () => '分隔線',
+    fields: []
+  }
+};
+
+// ============================================================
+// Field components
+// ============================================================
+
+function TextField({ value, onChange, placeholder, multiline }) {
+  if (multiline) {
+    return <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />;
+  }
+  return <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />;
+}
+
+function HtmlField({ value, onChange, help }) {
+  return <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} className="font-mono" style={{ fontSize: 13 }} placeholder='<span class="accent">字</span>' />;
+}
+
+function SelectField({ value, onChange, options }) {
+  return (
+    <select value={value || ''} onChange={(e) => onChange(e.target.value)}>
+      {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+    </select>
+  );
+}
+
+function RichTextField({ value, onChange }) {
+  const containerRef = useRef(null);
+  const quillRef = useRef(null);
+  const initialValueRef = useRef(value);
+
+  useEffect(() => {
+    if (!containerRef.current || quillRef.current) return;
+    const q = new Quill(containerRef.current, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'color': [] }, { 'background': [] }],
+          ['link', 'blockquote'],
+          ['clean']
+        ]
+      }
+    });
+    if (initialValueRef.current) q.root.innerHTML = initialValueRef.current;
+    q.on('text-change', () => {
+      const html = q.root.innerHTML;
+      onChange(html === '<p><br></p>' ? '' : html);
+    });
+    quillRef.current = q;
+  }, []);
+
+  return <div ref={containerRef} />;
+}
+
+function ImageField({ value, onChange, password, showToast }) {
+  const [uploading, setUploading] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleFile = async (file) => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target.result;
+        const base64 = dataUrl.split(',')[1];
+        const resp = await gasPost({
+          action: 'uploadImage',
+          password,
+          base64,
+          filename: file.name,
+          mimeType: file.type
+        });
+        if (resp.ok) {
+          onChange(resp.url);
+          showToast('圖片已上傳', 'success');
+        } else {
+          showToast('上傳失敗: ' + (resp.error || ''), 'error');
+        }
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      showToast('上傳失敗: ' + err.message, 'error');
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div>
+      {value && <div className="image-preview" style={{ backgroundImage: `url('${value}')` }} />}
+      <div className="flex flex-wrap gap-2 items-center">
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={(e) => handleFile(e.target.files[0])}
+          style={{ display: 'none' }}
+        />
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          {uploading ? '上傳中⋯' : (value ? '更換圖片' : '上傳圖片')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          onClick={() => setShowUrlInput(s => !s)}
+        >
+          {showUrlInput ? '收起' : '直接貼網址'}
+        </button>
+        {value && (
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => onChange('')}>
+            移除
+          </button>
+        )}
+      </div>
+      {showUrlInput && (
+        <div className="mt-2">
+          <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder="https://..." />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GroupField({ value, onChange, subFields, password, showToast }) {
+  const v = value || {};
+  return (
+    <div className="repeater-item" style={{ marginBottom: 0 }}>
+      {subFields.map(f => (
+        <FieldRenderer
+          key={f.key}
+          field={f}
+          value={v[f.key]}
+          onChange={(nv) => onChange({ ...v, [f.key]: nv })}
+          password={password}
+          showToast={showToast}
+        />
+      ))}
+    </div>
+  );
+}
+
+function RepeaterField({ value, onChange, itemFields, password, showToast }) {
+  const items = value || [];
+  const move = (i, dir) => {
+    const j = i + dir;
+    if (j < 0 || j >= items.length) return;
+    const newItems = [...items];
+    [newItems[i], newItems[j]] = [newItems[j], newItems[i]];
+    onChange(newItems);
+  };
+  const remove = (i) => {
+    if (!confirm('確定刪除這一項?')) return;
+    onChange(items.filter((_, idx) => idx !== i));
+  };
+  const add = () => {
+    onChange([...items, {}]);
+  };
+  const update = (i, patch) => {
+    const newItems = [...items];
+    newItems[i] = { ...newItems[i], ...patch };
+    onChange(newItems);
+  };
+  return (
+    <div>
+      {items.map((item, i) => (
+        <div key={i} className="repeater-item">
+          <div className="repeater-controls">
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => move(i, -1)} disabled={i === 0} title="上移">↑</button>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => move(i, 1)} disabled={i === items.length - 1} title="下移">↓</button>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => remove(i)} title="刪除" style={{ color: 'var(--danger)' }}>✕</button>
+          </div>
+          <div className="text-xs font-mono mb-3" style={{ color: 'var(--ink-mute)' }}>#{i + 1}</div>
+          {itemFields.map(f => (
+            <FieldRenderer
+              key={f.key}
+              field={f}
+              value={item[f.key]}
+              onChange={(v) => update(i, { [f.key]: v })}
+              password={password}
+              showToast={showToast}
+            />
+          ))}
+        </div>
+      ))}
+      <button type="button" className="btn btn-secondary btn-sm" onClick={add}>+ 新增一項</button>
+    </div>
+  );
+}
+
+function FieldRenderer({ field, value, onChange, password, showToast }) {
+  const { type, label, key, help, placeholder } = field;
+  return (
+    <div className="mb-4">
+      <label className="field-label">{label}</label>
+      {type === 'text' && <TextField value={value} onChange={onChange} placeholder={placeholder} />}
+      {type === 'textarea' && <TextField value={value} onChange={onChange} multiline placeholder={placeholder} />}
+      {type === 'html' && <HtmlField value={value} onChange={onChange} help={help} />}
+      {type === 'select' && <SelectField value={value} onChange={onChange} options={field.options} />}
+      {type === 'image' && <ImageField value={value} onChange={onChange} password={password} showToast={showToast} />}
+      {type === 'richtext' && <RichTextField value={value} onChange={onChange} />}
+      {type === 'repeater' && <RepeaterField value={value} onChange={onChange} itemFields={field.itemFields} password={password} showToast={showToast} />}
+      {type === 'group' && <GroupField value={value} onChange={onChange} subFields={field.subFields} password={password} showToast={showToast} />}
+      {help && <div className="field-help">{help}</div>}
+    </div>
+  );
+}
+
+// ============================================================
+// Section editor (one section)
+// ============================================================
+function SectionEditor({ section, onUpdate, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown, password, showToast }) {
+  const [expanded, setExpanded] = useState(false);
+  const schema = SECTION_SCHEMAS[section.type];
+  if (!schema) return (
+    <div className="section-card">
+      <div className="section-header">
+        <div className="text-sm" style={{ color: 'var(--danger)' }}>未知類型: {section.type}</div>
+        <button className="btn btn-ghost btn-sm" onClick={onDelete}>✕</button>
+      </div>
+    </div>
+  );
+
+  const updateData = (key, val) => {
+    onUpdate({ ...section, data: { ...section.data, [key]: val } });
+  };
+
+  const updateAnchor = (val) => {
+    onUpdate({ ...section, anchorId: val });
+  };
+
+  return (
+    <div className={`section-card ${expanded ? 'expanded' : ''}`}>
+      <div className="section-header" onClick={() => setExpanded(!expanded)}>
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <span className="text-xl flex-shrink-0">{schema.icon}</span>
+          <div className="min-w-0 flex-1">
+            <div className="font-medium text-sm" style={{ color: 'var(--ink)' }}>{schema.label}</div>
+            <div className="text-xs truncate" style={{ color: 'var(--ink-mute)' }}>{schema.summary(section.data || {})}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+          <button className="btn btn-ghost btn-sm" disabled={!canMoveUp} onClick={onMoveUp} title="上移">↑</button>
+          <button className="btn btn-ghost btn-sm" disabled={!canMoveDown} onClick={onMoveDown} title="下移">↓</button>
+          <button className="btn btn-ghost btn-sm" onClick={onDelete} style={{ color: 'var(--danger)' }} title="刪除">✕</button>
+          <span style={{ color: 'var(--ink-mute)', marginLeft: 4 }}>{expanded ? '▾' : '▸'}</span>
+        </div>
+      </div>
+      {expanded && (
+        <div className="section-body">
+          <div className="mb-4">
+            <label className="field-label">錨點 ID (用於導覽列連結)</label>
+            <input type="text" value={section.anchorId || ''} onChange={(e) => updateAnchor(e.target.value)} placeholder="例: origin, gallery (英文/數字)" className="font-mono" />
+            <div className="field-help">設定後可以透過 #{section.anchorId || 'xxx'} 連結到此區塊</div>
+          </div>
+          <div className="border-t pt-4" style={{ borderColor: 'var(--border)' }}>
+            {schema.fields.map(f => (
+              <FieldRenderer
+                key={f.key}
+                field={f}
+                value={(section.data || {})[f.key]}
+                onChange={(v) => updateData(f.key, v)}
+                password={password}
+                showToast={showToast}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// Section type picker modal
+// ============================================================
+function SectionTypePicker({ onPick, onClose }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 640 }}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-serif text-xl font-medium">選擇區塊類型</h3>
+          <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
+        </div>
+        <div className="type-picker-grid">
+          {Object.entries(SECTION_SCHEMAS).map(([type, schema]) => (
+            <div key={type} className="type-picker-card" onClick={() => onPick(type)}>
+              <div className="icon">{schema.icon}</div>
+              <div className="name">{schema.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Page Editor
+// ============================================================
+function PageEditor({ page, onUpdatePage, onDeletePage, password, showToast }) {
+  const [showPicker, setShowPicker] = useState(false);
+
+  const updateSection = (idx, newSection) => {
+    const newSections = [...page.sections];
+    newSections[idx] = newSection;
+    onUpdatePage({ ...page, sections: newSections });
+  };
+  const deleteSection = (idx) => {
+    if (!confirm('確定刪除這個區塊?')) return;
+    onUpdatePage({ ...page, sections: page.sections.filter((_, i) => i !== idx) });
+  };
+  const moveSection = (idx, dir) => {
+    const j = idx + dir;
+    if (j < 0 || j >= page.sections.length) return;
+    const newSections = [...page.sections];
+    [newSections[idx], newSections[j]] = [newSections[j], newSections[idx]];
+    onUpdatePage({ ...page, sections: newSections });
+  };
+  const addSection = (type) => {
+    setShowPicker(false);
+    const newSection = { id: uid(), type, data: {} };
+    onUpdatePage({ ...page, sections: [...page.sections, newSection] });
+  };
+
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="grid-2">
+          <div>
+            <label className="field-label">頁面標題</label>
+            <input type="text" value={page.title || ''} onChange={(e) => onUpdatePage({ ...page, title: e.target.value })} />
+          </div>
+          <div>
+            <label className="field-label">URL Slug</label>
+            <input type="text" value={page.slug || ''} onChange={(e) => onUpdatePage({ ...page, slug: e.target.value })} className="font-mono" disabled={page.isHome} />
+            <div className="field-help">{page.isHome ? '首頁固定為 /，無法修改' : '網址會是 #/page/' + (page.slug || '...')}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 mt-4">
+          <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--ink-soft)' }}>
+            <input type="checkbox" checked={!!page.isHome} onChange={(e) => onUpdatePage({ ...page, isHome: e.target.checked })} />
+            設為首頁
+          </label>
+          {!page.isHome && (
+            <button className="btn btn-danger btn-sm ml-auto" onClick={onDeletePage}>刪除此頁</button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-serif text-lg font-medium">區塊 ({page.sections.length})</h3>
+        <button className="btn btn-primary btn-sm" onClick={() => setShowPicker(true)}>+ 新增區塊</button>
+      </div>
+
+      {page.sections.map((section, i) => (
+        <SectionEditor
+          key={section.id}
+          section={section}
+          onUpdate={(s) => updateSection(i, s)}
+          onDelete={() => deleteSection(i)}
+          onMoveUp={() => moveSection(i, -1)}
+          onMoveDown={() => moveSection(i, 1)}
+          canMoveUp={i > 0}
+          canMoveDown={i < page.sections.length - 1}
+          password={password}
+          showToast={showToast}
+        />
+      ))}
+
+      {page.sections.length === 0 && (
+        <div className="card p-8 text-center" style={{ color: 'var(--ink-mute)' }}>
+          這頁還沒有任何區塊,點上方「新增區塊」開始建立
+        </div>
+      )}
+
+      {showPicker && <SectionTypePicker onPick={addSection} onClose={() => setShowPicker(false)} />}
+    </div>
+  );
+}
+
+// ============================================================
+// Site Settings Editor
+// ============================================================
+function SiteEditor({ site, onUpdate }) {
+  const update = (key, val) => onUpdate({ ...site, [key]: val });
+  return (
+    <div className="card p-6">
+      <h2 className="font-serif text-2xl font-medium mb-6">網站設定</h2>
+      <div className="grid-2">
+        <div>
+          <label className="field-label">網站標題 (中)</label>
+          <input type="text" value={site.title || ''} onChange={(e) => update('title', e.target.value)} />
+        </div>
+        <div>
+          <label className="field-label">網站標題 (英)</label>
+          <input type="text" value={site.titleEn || ''} onChange={(e) => update('titleEn', e.target.value)} />
+        </div>
+      </div>
+      <div className="grid-2 mt-4">
+        <div>
+          <label className="field-label">Logo 印章字 (1 字)</label>
+          <input type="text" value={site.logoSeal || ''} onChange={(e) => update('logoSeal', e.target.value)} maxLength={2} />
+        </div>
+        <div>
+          <label className="field-label">SEO 描述</label>
+          <input type="text" value={site.description || ''} onChange={(e) => update('description', e.target.value)} />
+        </div>
+      </div>
+      <div className="grid-2 mt-4">
+        <div>
+          <label className="field-label">導覽列右側按鈕文字</label>
+          <input type="text" value={site.ctaButtonLabel || ''} onChange={(e) => update('ctaButtonLabel', e.target.value)} />
+        </div>
+        <div>
+          <label className="field-label">導覽列右側按鈕連結</label>
+          <input type="text" value={site.ctaButtonUrl || ''} onChange={(e) => update('ctaButtonUrl', e.target.value)} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Footer Editor
+// ============================================================
+function FooterEditor({ footer, onUpdate }) {
+  const update = (key, val) => onUpdate({ ...footer, [key]: val });
+  return (
+    <div className="card p-6">
+      <h2 className="font-serif text-2xl font-medium mb-6">頁尾設定</h2>
+      <div className="mb-4">
+        <label className="field-label">標語 (支援 HTML/換行)</label>
+        <textarea value={footer.tagline || ''} onChange={(e) => update('tagline', e.target.value)} className="font-mono" style={{ fontSize: 13 }} />
+      </div>
+      <div className="mb-4">
+        <label className="field-label">地址</label>
+        <input type="text" value={footer.address || ''} onChange={(e) => update('address', e.target.value)} />
+      </div>
+      <div className="grid-2">
+        <div>
+          <label className="field-label">右下小字</label>
+          <input type="text" value={footer.accentText || ''} onChange={(e) => update('accentText', e.target.value)} />
+        </div>
+        <div>
+          <label className="field-label">YouTube 頻道網址</label>
+          <input type="text" value={footer.youtubeUrl || ''} onChange={(e) => update('youtubeUrl', e.target.value)} />
+        </div>
+      </div>
+      <div className="mt-4">
+        <label className="field-label">版權所有人</label>
+        <input type="text" value={footer.copyrightOwner || ''} onChange={(e) => update('copyrightOwner', e.target.value)} />
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Navigation Editor
+// ============================================================
+function NavItemEditor({ item, onUpdate, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown, depth }) {
+  const update = (key, val) => onUpdate({ ...item, [key]: val });
+  const updateChild = (i, child) => {
+    const newChildren = [...(item.children || [])];
+    newChildren[i] = child;
+    update('children', newChildren);
+  };
+  const deleteChild = (i) => {
+    if (!confirm('確定刪除這個子選單?')) return;
+    update('children', (item.children || []).filter((_, idx) => idx !== i));
+  };
+  const moveChild = (i, dir) => {
+    const j = i + dir;
+    const newChildren = [...(item.children || [])];
+    if (j < 0 || j >= newChildren.length) return;
+    [newChildren[i], newChildren[j]] = [newChildren[j], newChildren[i]];
+    update('children', newChildren);
+  };
+  const addChild = () => {
+    update('children', [...(item.children || []), { id: uid(), label: '新項目', type: 'anchor', target: '' }]);
+  };
+
+  return (
+    <div className="repeater-item" style={{ marginLeft: depth * 24 }}>
+      <div className="repeater-controls">
+        <button type="button" className="btn btn-ghost btn-sm" onClick={onMoveUp} disabled={!canMoveUp}>↑</button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={onMoveDown} disabled={!canMoveDown}>↓</button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={onDelete} style={{ color: 'var(--danger)' }}>✕</button>
+      </div>
+      <div className="grid-2">
+        <div>
+          <label className="field-label">顯示文字</label>
+          <input type="text" value={item.label || ''} onChange={(e) => update('label', e.target.value)} />
+        </div>
+        <div>
+          <label className="field-label">類型</label>
+          <select value={item.type || 'anchor'} onChange={(e) => update('type', e.target.value)}>
+            <option value="anchor">錨點 (#section-id)</option>
+            <option value="page">頁面 (內部頁)</option>
+            <option value="external">外部連結</option>
+          </select>
+        </div>
+      </div>
+      <div className="mt-3">
+        <label className="field-label">
+          {item.type === 'anchor' && '錨點 ID (不含 #)'}
+          {item.type === 'page' && '頁面 slug'}
+          {item.type === 'external' && '完整網址 (https://)'}
+        </label>
+        <input type="text" value={item.target || ''} onChange={(e) => update('target', e.target.value)} className="font-mono" />
+      </div>
+      {depth === 0 && (
+        <div className="mt-4 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+          <div className="text-xs mb-2" style={{ color: 'var(--ink-mute)' }}>子選單 (下拉選項)</div>
+          {(item.children || []).map((c, i) => (
+            <NavItemEditor
+              key={c.id}
+              item={c}
+              onUpdate={(nc) => updateChild(i, nc)}
+              onDelete={() => deleteChild(i)}
+              onMoveUp={() => moveChild(i, -1)}
+              onMoveDown={() => moveChild(i, 1)}
+              canMoveUp={i > 0}
+              canMoveDown={i < (item.children || []).length - 1}
+              depth={depth + 1}
+            />
+          ))}
+          <button type="button" className="btn btn-ghost btn-sm" onClick={addChild}>+ 新增子選單</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NavEditor({ navigation, onUpdate }) {
+  const update = (i, item) => {
+    const n = [...navigation];
+    n[i] = item;
+    onUpdate(n);
+  };
+  const remove = (i) => {
+    if (!confirm('確定刪除此導覽項?')) return;
+    onUpdate(navigation.filter((_, idx) => idx !== i));
+  };
+  const move = (i, dir) => {
+    const j = i + dir;
+    if (j < 0 || j >= navigation.length) return;
+    const n = [...navigation];
+    [n[i], n[j]] = [n[j], n[i]];
+    onUpdate(n);
+  };
+  const add = () => {
+    onUpdate([...navigation, { id: uid(), label: '新選項', type: 'anchor', target: '', children: [] }]);
+  };
+  return (
+    <div className="card p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-serif text-2xl font-medium">導覽列</h2>
+        <button className="btn btn-primary btn-sm" onClick={add}>+ 新增選項</button>
+      </div>
+      {navigation.map((item, i) => (
+        <NavItemEditor
+          key={item.id}
+          item={item}
+          onUpdate={(it) => update(i, it)}
+          onDelete={() => remove(i)}
+          onMoveUp={() => move(i, -1)}
+          onMoveDown={() => move(i, 1)}
+          canMoveUp={i > 0}
+          canMoveDown={i < navigation.length - 1}
+          depth={0}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ============================================================
+// Backups view
+// ============================================================
+function BackupsView({ password, showToast, onRestore }) {
+  const [backups, setBackups] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = async () => {
+    setLoading(true);
+    const r = await gasPost({ action: 'listBackups', password });
+    if (r.ok) setBackups(r.backups);
+    else showToast('無法載入備份列表', 'error');
+    setLoading(false);
+  };
+
+  useEffect(() => { refresh(); }, []);
+
+  const restore = async (id, name) => {
+    if (!confirm(`確定要還原到「${name}」這個版本?目前的內容會自動再備份一次。`)) return;
+    const r = await gasPost({ action: 'restoreBackup', password, fileId: id });
+    if (r.ok) {
+      showToast('還原成功,正在重新載入⋯', 'success');
+      onRestore && onRestore();
+    } else {
+      showToast('還原失敗: ' + (r.error || ''), 'error');
+    }
+  };
+
+  return (
+    <div className="card p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-serif text-2xl font-medium">備份歷史</h2>
+        <button className="btn btn-secondary btn-sm" onClick={refresh}>重新整理</button>
+      </div>
+      {loading ? <div style={{ color: 'var(--ink-mute)' }}>載入中⋯</div> :
+        backups.length === 0 ? <div style={{ color: 'var(--ink-mute)' }}>尚無備份(每次儲存都會自動備份)</div> :
+        <div>
+          {backups.map(b => (
+            <div key={b.id} className="repeater-item flex items-center justify-between" style={{ paddingTop: 12, paddingBottom: 12 }}>
+              <div>
+                <div className="font-mono text-sm">{b.name}</div>
+                <div className="text-xs mt-1" style={{ color: 'var(--ink-mute)' }}>{new Date(b.created).toLocaleString('zh-TW')}</div>
+              </div>
+              <button className="btn btn-secondary btn-sm" onClick={() => restore(b.id, b.name)}>還原此版本</button>
+            </div>
+          ))}
+        </div>
+      }
+    </div>
+  );
+}
+
+// ============================================================
+// Login screen
+// ============================================================
+function Login({ onLogin }) {
+  const [pw, setPw] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const submit = async () => {
+    if (!pw) return;
+    setBusy(true); setErr('');
+    try {
+      const r = await gasPost({ action: 'login', password: pw });
+      if (r.ok) {
+        sessionStorage.setItem('jc_pw', pw);
+        onLogin(pw);
+      } else {
+        setErr('密碼錯誤');
+      }
+    } catch (e) {
+      setErr('連線失敗,請確認 GAS_URL');
+    }
+    setBusy(false);
+  };
+
+  return (
+    <div className="login-bg min-h-screen flex items-center justify-center p-6">
+      <div className="card p-10" style={{ maxWidth: 420, width: '100%' }}>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="seal" style={{ width: 48, height: 48, fontSize: '1.3rem' }}>慈</div>
+          <div>
+            <div className="font-serif font-semibold text-lg">淨慈寺 CMS</div>
+            <div className="text-xs" style={{ color: 'var(--ink-mute)', letterSpacing: '0.15em' }}>Admin Panel</div>
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="field-label">管理密碼</label>
+          <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submit()} autoFocus />
+        </div>
+        {err && <div className="text-sm mb-4" style={{ color: 'var(--danger)' }}>{err}</div>}
+        <button className="btn btn-primary w-full" onClick={submit} disabled={busy}>{busy ? '登入中⋯' : '登入'}</button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Main App
+// ============================================================
+function App() {
+  const [password, setPassword] = useState(sessionStorage.getItem('jc_pw') || null);
+  const [content, setContent] = useState(null);
+  const [origContent, setOrigContent] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [active, setActive] = useState({ type: 'site' });
+  const [toast, setToast] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  const showToast = (msg, kind = '') => {
+    setToast({ msg, kind });
+    setTimeout(() => setToast(null), 2400);
+  };
+
+  const loadContent = async () => {
+    setLoading(true);
+    try {
+      const r = await gasGetContent();
+      if (r.ok) {
+        setContent(r.content);
+        setOrigContent(JSON.stringify(r.content));
+      } else {
+        showToast('載入失敗: ' + (r.error || ''), 'error');
+      }
+    } catch (e) {
+      showToast('載入失敗: ' + e.message, 'error');
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (password && !content) loadContent();
+  }, [password]);
+
+  const dirty = content && JSON.stringify(content) !== origContent;
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (dirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [dirty]);
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const r = await gasPost({ action: 'saveContent', password, content });
+      if (r.ok) {
+        setOrigContent(JSON.stringify(content));
+        showToast('已儲存', 'success');
+      } else {
+        showToast('儲存失敗: ' + (r.error || ''), 'error');
+      }
+    } catch (e) {
+      showToast('儲存失敗: ' + e.message, 'error');
+    }
+    setSaving(false);
+  };
+
+  const logout = () => {
+    if (dirty && !confirm('有未儲存的變更,確定要登出?')) return;
+    sessionStorage.removeItem('jc_pw');
+    setPassword(null);
+    setContent(null);
+    setOrigContent(null);
+  };
+
+  if (!password) return <Login onLogin={setPassword} />;
+  if (loading || !content) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div style={{ color: 'var(--ink-mute)' }}>載入中⋯</div>
+    </div>
+  );
+
+  // Page management
+  const updatePage = (pageId, newPage) => {
+    const newPages = content.pages.map(p => p.id === pageId ? newPage : p);
+    // If marked as home, clear other pages
+    if (newPage.isHome) {
+      newPages.forEach(p => { if (p.id !== pageId) p.isHome = false; });
+    }
+    setContent({ ...content, pages: newPages });
+  };
+  const deletePage = (pageId) => {
+    const page = content.pages.find(p => p.id === pageId);
+    if (!page || page.isHome) { showToast('首頁無法刪除', 'error'); return; }
+    if (!confirm(`確定刪除頁面「${page.title}」?`)) return;
+    setContent({ ...content, pages: content.pages.filter(p => p.id !== pageId) });
+    setActive({ type: 'site' });
+  };
+  const addPage = () => {
+    const slug = prompt('新頁面的 slug (只能英數和 -):', 'new-page');
+    if (!slug) return;
+    if (!/^[a-z0-9-]+$/i.test(slug)) { showToast('slug 只能用英數和 -', 'error'); return; }
+    if (content.pages.some(p => p.slug === slug)) { showToast('slug 已存在', 'error'); return; }
+    const newPage = {
+      id: uid(),
+      slug,
+      title: '新頁面',
+      isHome: false,
+      sections: []
+    };
+    setContent({ ...content, pages: [...content.pages, newPage] });
+    setActive({ type: 'page', pageId: newPage.id });
+  };
+
+  const currentPage = active.type === 'page' ? content.pages.find(p => p.id === active.pageId) : null;
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <aside className="flex-shrink-0" style={{ width: 280, background: 'var(--bg-card)', borderRight: '1px solid var(--border)' }}>
+        <div className="p-5 border-b" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex items-center gap-3">
+            <div className="seal">慈</div>
+            <div>
+              <div className="font-serif font-semibold">淨慈寺 CMS</div>
+              <div className="text-xs" style={{ color: 'var(--ink-mute)' }}>Admin Panel</div>
+            </div>
+          </div>
+        </div>
+        <div className="p-3 overflow-y-auto" style={{ height: 'calc(100vh - 72px - 80px)' }}>
+          <div className="sidebar-section-title">設定</div>
+          <div className={`sidebar-link ${active.type === 'site' ? 'active' : ''}`} onClick={() => setActive({ type: 'site' })}>
+            <span>⚙</span> 網站設定
+          </div>
+          <div className={`sidebar-link ${active.type === 'navigation' ? 'active' : ''}`} onClick={() => setActive({ type: 'navigation' })}>
+            <span>≡</span> 導覽列
+          </div>
+          <div className={`sidebar-link ${active.type === 'footer' ? 'active' : ''}`} onClick={() => setActive({ type: 'footer' })}>
+            <span>▭</span> 頁尾
+          </div>
+
+          <div className="sidebar-section-title flex items-center justify-between">
+            <span>頁面</span>
+            <button className="btn btn-ghost btn-sm" onClick={addPage} title="新增頁面">+</button>
+          </div>
+          {content.pages.map(p => (
+            <div
+              key={p.id}
+              className={`sidebar-link ${active.type === 'page' && active.pageId === p.id ? 'active' : ''}`}
+              onClick={() => setActive({ type: 'page', pageId: p.id })}
+            >
+              <span>{p.isHome ? '⌂' : '◢'}</span>
+              <span className="truncate">{p.title}</span>
+              {p.isHome && <span className="ml-auto text-xs" style={{ color: 'var(--gold)' }}>首頁</span>}
+            </div>
+          ))}
+
+          <div className="sidebar-section-title">工具</div>
+          <div className={`sidebar-link ${active.type === 'backups' ? 'active' : ''}`} onClick={() => setActive({ type: 'backups' })}>
+            <span>↻</span> 備份歷史
+          </div>
+        </div>
+        <div className="p-3 border-t" style={{ borderColor: 'var(--border)' }}>
+          <button className="sidebar-link w-full" onClick={logout} style={{ color: 'var(--danger)' }}>
+            <span>↪</span> 登出
+          </button>
+        </div>
+      </aside>
+
+      {/* Main */}
+      <main className="flex-1 overflow-y-auto" style={{ height: '100vh' }}>
+        {/* Top save bar */}
+        <div className="sticky top-0 z-10 px-8 py-4 flex items-center justify-between border-b"
+             style={{ background: 'rgba(247,245,241,0.92)', backdropFilter: 'blur(8px)', borderColor: 'var(--border)' }}>
+          <div className="flex items-center gap-3 text-sm">
+            {dirty ? (
+              <><span className="dirty-dot"></span><span style={{ color: 'var(--ink-soft)' }}>有未儲存的變更</span></>
+            ) : (
+              <span style={{ color: 'var(--ink-mute)' }}>所有變更已儲存</span>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="index.html" target="_blank" className="btn btn-secondary btn-sm">預覽公開頁 ↗</a>
+            <button className="btn btn-primary" onClick={save} disabled={!dirty || saving}>
+              {saving ? '儲存中⋯' : '儲存所有變更'}
+            </button>
+          </div>
+        </div>
+
+        <div className="p-8 max-w-5xl mx-auto">
+          {active.type === 'site' && <SiteEditor site={content.site} onUpdate={(s) => setContent({ ...content, site: s })} />}
+          {active.type === 'navigation' && <NavEditor navigation={content.navigation} onUpdate={(n) => setContent({ ...content, navigation: n })} />}
+          {active.type === 'footer' && <FooterEditor footer={content.footer} onUpdate={(f) => setContent({ ...content, footer: f })} />}
+          {active.type === 'page' && currentPage && (
+            <PageEditor
+              key={currentPage.id}
+              page={currentPage}
+              onUpdatePage={(p) => updatePage(currentPage.id, p)}
+              onDeletePage={() => deletePage(currentPage.id)}
+              password={password}
+              showToast={showToast}
+            />
+          )}
+          {active.type === 'backups' && <BackupsView password={password} showToast={showToast} onRestore={loadContent} />}
+        </div>
+      </main>
+
+      {toast && <div className={`toast ${toast.kind}`}>{toast.msg}</div>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>

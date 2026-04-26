@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>淨慈寺文化園區｜清淨慈悲・廣結善緣</title>
+<meta name="description" content="淨慈寺文化園區位於新北市土城區，修身淨心、廣結善緣。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-soft: #2d2520;
+    --ink-light: #57463a;
+    --paper: #f5efe4;
+    --paper-deep: #ede4d2;
+    --paper-warm: #faf5eb;
+    --temple-red: #8b2421;
+    --temple-red-deep: #5e1714;
+    --gold: #b8860b;
+    --gold-light: #d4a849;
+    --gold-glow: #e8c170;
+    --tea: #6b4423;
+  }
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.7;
+  }
+  .font-serif-tc { font-family: 'Noto Serif TC', serif; }
+  .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1; mix-blend-mode: multiply;
+  }
+  main, nav, footer { position: relative; z-index: 2; }
+  .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 0.5em; }
+
+  .accent { color: var(--temple-red); }
+
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 1.1s cubic-bezier(0.22,1,0.36,1), transform 1.1s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .seal {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px;
+    background: var(--temple-red); color: var(--paper-warm);
+    font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.3rem;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 2px var(--paper-warm), 0 0 0 1px var(--temple-red), 2px 2px 8px rgba(94,23,20,0.2);
+    transform: rotate(-3deg); letter-spacing: 0;
+  }
+
+  .nav-backdrop {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background: rgba(245,239,228,0.78);
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+  }
+  .nav-link { position: relative; transition: color 0.3s; font-weight: 400; letter-spacing: 0.05em; }
+  .nav-link::after {
+    content: ''; position: absolute; bottom: -6px; left: 50%;
+    transform: translateX(-50%); width: 0; height: 1px;
+    background: var(--temple-red);
+    transition: width 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .nav-link:hover { color: var(--temple-red); }
+  .nav-link:hover::after { width: 100%; }
+
+  .btn-primary {
+    background: var(--temple-red); color: var(--paper-warm);
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    position: relative; overflow: hidden;
+    letter-spacing: 0.15em; font-weight: 500;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--temple-red-deep);
+    transform: translateY(101%);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .btn-primary:hover::before { transform: translateY(0); }
+  .btn-primary > * { position: relative; z-index: 1; }
+  .btn-primary:hover { box-shadow: 0 16px 40px -12px rgba(94,23,20,0.4); }
+
+  .btn-ghost {
+    border: 1px solid rgba(245,239,228,0.5); color: var(--paper-warm);
+    transition: all 0.3s ease; letter-spacing: 0.15em; font-weight: 400;
+    backdrop-filter: blur(8px); background: rgba(245,239,228,0.05);
+  }
+  .btn-ghost:hover { background: rgba(245,239,228,0.15); border-color: var(--paper-warm); }
+
+  .eyebrow {
+    color: var(--gold); font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 1rem; letter-spacing: 0.3em; text-transform: uppercase;
+  }
+  .eyebrow::before {
+    content: ''; display: inline-block; width: 32px; height: 1px;
+    background: var(--gold); vertical-align: middle; margin-right: 16px;
+  }
+
+  .pull-quote {
+    font-family: 'Noto Serif TC', serif; font-weight: 300; line-height: 1.9;
+    position: relative; padding-left: 28px;
+    border-left: 1px solid var(--gold);
+    color: var(--ink-soft);
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.7; }
+    50% { transform: translate(-50%, 8px); opacity: 1; }
+  }
+  .scroll-ind { animation: scrollPulse 2.4s ease-in-out infinite; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .delay-1 { animation: fadeUp 1.2s 0.3s both cubic-bezier(0.22,1,0.36,1); }
+  .delay-2 { animation: fadeUp 1.2s 0.6s both cubic-bezier(0.22,1,0.36,1); }
+  .delay-3 { animation: fadeUp 1.2s 0.9s both cubic-bezier(0.22,1,0.36,1); }
+  .delay-4 { animation: fadeUp 1.2s 1.2s both cubic-bezier(0.22,1,0.36,1); }
+  .delay-5 { animation: fadeUp 1.2s 1.5s both cubic-bezier(0.22,1,0.36,1); }
+
+  .timeline-item { position: relative; padding-left: 48px; padding-bottom: 40px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: 11px; top: 12px;
+    width: 1px; height: calc(100% - 8px);
+    background: linear-gradient(180deg, var(--gold) 0%, rgba(184,134,11,0.2) 100%);
+  }
+  .timeline-item:last-child::before { display: none; }
+  .timeline-dot {
+    position: absolute; left: 4px; top: 8px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--temple-red);
+    transition: all 0.3s ease;
+  }
+  .timeline-item:hover .timeline-dot {
+    background: var(--temple-red);
+    box-shadow: 0 0 0 6px rgba(139,36,33,0.12);
+  }
+
+  .year-card {
+    transition: all 0.5s cubic-bezier(0.22,1,0.36,1);
+    border: 1px solid rgba(184,134,11,0.18);
+    background: var(--paper-warm);
+    position: relative; overflow: hidden;
+  }
+  .year-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(139,36,33,0.04) 100%);
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .year-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--temple-red);
+    box-shadow: 0 20px 40px -16px rgba(94,23,20,0.18);
+  }
+  .year-card:hover::before { opacity: 1; }
+  .year-num { transition: all 0.5s cubic-bezier(0.22,1,0.36,1); font-family: 'Cormorant Garamond', serif; }
+  .year-card:hover .year-num { color: var(--temple-red); letter-spacing: 0.02em; }
+
+  .donate-card {
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+  }
+  .donate-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -16px rgba(94,23,20,0.18);
+    border-color: var(--gold);
+  }
+
+  .space-card {
+    transition: all 0.5s cubic-bezier(0.22,1,0.36,1);
+    background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper-deep) 100%);
+    border: 1px solid rgba(184,134,11,0.15);
+  }
+  .space-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -12px rgba(94,23,20,0.12);
+  }
+
+  ::selection { background: var(--temple-red); color: var(--paper-warm); }
+
+  .dropdown { position: relative; }
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.25);
+    box-shadow: 0 16px 40px -12px rgba(26,20,16,0.18);
+    padding: 12px 0; min-width: 160px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 50;
+  }
+  .dropdown:hover .dropdown-menu {
+    opacity: 1; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: block; padding: 8px 24px; font-size: 0.9rem;
+    color: var(--ink-soft); transition: all 0.2s; letter-spacing: 0.05em;
+  }
+  .dropdown-menu a:hover { background: var(--paper-deep); color: var(--temple-red); padding-left: 28px; }
+
+  .mobile-menu-btn { display: none; }
+  @media (max-width: 1024px) {
+    .desktop-nav { display: none !important; }
+    .mobile-menu-btn { display: flex; }
+  }
+  .mobile-menu {
+    position: fixed; inset: 0; background: var(--paper); z-index: 60;
+    padding: 80px 32px 32px;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .mobile-menu.open { transform: translateX(0); }
+
+  .brush { height: 2px; width: 64px; background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); }
+
+  .corner-frame { position: relative; }
+  .corner-frame::before, .corner-frame::after {
+    content: ''; position: absolute; width: 24px; height: 24px;
+    border-color: var(--gold);
+  }
+  .corner-frame::before { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+  .corner-frame::after { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+
+  /* Rich text content */
+  .rich-content h1, .rich-content h2, .rich-content h3, .rich-content h4 {
+    font-family: 'Noto Serif TC', serif; font-weight: 500;
+    color: var(--ink); margin: 1.5em 0 0.5em;
+  }
+  .rich-content h1 { font-size: 2.25rem; }
+  .rich-content h2 { font-size: 1.75rem; }
+  .rich-content h3 { font-size: 1.35rem; }
+  .rich-content p { margin: 0.75em 0; line-height: 1.85; color: var(--ink-soft); }
+  .rich-content a { color: var(--temple-red); text-decoration: underline; text-underline-offset: 3px; }
+  .rich-content strong { font-weight: 600; color: var(--ink); }
+  .rich-content em { font-style: italic; }
+  .rich-content ul, .rich-content ol { padding-left: 1.5em; margin: 0.75em 0; }
+  .rich-content li { margin: 0.4em 0; line-height: 1.8; }
+  .rich-content blockquote {
+    border-left: 3px solid var(--gold);
+    padding: 0.5em 0 0.5em 1.5em;
+    margin: 1em 0;
+    font-family: 'Noto Serif TC', serif;
+    color: var(--ink-soft); font-style: italic;
+  }
+  .rich-content img { max-width: 100%; height: auto; margin: 1em 0; border-radius: 4px; }
+
+  /* Loading screen */
+  .loading-screen {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+  }
+  @keyframes pulseFade {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+  .loading-seal { animation: pulseFade 1.6s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+
+// ============================================================
+// CONFIG — change this to your GAS Web App URL
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzjSa-FA9S8U4Z8MqBc81btmXG118_k3K_cLoDxBOxDSV2KJyjLXrSRcQStDhIyzcYP/exec';
+
+// ============================================================
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ============================================================
+// API
+// ============================================================
+function gasGet(action) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `${GAS_URL}?action=${encodeURIComponent(action)}`);
+    xhr.onload = () => {
+      try { resolve(JSON.parse(xhr.responseText)); }
+      catch (e) { reject(e); }
+    };
+    xhr.onerror = () => reject(new Error('network'));
+    xhr.send();
+  });
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+function parseRoute(hash) {
+  if (!hash || hash === '#' || hash === '#/') return { type: 'home', anchor: null };
+  if (hash.startsWith('#/page/')) return { type: 'page', slug: decodeURIComponent(hash.slice(7)) };
+  return { type: 'home', anchor: hash.slice(1) };
+}
+
+function useHashRoute() {
+  const [route, setRoute] = useState(parseRoute(window.location.hash));
+  useEffect(() => {
+    const onHash = () => setRoute(parseRoute(window.location.hash));
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+  return route;
+}
+
+function useReveal() {
+  useEffect(() => {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  });
+}
+
+function HtmlContent({ html, className }) {
+  return <div className={className} dangerouslySetInnerHTML={{ __html: html || '' }} />;
+}
+
+function navTargetUrl(item) {
+  if (!item) return '#';
+  if (item.type === 'external') return item.target;
+  if (item.type === 'page') return `#/page/${item.target}`;
+  return `#${item.target}`;
+}
+
+// ============================================================
+// Section renderers
+// ============================================================
+
+function HeroSection({ data, isFirst }) {
+  const bg = data.backgroundImage
+    ? `linear-gradient(180deg, rgba(26,20,16,0.55) 0%, rgba(26,20,16,0.35) 40%, rgba(245,239,228,0) 70%, var(--paper) 100%), url('${data.backgroundImage}')`
+    : 'linear-gradient(180deg, var(--ink) 0%, var(--paper) 100%)';
+  const subtitleHtml = (data.subtitle || '').replace(/\n/g, '<br>');
+  return (
+    <section className="relative min-h-screen flex items-center" style={{ backgroundImage: bg, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+      {data.verticalAccent && (
+        <div className="hidden lg:flex vertical-rl absolute right-12 top-1/2 -translate-y-1/2 text-sm font-serif-tc delay-5" style={{ color: 'rgba(245,239,228,0.55)' }}>
+          {data.verticalAccent.split('').join('\u00a0')}
+        </div>
+      )}
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-32 pb-24 w-full relative">
+        <div className="max-w-3xl">
+          {data.eyebrow && <div className="eyebrow delay-1 mb-6">{data.eyebrow}</div>}
+          <h1 className="font-serif-tc font-light leading-[1.05] mb-8" style={{ color: 'var(--paper-warm)', fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
+            {data.titleLine1 && <span className="block delay-2">{data.titleLine1}</span>}
+            {data.titleLine2 && <span className="block delay-3" style={{ color: 'var(--gold-glow)' }}>{data.titleLine2}</span>}
+          </h1>
+          {data.subtitle && (
+            <p className="delay-4 font-serif-tc text-lg lg:text-xl mb-12 leading-relaxed max-w-xl"
+               style={{ color: 'rgba(245,239,228,0.92)' }}
+               dangerouslySetInnerHTML={{ __html: subtitleHtml }} />
+          )}
+          <div className="delay-5 flex flex-wrap gap-4">
+            {data.ctaPrimaryLabel && (
+              <a href={data.ctaPrimaryUrl || '#'} target={data.ctaPrimaryUrl?.startsWith('http') ? '_blank' : '_self'} className="btn-primary px-8 py-4 inline-flex items-center gap-3 text-sm">
+                <span>{data.ctaPrimaryLabel}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="relative z-10">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              </a>
+            )}
+            {data.ctaSecondaryLabel && (
+              <a href={data.ctaSecondaryUrl || '#'} className="btn-ghost px-8 py-4 text-sm">{data.ctaSecondaryLabel}</a>
+            )}
+          </div>
+        </div>
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 scroll-ind">
+          <div className="flex flex-col items-center gap-2">
+            <span className="font-cormorant italic text-xs tracking-[0.3em]" style={{ color: 'rgba(245,239,228,0.7)' }}>SCROLL</span>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke="rgba(245,239,228,0.7)" strokeWidth="1">
+              <path d="M8 4v16M3 15l5 5 5-5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CardsCornerSection({ data, anchorId }) {
+  return (
+    <section id={anchorId} className="py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          <div className="lg:col-span-5 lg:sticky lg:top-32 reveal">
+            {data.eyebrow && <div className="eyebrow mb-6">{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light leading-tight mb-8" html={data.titleHtml} />}
+            <div className="brush mb-8"></div>
+            {data.description && <p className="text-base leading-loose" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+          </div>
+          <div className="lg:col-span-7 space-y-8 reveal">
+            {data.quote && (
+              <div className="pull-quote text-xl lg:text-2xl">
+                <HtmlContent html={data.quote} />
+              </div>
+            )}
+            <div className="grid sm:grid-cols-2 gap-6 pt-4">
+              {(data.cards || []).map((c, i) => (
+                <div key={i} className="corner-frame p-6">
+                  {(c.number || c.englishLabel) && (
+                    <div className="font-cormorant italic text-sm mb-3" style={{ color: 'var(--gold)' }}>
+                      {c.number}{c.number && c.englishLabel ? ' — ' : ''}{c.englishLabel}
+                    </div>
+                  )}
+                  {c.title && <h3 className="font-serif-tc text-lg font-medium mb-3" style={{ color: 'var(--ink)' }}>{c.title}</h3>}
+                  {c.body && <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-light)' }}>{c.body}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TimelineSection({ data, anchorId }) {
+  const bg = data.background === 'cream-deep'
+    ? { background: 'linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%)' }
+    : {};
+  return (
+    <section id={anchorId} className="py-24 lg:py-32" style={bg}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-2xl mx-auto text-center mb-20 reveal">
+          {data.eyebrow && <div className="eyebrow mb-6" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+          {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-6" html={data.titleHtml} />}
+          <div className="brush mx-auto"></div>
+          {data.description && <p className="mt-6 text-base leading-relaxed" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+        </div>
+        <div className="max-w-3xl mx-auto reveal">
+          {(data.items || []).map((item, i) => (
+            <div key={i} className="timeline-item">
+              <div className="timeline-dot"></div>
+              {item.phase && <div className="font-cormorant italic text-sm mb-2" style={{ color: 'var(--gold)' }}>{item.phase}</div>}
+              {item.title && <h3 className="font-serif-tc text-2xl font-medium mb-3" style={{ color: 'var(--ink)' }}>{item.title}</h3>}
+              {item.body && <p className="text-base leading-relaxed mb-2" style={{ color: 'var(--ink-light)' }}>{item.body}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CardsGradientSection({ data, anchorId }) {
+  return (
+    <section id={anchorId} className="py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-end mb-16">
+          <div className="reveal">
+            {data.eyebrow && <div className="eyebrow mb-6">{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light leading-tight" html={data.titleHtml} />}
+          </div>
+          <div className="reveal">
+            {data.description && <p className="text-base leading-loose" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+          {(data.cards || []).map((c, i) => (
+            <div key={i} className="space-card p-8">
+              {c.englishLabel && <div className="font-cormorant italic text-sm mb-3" style={{ color: 'var(--gold)' }}>{c.englishLabel}</div>}
+              {c.title && <h3 className="font-serif-tc text-xl font-medium mb-3" style={{ color: 'var(--ink)' }}>{c.title}</h3>}
+              {c.body && <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-light)' }}>{c.body}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function YearArchiveSection({ data, anchorId }) {
+  const bg = data.background === 'cream-deep'
+    ? { background: 'linear-gradient(180deg, var(--paper-deep) 0%, var(--paper) 100%)' }
+    : {};
+  return (
+    <section id={anchorId} className="py-24 lg:py-32" style={bg}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="text-center mb-16 reveal">
+          {data.eyebrow && <div className="eyebrow mb-6" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+          {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-6" html={data.titleHtml} />}
+          <div className="brush mx-auto mb-8"></div>
+          {data.description && <p className="max-w-xl mx-auto text-base leading-relaxed" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 lg:gap-6 reveal">
+          {(data.years || []).map((y, i) => (
+            <a key={i} href={y.url || '#'} target={y.url?.startsWith('http') ? '_blank' : '_self'} className="year-card p-6 lg:p-8 text-center">
+              <div className="year-num text-3xl lg:text-4xl font-light mb-2" style={{ color: 'var(--ink)' }}>{y.year}</div>
+              <div className="text-xs tracking-widest" style={{ color: y.label === 'Latest' ? 'var(--gold)' : 'var(--ink-light)' }}>{y.label || ''}</div>
+            </a>
+          ))}
+          {data.extraTile && data.extraTile.url && (
+            <a href={data.extraTile.url} target="_blank" rel="noreferrer" className="year-card p-6 lg:p-8 text-center flex flex-col items-center justify-center"
+               style={{ background: 'var(--temple-red)', borderColor: 'var(--temple-red)' }}>
+              {data.extraTile.type === 'youtube' && (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="rgba(245,239,228,0.95)" className="mb-2">
+                  <path d="M23 7.5c-.3-2-1.7-3.5-3.7-3.7C16.5 3.5 12 3.5 12 3.5s-4.5 0-7.3.3c-2 .2-3.4 1.7-3.7 3.7C.5 9.6.5 12 .5 12s0 2.4.5 4.5c.3 2 1.7 3.5 3.7 3.7 2.8.3 7.3.3 7.3.3s4.5 0 7.3-.3c2-.2 3.4-1.7 3.7-3.7.5-2.1.5-4.5.5-4.5s0-2.4-.5-4.5zM9.5 15.5v-7l6 3.5-6 3.5z"/>
+                </svg>
+              )}
+              <div className="text-sm font-medium" style={{ color: 'var(--paper-warm)' }}>{data.extraTile.label || ''}</div>
+              {data.extraTile.sublabel && <div className="text-xs mt-1" style={{ color: 'rgba(245,239,228,0.7)' }}>{data.extraTile.sublabel}</div>}
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DonateSection({ data, anchorId }) {
+  return (
+    <section id={anchorId} className="py-24 lg:py-32">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+        <div className="text-center mb-16 reveal">
+          {data.eyebrow && <div className="eyebrow mb-6" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+          {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-6" html={data.titleHtml} />}
+          <div className="brush mx-auto mb-8"></div>
+          {data.description && <HtmlContent className="max-w-2xl mx-auto text-base leading-relaxed" html={data.description} />}
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 reveal">
+          {(data.cards || []).map((c, i) => (
+            <a key={i} href={c.url || '#'} target={c.url?.startsWith('http') ? '_blank' : '_self'} className="donate-card p-8 lg:p-10 group block">
+              <div className="flex items-start justify-between mb-8">
+                <div>
+                  {c.englishLabel && <div className="font-cormorant italic text-sm mb-2" style={{ color: 'var(--gold)' }}>{c.englishLabel}</div>}
+                  {c.title && <h3 className="font-serif-tc text-2xl lg:text-3xl font-medium" style={{ color: 'var(--ink)' }}>{c.title}</h3>}
+                </div>
+                {c.sealText && <div className="seal" style={{ fontSize: '1rem' }}>{c.sealText}</div>}
+              </div>
+              {c.body && <p className="text-sm leading-relaxed mb-8" style={{ color: 'var(--ink-light)' }}>{c.body}</p>}
+              <div className="flex items-center justify-between pt-6 border-t" style={{ borderColor: 'rgba(184,134,11,0.2)' }}>
+                <span className="font-serif-tc font-medium" style={{ color: 'var(--temple-red)' }}>{c.linkLabel || '了解更多'}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+                     style={{ color: 'var(--temple-red)', transition: 'transform 0.3s' }} className="group-hover:translate-x-1">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+        {data.extraLink && (
+          <div className="mt-12 text-center reveal">
+            <a href={data.extraLink.url || '#'} className="inline-flex items-center gap-2 text-sm tracking-wider" style={{ color: 'var(--ink-light)' }}>
+              <span style={{ borderBottom: '1px solid currentColor', paddingBottom: '2px' }}>{data.extraLink.label}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function RichTextSection({ data, anchorId }) {
+  const layout = data.layout || 'centered';
+  if (layout === 'centered') {
+    return (
+      <section id={anchorId} className="py-24 lg:py-32">
+        <div className="max-w-3xl mx-auto px-6 lg:px-12 reveal">
+          {data.eyebrow && <div className="eyebrow mb-6" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+          {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light mb-6" html={data.titleHtml} />}
+          {data.body && <HtmlContent className="rich-content text-base" html={data.body} />}
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section id={anchorId} className="py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-12 reveal">
+        <div className="lg:col-span-5">
+          {data.eyebrow && <div className="eyebrow mb-6">{data.eyebrow}</div>}
+          {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light" html={data.titleHtml} />}
+        </div>
+        <div className="lg:col-span-7">
+          {data.body && <HtmlContent className="rich-content text-base" html={data.body} />}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ImageSection({ data, anchorId }) {
+  if (!data.src) return null;
+  return (
+    <section id={anchorId} className="py-12 lg:py-20">
+      <div className={`mx-auto px-6 lg:px-12 reveal ${data.fullWidth ? '' : 'max-w-5xl'}`}>
+        <img src={data.src} alt={data.alt || ''} className="w-full h-auto rounded-sm" style={{ boxShadow: '0 24px 48px -16px rgba(26,20,16,0.18)' }} />
+        {data.caption && <p className="mt-4 text-sm text-center font-serif-tc italic" style={{ color: 'var(--ink-light)' }}>{data.caption}</p>}
+      </div>
+    </section>
+  );
+}
+
+function VideoSection({ data, anchorId }) {
+  if (!data.youtubeId) return null;
+  return (
+    <section id={anchorId} className="py-12 lg:py-20">
+      <div className="max-w-5xl mx-auto px-6 lg:px-12 reveal">
+        {data.title && <h3 className="font-serif-tc text-2xl mb-6 text-center">{data.title}</h3>}
+        <div className="relative" style={{ paddingBottom: '56.25%', height: 0 }}>
+          <iframe className="absolute inset-0 w-full h-full"
+                  src={`https://www.youtube.com/embed/${data.youtubeId}`}
+                  frameBorder="0" allowFullScreen
+                  style={{ borderRadius: '4px', boxShadow: '0 24px 48px -16px rgba(26,20,16,0.2)' }}/>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DividerSection() {
+  return (
+    <div className="py-8 flex justify-center">
+      <div className="brush"></div>
+    </div>
+  );
+}
+
+const SECTION_RENDERERS = {
+  hero: HeroSection,
+  'cards-corner': CardsCornerSection,
+  timeline: TimelineSection,
+  'cards-gradient': CardsGradientSection,
+  'year-archive': YearArchiveSection,
+  donate: DonateSection,
+  richtext: RichTextSection,
+  image: ImageSection,
+  video: VideoSection,
+  divider: DividerSection
+};
+
+function PageRenderer({ page }) {
+  if (!page) return null;
+  return (
+    <main>
+      {page.sections.map((s, i) => {
+        const Renderer = SECTION_RENDERERS[s.type];
+        if (!Renderer) return null;
+        return <Renderer key={s.id} data={s.data || {}} anchorId={s.anchorId} isFirst={i === 0} />;
+      })}
+    </main>
+  );
+}
+
+// ============================================================
+// Layout: Nav + Footer
+// ============================================================
+
+function Nav({ site, navigation, ctaButton, onMobileToggle }) {
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 nav-backdrop">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
+        <a href="#/" className="flex items-center gap-3">
+          <div className="seal">{site.logoSeal || '慈'}</div>
+          <div>
+            <div className="font-serif-tc text-lg font-semibold tracking-wide" style={{ color: 'var(--ink)' }}>{site.title}</div>
+            {site.titleEn && <div className="font-cormorant italic text-xs" style={{ color: 'var(--gold)', letterSpacing: '0.15em' }}>{site.titleEn}</div>}
+          </div>
+        </a>
+        <div className="desktop-nav flex items-center gap-9 text-sm" style={{ color: 'var(--ink-soft)' }}>
+          {(navigation || []).map(item => (
+            item.children && item.children.length ? (
+              <div key={item.id} className="dropdown">
+                <a href={navTargetUrl(item)} className="nav-link" target={item.type === 'external' ? '_blank' : '_self'}>{item.label}</a>
+                <div className="dropdown-menu font-serif-tc">
+                  {item.children.map(c => (
+                    <a key={c.id} href={navTargetUrl(c)} target={c.type === 'external' ? '_blank' : '_self'}>{c.label}</a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <a key={item.id} href={navTargetUrl(item)} className="nav-link" target={item.type === 'external' ? '_blank' : '_self'}>{item.label}</a>
+            )
+          ))}
+          {ctaButton && ctaButton.label && (
+            <a href={ctaButton.url || '#'} target={ctaButton.url?.startsWith('http') ? '_blank' : '_self'} className="btn-primary px-6 py-2.5 text-sm">
+              <span>{ctaButton.label}</span>
+            </a>
+          )}
+        </div>
+        <button className="mobile-menu-btn p-2" onClick={onMobileToggle} aria-label="menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M4 7h16M4 12h16M4 17h16"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+function MobileMenu({ open, onClose, navigation, ctaButton }) {
+  return (
+    <div className={`mobile-menu ${open ? 'open' : ''}`}>
+      <button className="absolute top-6 right-6 p-2" onClick={onClose} aria-label="close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+      <div className="font-serif-tc space-y-6 text-2xl" style={{ color: 'var(--ink)' }}>
+        {(navigation || []).map(item => (
+          <a key={item.id} href={navTargetUrl(item)} target={item.type === 'external' ? '_blank' : '_self'} className="block" onClick={onClose}>{item.label}</a>
+        ))}
+        {ctaButton && ctaButton.label && (
+          <a href={ctaButton.url || '#'} target={ctaButton.url?.startsWith('http') ? '_blank' : '_self'} className="btn-primary inline-block px-8 py-3 text-base mt-4">
+            <span>{ctaButton.label}</span>
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Footer({ site, footer, navigation }) {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="pt-20 pb-10" style={{ background: 'var(--ink)', color: 'var(--paper-deep)' }}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid md:grid-cols-12 gap-12 mb-16">
+          <div className="md:col-span-5">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="seal">{site.logoSeal || '慈'}</div>
+              <div>
+                <div className="font-serif-tc text-xl font-semibold" style={{ color: 'var(--paper-warm)' }}>{site.title}</div>
+                {site.titleEn && <div className="font-cormorant italic text-sm" style={{ color: 'var(--gold-light)', letterSpacing: '0.15em' }}>{site.titleEn}</div>}
+              </div>
+            </div>
+            {footer.tagline && <HtmlContent className="text-sm leading-loose mb-6" html={footer.tagline} />}
+            {footer.address && (
+              <div className="flex items-start gap-3" style={{ color: 'rgba(237,228,210,0.7)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mt-0.5 flex-shrink-0">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span className="text-sm leading-relaxed">{footer.address}</span>
+              </div>
+            )}
+          </div>
+          <div className="md:col-span-3">
+            <div className="font-cormorant italic text-sm mb-5" style={{ color: 'var(--gold-light)' }}>Navigate</div>
+            <ul className="space-y-3 text-sm">
+              {(navigation || []).map(item => (
+                <li key={item.id}>
+                  <a href={navTargetUrl(item)} target={item.type === 'external' ? '_blank' : '_self'} style={{ color: 'rgba(237,228,210,0.75)' }}>{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:col-span-4">
+            {footer.youtubeUrl && (
+              <a href={footer.youtubeUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm" style={{ color: 'var(--gold-light)' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23 7.5c-.3-2-1.7-3.5-3.7-3.7C16.5 3.5 12 3.5 12 3.5s-4.5 0-7.3.3c-2 .2-3.4 1.7-3.7 3.7C.5 9.6.5 12 .5 12s0 2.4.5 4.5c.3 2 1.7 3.5 3.7 3.7 2.8.3 7.3.3 7.3.3s4.5 0 7.3-.3c2-.2 3.4-1.7 3.7-3.7.5-2.1.5-4.5.5-4.5s0-2.4-.5-4.5zM9.5 15.5v-7l6 3.5-6 3.5z"/>
+                </svg>
+                <span>YouTube 頻道</span>
+              </a>
+            )}
+          </div>
+        </div>
+        <div className="pt-8 border-t flex flex-col md:flex-row justify-between gap-4 text-xs" style={{ borderColor: 'rgba(184,134,11,0.2)', color: 'rgba(237,228,210,0.5)' }}>
+          <div>© {year} {footer.copyrightOwner || site.title}　All Rights Reserved</div>
+          {footer.accentText && <div className="font-cormorant italic tracking-widest">{footer.accentText}</div>}
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ============================================================
+// App
+// ============================================================
+
+function App() {
+  const [content, setContent] = useState(null);
+  const [error, setError] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const route = useHashRoute();
+  useReveal();
+
+  useEffect(() => {
+    gasGet('getContent')
+      .then(r => {
+        if (r.ok) setContent(r.content);
+        else setError(r.error || 'load failed');
+      })
+      .catch(e => setError(String(e)));
+  }, []);
+
+  // After content loads + route change, scroll to anchor or top
+  useEffect(() => {
+    if (!content) return;
+    setTimeout(() => {
+      if (route.type === 'home' && route.anchor) {
+        const el = document.getElementById(route.anchor);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.pageYOffset - 72;
+          window.scrollTo({ top, behavior: 'smooth' });
+          return;
+        }
+      }
+      if (!route.anchor) window.scrollTo({ top: 0, behavior: 'auto' });
+    }, 50);
+  }, [content, route]);
+
+  if (error) {
+    return (
+      <div className="loading-screen">
+        <div className="seal">!</div>
+        <p className="font-serif-tc text-base" style={{ color: 'var(--ink-light)' }}>無法載入內容: {error}</p>
+        <p className="text-xs" style={{ color: 'var(--ink-light)' }}>請確認 GAS_URL 設定正確</p>
+      </div>
+    );
+  }
+
+  if (!content) {
+    return (
+      <div className="loading-screen">
+        <div className="seal loading-seal">慈</div>
+        <p className="font-serif-tc text-sm" style={{ color: 'var(--ink-light)' }}>載入中⋯</p>
+      </div>
+    );
+  }
+
+  let currentPage;
+  if (route.type === 'page') {
+    currentPage = (content.pages || []).find(p => p.slug === route.slug);
+  } else {
+    currentPage = (content.pages || []).find(p => p.isHome) || content.pages?.[0];
+  }
+
+  if (!currentPage) {
+    return (
+      <div className="loading-screen">
+        <div className="seal">?</div>
+        <p className="font-serif-tc text-base" style={{ color: 'var(--ink-light)' }}>找不到頁面</p>
+        <a href="#/" className="text-sm" style={{ color: 'var(--temple-red)' }}>← 返回首頁</a>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} />
+      <PageRenderer page={currentPage} />
+      <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+// Smooth-scroll same-page anchors
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const href = a.getAttribute('href');
+  if (href === '#' || href.startsWith('#/')) return;
+  const target = document.querySelector(href);
+  if (target) {
+    e.preventDefault();
+    const top = target.getBoundingClientRect().top + window.pageYOffset - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+    history.replaceState(null, '', href);
+  }
+});
+
+</script>
+</body>
+</html>
