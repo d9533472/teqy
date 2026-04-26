@@ -426,6 +426,164 @@ const SECTION_SCHEMAS = {
     icon: '—',
     summary: () => '分隔線',
     fields: []
+  },
+  carousel: {
+    label: '輪播圖片',
+    icon: '⇆',
+    summary: (d) => `輪播 (${(d.slides || []).length} 張)`,
+    fields: [
+      { key: 'slides', label: '輪播項目', type: 'repeater', itemFields: [
+        { key: 'image', label: '圖片', type: 'image' },
+        { key: 'title', label: '標題', type: 'text' },
+        { key: 'body', label: '內文', type: 'textarea' },
+        { key: 'ctaLabel', label: '按鈕文字', type: 'text' },
+        { key: 'ctaUrl', label: '按鈕連結', type: 'text' }
+      ]},
+      { key: 'autoplay', label: '自動播放', type: 'select', options: [{ value: '', label: '否' }, { value: '1', label: '是' }] },
+      { key: 'interval', label: '切換秒數', type: 'text', placeholder: '5', help: '自動播放時每隔幾秒切換,預設 5' }
+    ]
+  },
+  gallery: {
+    label: '相簿網格',
+    icon: '▦',
+    summary: (d) => `相簿 (${(d.images || []).length} 張)`,
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'description', label: '說明文字', type: 'textarea' },
+      { key: 'columns', label: '欄數', type: 'select', options: [{ value: '2', label: '2 欄' }, { value: '3', label: '3 欄' }, { value: '4', label: '4 欄' }] },
+      { key: 'images', label: '圖片清單', type: 'repeater', itemFields: [
+        { key: 'src', label: '圖片', type: 'image' },
+        { key: 'caption', label: '圖說 (選填)', type: 'text' }
+      ]}
+    ]
+  },
+  'image-text': {
+    label: '圖文並排',
+    icon: '◧',
+    summary: (d) => d.eyebrow || d.titleHtml?.replace(/<[^>]+>/g,'').slice(0,30) || '圖文並排',
+    fields: [
+      { key: 'imagePosition', label: '圖片位置', type: 'select', options: [{ value: 'left', label: '左圖右文' }, { value: 'right', label: '右圖左文' }] },
+      { key: 'image', label: '圖片', type: 'image' },
+      { key: 'imageAlt', label: '圖片替代文字', type: 'text' },
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'body', label: '內文 (富文字)', type: 'richtext' },
+      { key: 'ctaLabel', label: '按鈕文字 (選填)', type: 'text' },
+      { key: 'ctaUrl', label: '按鈕連結', type: 'text' }
+    ]
+  },
+  quote: {
+    label: '大型引言',
+    icon: '"',
+    summary: (d) => d.quote?.replace(/<[^>]+>/g,'').slice(0,40) || '引言',
+    fields: [
+      { key: 'quote', label: '引言內容 (支援 HTML)', type: 'html', help: '可用 <br> 換行' },
+      { key: 'author', label: '出處 / 作者', type: 'text' },
+      { key: 'background', label: '背景樣式', type: 'select', options: [{ value: '', label: '淺色 (米色漸層)' }, { value: 'dark', label: '深色 (墨黑)' }] }
+    ]
+  },
+  stats: {
+    label: '數據統計',
+    icon: '#',
+    summary: (d) => `統計 (${(d.items || []).length} 項)`,
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'items', label: '統計項目', type: 'repeater', itemFields: [
+        { key: 'number', label: '數字', type: 'text', placeholder: '2014' },
+        { key: 'suffix', label: '後綴 (選填)', type: 'text', placeholder: '+' },
+        { key: 'label', label: '標籤', type: 'text', placeholder: '建寺啟用' }
+      ]}
+    ]
+  },
+  faq: {
+    label: 'FAQ 手風琴',
+    icon: '?',
+    summary: (d) => `FAQ (${(d.items || []).length} 題)`,
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'items', label: '問答清單', type: 'repeater', itemFields: [
+        { key: 'question', label: '問題', type: 'text' },
+        { key: 'answer', label: '答案 (富文字)', type: 'richtext' }
+      ]}
+    ]
+  },
+  contact: {
+    label: '聯絡資訊',
+    icon: '✉',
+    summary: (d) => '聯絡資訊',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'address', label: '地址', type: 'text' },
+      { key: 'phone', label: '電話', type: 'text' },
+      { key: 'email', label: 'Email', type: 'text' },
+      { key: 'hours', label: '開放時間 (可換行)', type: 'textarea' },
+      { key: 'mapEmbedSrc', label: 'Google 地圖嵌入網址', type: 'text', help: '從 Google Maps → 分享 → 嵌入網頁,複製 iframe 裡的 src 網址' }
+    ]
+  },
+  map: {
+    label: 'Google 地圖',
+    icon: '⌖',
+    summary: (d) => 'Google 地圖',
+    fields: [
+      { key: 'embedSrc', label: '地圖嵌入網址', type: 'text', help: '從 Google Maps → 分享 → 嵌入網頁,複製 iframe 裡的 src 網址 (https://www.google.com/maps/embed?pb=...)' },
+      { key: 'height', label: '高度 (像素)', type: 'text', placeholder: '420' },
+      { key: 'fullWidth', label: '全寬顯示', type: 'select', options: [{ value: '', label: '否 (限寬)' }, { value: '1', label: '是' }] }
+    ]
+  },
+  'cta-banner': {
+    label: 'CTA 橫幅',
+    icon: '◉',
+    summary: (d) => d.titleHtml?.replace(/<[^>]+>/g,'').slice(0,30) || 'CTA 橫幅',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'body', label: '副標 (支援 HTML)', type: 'html' },
+      { key: 'backgroundImage', label: '背景圖 (選填,留空用紅色背景)', type: 'image' },
+      { key: 'alignment', label: '文字對齊', type: 'select', options: [{ value: 'center', label: '置中' }, { value: 'left', label: '靠左' }] },
+      { key: 'ctaPrimaryLabel', label: '主按鈕文字', type: 'text' },
+      { key: 'ctaPrimaryUrl', label: '主按鈕連結', type: 'text' },
+      { key: 'ctaSecondaryLabel', label: '次按鈕文字 (選填)', type: 'text' },
+      { key: 'ctaSecondaryUrl', label: '次按鈕連結', type: 'text' }
+    ]
+  },
+  'logo-strip': {
+    label: 'Logo 牆',
+    icon: '◫',
+    summary: (d) => `Logo 牆 (${(d.logos || []).length})`,
+    fields: [
+      { key: 'eyebrow', label: '小標 (例: 合作單位)', type: 'text' },
+      { key: 'logos', label: 'Logo 清單', type: 'repeater', itemFields: [
+        { key: 'image', label: 'Logo 圖片', type: 'image' },
+        { key: 'name', label: '名稱', type: 'text' },
+        { key: 'url', label: '連結 (選填)', type: 'text' }
+      ]}
+    ]
+  },
+  'html-embed': {
+    label: 'HTML 嵌入',
+    icon: '<>',
+    summary: () => 'HTML 自訂嵌入',
+    fields: [
+      { key: 'html', label: 'HTML 程式碼', type: 'textarea', help: '可貼任何 HTML / iframe / embed code,例如表單、Facebook 嵌入、Twitter 牆等' },
+      { key: 'fullWidth', label: '全寬顯示', type: 'select', options: [{ value: '', label: '否 (限寬)' }, { value: '1', label: '是' }] }
+    ]
+  },
+  spacer: {
+    label: '空白間距',
+    icon: '⇕',
+    summary: (d) => `空白間距 (${d.size || 'medium'})`,
+    fields: [
+      { key: 'size', label: '間距大小', type: 'select', options: [
+        { value: 'small', label: '小 (32px)' },
+        { value: 'medium', label: '中 (64px)' },
+        { value: 'large', label: '大 (120px)' },
+        { value: 'xlarge', label: '特大 (200px)' }
+      ]}
+    ]
   }
 };
 
@@ -819,7 +977,7 @@ function PageEditor({ page, onUpdatePage, onDeletePage, password, showToast }) {
 // ============================================================
 // Site Settings Editor
 // ============================================================
-function SiteEditor({ site, onUpdate }) {
+function SiteEditor({ site, onUpdate, password, showToast }) {
   const update = (key, val) => onUpdate({ ...site, [key]: val });
   return (
     <div className="card p-6">
@@ -834,10 +992,17 @@ function SiteEditor({ site, onUpdate }) {
           <input type="text" value={site.titleEn || ''} onChange={(e) => update('titleEn', e.target.value)} />
         </div>
       </div>
+
+      <div className="mt-6 pt-6 border-t" style={{ borderColor: 'var(--border)' }}>
+        <label className="field-label">Logo 圖片</label>
+        <div className="field-help" style={{ marginTop: 0, marginBottom: 8 }}>上傳後會取代下方的「印章字」。建議:正方形或長方形 PNG / SVG,高度 88px 以上(會自動縮放到適當高度)。</div>
+        <ImageField value={site.logoImage} onChange={(v) => update('logoImage', v)} password={password} showToast={showToast} />
+      </div>
+
       <div className="grid-2 mt-4">
         <div>
-          <label className="field-label">Logo 印章字 (1 字)</label>
-          <input type="text" value={site.logoSeal || ''} onChange={(e) => update('logoSeal', e.target.value)} maxLength={2} />
+          <label className="field-label">Logo 印章字 (沒上傳圖片時的備用)</label>
+          <input type="text" value={site.logoSeal || ''} onChange={(e) => update('logoSeal', e.target.value)} maxLength={2} placeholder="慈" />
         </div>
         <div>
           <label className="field-label">SEO 描述</label>
@@ -1299,7 +1464,7 @@ function App() {
         </div>
 
         <div className="p-8 max-w-5xl mx-auto">
-          {active.type === 'site' && <SiteEditor site={content.site} onUpdate={(s) => setContent({ ...content, site: s })} />}
+          {active.type === 'site' && <SiteEditor site={content.site} onUpdate={(s) => setContent({ ...content, site: s })} password={password} showToast={showToast} />}
           {active.type === 'navigation' && <NavEditor navigation={content.navigation} onUpdate={(n) => setContent({ ...content, navigation: n })} />}
           {active.type === 'footer' && <FooterEditor footer={content.footer} onUpdate={(f) => setContent({ ...content, footer: f })} />}
           {active.type === 'page' && currentPage && (

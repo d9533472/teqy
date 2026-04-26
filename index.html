@@ -274,6 +274,147 @@
     50% { opacity: 1; transform: scale(1.05); }
   }
   .loading-seal { animation: pulseFade 1.6s ease-in-out infinite; }
+
+  /* Carousel */
+  .carousel-shell {
+    position: relative; aspect-ratio: 16/9; min-height: 360px;
+    background: var(--ink); border-radius: 4px; overflow: hidden;
+    box-shadow: 0 24px 48px -16px rgba(26,20,16,0.2);
+  }
+  .carousel-slide {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0; transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1);
+    display: flex; align-items: flex-end;
+    pointer-events: none;
+  }
+  .carousel-slide.active { opacity: 1; pointer-events: auto; }
+  .carousel-inner { padding: 48px; max-width: 720px; }
+  .carousel-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(245,239,228,0.85); color: var(--ink);
+    font-size: 24px; line-height: 1; cursor: pointer;
+    border: none; transition: all 0.3s; z-index: 5;
+  }
+  .carousel-arrow:hover { background: var(--paper-warm); transform: translateY(-50%) scale(1.05); }
+  .carousel-arrow.left { left: 16px; }
+  .carousel-arrow.right { right: 16px; }
+  .carousel-dots {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 5;
+  }
+  .carousel-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(245,239,228,0.4); border: none;
+    cursor: pointer; transition: all 0.3s;
+    padding: 0;
+  }
+  .carousel-dot.active { background: var(--paper-warm); width: 24px; border-radius: 4px; }
+
+  /* Gallery */
+  .gallery-item {
+    cursor: pointer; overflow: hidden; border-radius: 4px;
+    background: var(--paper-deep);
+    aspect-ratio: 4/3;
+    position: relative;
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .gallery-item:hover { transform: translateY(-4px); }
+  .gallery-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .gallery-item:hover img { transform: scale(1.05); }
+  .gallery-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px; font-size: 13px;
+    background: linear-gradient(180deg, transparent 0%, rgba(26,20,16,0.85) 100%);
+    color: var(--paper-warm);
+    transform: translateY(100%); transition: transform 0.4s ease;
+  }
+  .gallery-item:hover .gallery-caption { transform: translateY(0); }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(26,20,16,0.92);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px; cursor: zoom-out;
+  }
+  .lightbox img {
+    max-width: 100%; max-height: 80vh; object-fit: contain;
+    cursor: default; border-radius: 4px;
+  }
+  .lightbox-close {
+    position: absolute; top: 24px; right: 24px;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(245,239,228,0.15); color: var(--paper-warm);
+    border: none; font-size: 20px; cursor: pointer;
+    transition: background 0.3s;
+  }
+  .lightbox-close:hover { background: rgba(245,239,228,0.3); }
+  .lightbox-caption {
+    position: absolute; bottom: 24px; left: 0; right: 0;
+    text-align: center; color: var(--paper-warm); font-size: 14px;
+    font-family: 'Noto Serif TC', serif;
+  }
+
+  /* FAQ */
+  .faq-item {
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+  }
+  .faq-question {
+    width: 100%; text-align: left; padding: 20px 0;
+    background: none; border: none; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Noto Serif TC', serif; font-size: 1.1rem;
+    font-weight: 500; color: var(--ink);
+    transition: color 0.2s;
+  }
+  .faq-question:hover { color: var(--temple-red); }
+  .faq-icon {
+    flex-shrink: 0; margin-left: 16px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--paper-deep); color: var(--temple-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 300;
+  }
+  .faq-answer {
+    padding: 0 0 24px 0; color: var(--ink-light);
+    animation: fadeUp 0.4s ease-out;
+  }
+
+  /* Contact */
+  .contact-row { display: flex; gap: 16px; align-items: flex-start; }
+  .contact-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--paper-warm); border: 1px solid rgba(184,134,11,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 16px;
+  }
+  .contact-label {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 12px; color: var(--gold);
+    letter-spacing: 0.15em; margin-bottom: 4px;
+  }
+  .contact-row a { color: var(--ink); transition: color 0.2s; }
+  .contact-row a:hover { color: var(--temple-red); }
+
+  /* Logo strip */
+  .logo-strip-item {
+    display: flex; align-items: center; justify-content: center;
+    height: 60px; opacity: 0.65;
+    transition: opacity 0.3s, filter 0.3s;
+    filter: grayscale(100%);
+  }
+  .logo-strip-item:hover { opacity: 1; filter: grayscale(0%); }
+  .logo-strip-item img { max-height: 100%; max-width: 160px; object-fit: contain; }
+
+  @media (max-width: 768px) {
+    .carousel-inner { padding: 24px; }
+    .carousel-shell { min-height: 280px; }
+  }
 </style>
 </head>
 <body>
@@ -642,6 +783,318 @@ function DividerSection() {
   );
 }
 
+// ============================================================
+// New section renderers
+// ============================================================
+
+function CarouselSection({ data, anchorId }) {
+  const slides = data.slides || [];
+  const [idx, setIdx] = useState(0);
+  const autoplay = data.autoplay === '1' || data.autoplay === true;
+  const interval = parseInt(data.interval || 5, 10) * 1000;
+
+  useEffect(() => {
+    if (!autoplay || slides.length <= 1) return;
+    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), interval);
+    return () => clearInterval(t);
+  }, [autoplay, slides.length, interval]);
+
+  if (!slides.length) return null;
+  const go = (n) => setIdx((n + slides.length) % slides.length);
+
+  return (
+    <section id={anchorId} className="py-12 lg:py-16">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 reveal">
+        <div className="carousel-shell">
+          {slides.map((s, i) => (
+            <div key={i} className={`carousel-slide ${i === idx ? 'active' : ''}`}
+                 style={{ backgroundImage: s.image ? `linear-gradient(180deg, rgba(26,20,16,0.1) 0%, rgba(26,20,16,0.6) 100%), url('${s.image}')` : 'none' }}>
+              <div className="carousel-inner">
+                {s.title && <h3 className="font-serif-tc text-3xl lg:text-5xl font-light mb-4" style={{ color: 'var(--paper-warm)' }}>{s.title}</h3>}
+                {s.body && <p className="text-base lg:text-lg max-w-2xl" style={{ color: 'rgba(245,239,228,0.92)' }}>{s.body}</p>}
+                {s.ctaLabel && <a href={s.ctaUrl || '#'} target={s.ctaUrl?.startsWith('http') ? '_blank' : '_self'} className="btn-primary inline-block mt-6 px-6 py-3 text-sm"><span>{s.ctaLabel}</span></a>}
+              </div>
+            </div>
+          ))}
+          {slides.length > 1 && (
+            <>
+              <button className="carousel-arrow left" onClick={() => go(idx - 1)} aria-label="prev">‹</button>
+              <button className="carousel-arrow right" onClick={() => go(idx + 1)} aria-label="next">›</button>
+              <div className="carousel-dots">
+                {slides.map((_, i) => (
+                  <button key={i} className={`carousel-dot ${i === idx ? 'active' : ''}`} onClick={() => setIdx(i)} aria-label={`slide ${i+1}`} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GallerySection({ data, anchorId }) {
+  const images = data.images || [];
+  const cols = parseInt(data.columns || 3, 10);
+  const [lightbox, setLightbox] = useState(null);
+  const colsClass = { 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 md:grid-cols-3', 4: 'sm:grid-cols-2 md:grid-cols-4' }[cols] || 'sm:grid-cols-3';
+
+  return (
+    <section id={anchorId} className="py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {(data.eyebrow || data.titleHtml) && (
+          <div className="text-center mb-12 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-4" html={data.titleHtml} />}
+            {data.description && <p className="max-w-2xl mx-auto text-base" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+          </div>
+        )}
+        <div className={`grid grid-cols-1 ${colsClass} gap-4 reveal`}>
+          {images.map((img, i) => (
+            <div key={i} className="gallery-item" onClick={() => img.src && setLightbox(img)}>
+              <img src={img.src} alt={img.caption || ''} loading="lazy" />
+              {img.caption && <div className="gallery-caption">{img.caption}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+      {lightbox && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox.src} alt={lightbox.caption || ''} onClick={(e) => e.stopPropagation()} />
+          {lightbox.caption && <div className="lightbox-caption">{lightbox.caption}</div>}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ImageTextSplitSection({ data, anchorId }) {
+  const imgRight = data.imagePosition === 'right';
+  return (
+    <section id={anchorId} className="py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center reveal ${imgRight ? '' : ''}`}>
+          <div className={imgRight ? 'lg:order-1' : 'lg:order-2'}>
+            {data.image && <img src={data.image} alt={data.imageAlt || ''} className="w-full rounded-sm" style={{ boxShadow: '0 24px 48px -16px rgba(26,20,16,0.18)' }} />}
+          </div>
+          <div className={imgRight ? 'lg:order-2' : 'lg:order-1'}>
+            {data.eyebrow && <div className="eyebrow mb-4">{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light mb-6" html={data.titleHtml} />}
+            <div className="brush mb-6"></div>
+            {data.body && <HtmlContent className="rich-content text-base" html={data.body} />}
+            {data.ctaLabel && <a href={data.ctaUrl || '#'} target={data.ctaUrl?.startsWith('http') ? '_blank' : '_self'} className="btn-primary inline-block mt-6 px-6 py-3 text-sm"><span>{data.ctaLabel}</span></a>}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function QuoteSection({ data, anchorId }) {
+  const dark = data.background === 'dark';
+  const bgStyle = dark
+    ? { background: 'var(--ink)', color: 'var(--paper-warm)' }
+    : { background: 'linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%)' };
+  return (
+    <section id={anchorId} className="py-24 lg:py-32" style={bgStyle}>
+      <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center reveal">
+        <div className="font-cormorant text-7xl leading-none mb-4" style={{ color: dark ? 'var(--gold-light)' : 'var(--gold)' }}>"</div>
+        {data.quote && <HtmlContent className="font-serif-tc text-2xl lg:text-3xl font-light leading-relaxed mb-6" html={data.quote} />}
+        {data.author && <div className="font-cormorant italic text-sm tracking-widest" style={{ color: dark ? 'var(--gold-light)' : 'var(--gold)' }}>— {data.author}</div>}
+      </div>
+    </section>
+  );
+}
+
+function StatsSection({ data, anchorId }) {
+  const items = data.items || [];
+  return (
+    <section id={anchorId} className="py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {(data.eyebrow || data.titleHtml) && (
+          <div className="text-center mb-12 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light" html={data.titleHtml} />}
+          </div>
+        )}
+        <div className={`grid grid-cols-2 lg:grid-cols-${Math.min(items.length || 4, 4)} gap-8 reveal`}>
+          {items.map((s, i) => (
+            <div key={i} className="text-center">
+              <div className="font-cormorant text-5xl lg:text-6xl font-light mb-2" style={{ color: 'var(--temple-red)' }}>
+                {s.number}{s.suffix && <span className="text-3xl">{s.suffix}</span>}
+              </div>
+              {s.label && <div className="text-sm tracking-wider" style={{ color: 'var(--ink-light)' }}>{s.label}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQItem({ q, a }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="faq-item">
+      <button className="faq-question" onClick={() => setOpen(!open)}>
+        <span>{q}</span>
+        <span className="faq-icon">{open ? '−' : '+'}</span>
+      </button>
+      {open && a && <div className="faq-answer rich-content" dangerouslySetInnerHTML={{ __html: a }} />}
+    </div>
+  );
+}
+
+function FaqSection({ data, anchorId }) {
+  return (
+    <section id={anchorId} className="py-20 lg:py-28">
+      <div className="max-w-3xl mx-auto px-6 lg:px-12">
+        {(data.eyebrow || data.titleHtml) && (
+          <div className="text-center mb-12 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light" html={data.titleHtml} />}
+          </div>
+        )}
+        <div className="reveal">
+          {(data.items || []).map((it, i) => <FAQItem key={i} q={it.question} a={it.answer} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactSection({ data, anchorId }) {
+  return (
+    <section id={anchorId} className="py-20 lg:py-28" style={{ background: 'linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%)' }}>
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+        {(data.eyebrow || data.titleHtml) && (
+          <div className="text-center mb-12 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-4xl font-light" html={data.titleHtml} />}
+          </div>
+        )}
+        <div className="grid md:grid-cols-2 gap-10 reveal">
+          <div className="space-y-6">
+            {data.address && (
+              <div className="contact-row">
+                <div className="contact-icon">📍</div>
+                <div><div className="contact-label">地址 Address</div><div>{data.address}</div></div>
+              </div>
+            )}
+            {data.phone && (
+              <div className="contact-row">
+                <div className="contact-icon">☎</div>
+                <div><div className="contact-label">電話 Phone</div><a href={`tel:${data.phone}`}>{data.phone}</a></div>
+              </div>
+            )}
+            {data.email && (
+              <div className="contact-row">
+                <div className="contact-icon">✉</div>
+                <div><div className="contact-label">Email</div><a href={`mailto:${data.email}`}>{data.email}</a></div>
+              </div>
+            )}
+            {data.hours && (
+              <div className="contact-row">
+                <div className="contact-icon">⏰</div>
+                <div><div className="contact-label">開放時間 Hours</div><div style={{ whiteSpace: 'pre-line' }}>{data.hours}</div></div>
+              </div>
+            )}
+          </div>
+          {data.mapEmbedSrc && (
+            <div className="rounded overflow-hidden" style={{ minHeight: 320, boxShadow: '0 16px 32px -12px rgba(26,20,16,0.18)' }}>
+              <iframe src={data.mapEmbedSrc} width="100%" height="100%" style={{ border: 0, minHeight: 320 }} loading="lazy"></iframe>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MapSection({ data, anchorId }) {
+  if (!data.embedSrc) return null;
+  const height = parseInt(data.height || 420, 10);
+  return (
+    <section id={anchorId} className="py-12 lg:py-16">
+      <div className={`mx-auto px-6 lg:px-12 reveal ${data.fullWidth ? '' : 'max-w-6xl'}`}>
+        <div className="rounded overflow-hidden" style={{ boxShadow: '0 16px 32px -12px rgba(26,20,16,0.18)' }}>
+          <iframe src={data.embedSrc} width="100%" height={height} style={{ border: 0, display: 'block' }} loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CtaBannerSection({ data, anchorId }) {
+  const align = data.alignment || 'center';
+  const sectionStyle = data.backgroundImage
+    ? { backgroundImage: `linear-gradient(180deg, rgba(26,20,16,0.55) 0%, rgba(26,20,16,0.55) 100%), url('${data.backgroundImage}')`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'var(--paper-warm)' }
+    : { background: 'var(--temple-red)', color: 'var(--paper-warm)' };
+  return (
+    <section id={anchorId} className="py-24 lg:py-32 cta-banner-section" style={sectionStyle}>
+      <div className="max-w-4xl mx-auto px-6 lg:px-12 reveal" style={{ textAlign: align }}>
+        {data.eyebrow && <div className="eyebrow mb-4" style={{ color: 'var(--gold-light)', display: 'inline-block' }}>{data.eyebrow}</div>}
+        {data.titleHtml && <HtmlContent className="font-serif-tc text-3xl lg:text-5xl font-light mb-6" html={data.titleHtml} />}
+        {data.body && (
+          <div className="text-base lg:text-lg leading-relaxed mb-8" style={{ maxWidth: '42rem', margin: align === 'center' ? '0 auto 2rem' : '0 0 2rem' }}>
+            <HtmlContent html={data.body} />
+          </div>
+        )}
+        <div style={{ display: 'flex', gap: 12, justifyContent: align === 'center' ? 'center' : 'flex-start', flexWrap: 'wrap' }}>
+          {data.ctaPrimaryLabel && (
+            <a href={data.ctaPrimaryUrl || '#'} target={data.ctaPrimaryUrl?.startsWith('http') ? '_blank' : '_self'}
+               className="inline-block px-8 py-4 text-sm font-medium transition-all"
+               style={{ background: 'var(--paper-warm)', color: 'var(--temple-red)', letterSpacing: '0.15em' }}>
+              {data.ctaPrimaryLabel}
+            </a>
+          )}
+          {data.ctaSecondaryLabel && (
+            <a href={data.ctaSecondaryUrl || '#'} target={data.ctaSecondaryUrl?.startsWith('http') ? '_blank' : '_self'}
+               className="btn-ghost px-8 py-4 text-sm">
+              {data.ctaSecondaryLabel}
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LogoStripSection({ data, anchorId }) {
+  return (
+    <section id={anchorId} className="py-16 lg:py-20">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+        {data.eyebrow && <div className="eyebrow mb-8 text-center" style={{ display: 'inline-block', width: '100%' }}>{data.eyebrow}</div>}
+        <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12 reveal">
+          {(data.logos || []).map((l, i) => (
+            l.url
+              ? <a key={i} href={l.url} target="_blank" rel="noreferrer" className="logo-strip-item"><img src={l.image} alt={l.name || ''} /></a>
+              : <div key={i} className="logo-strip-item"><img src={l.image} alt={l.name || ''} /></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HtmlEmbedSection({ data, anchorId }) {
+  if (!data.html) return null;
+  return (
+    <section id={anchorId} className="py-12">
+      <div className={`mx-auto px-6 lg:px-12 reveal ${data.fullWidth ? '' : 'max-w-5xl'}`}>
+        <div dangerouslySetInnerHTML={{ __html: data.html }} />
+      </div>
+    </section>
+  );
+}
+
+function SpacerSection({ data }) {
+  const sizes = { small: 32, medium: 64, large: 120, xlarge: 200 };
+  const h = sizes[data.size] || sizes.medium;
+  return <div style={{ height: h }} />;
+}
+
 const SECTION_RENDERERS = {
   hero: HeroSection,
   'cards-corner': CardsCornerSection,
@@ -652,7 +1105,19 @@ const SECTION_RENDERERS = {
   richtext: RichTextSection,
   image: ImageSection,
   video: VideoSection,
-  divider: DividerSection
+  divider: DividerSection,
+  carousel: CarouselSection,
+  gallery: GallerySection,
+  'image-text': ImageTextSplitSection,
+  quote: QuoteSection,
+  stats: StatsSection,
+  faq: FaqSection,
+  contact: ContactSection,
+  map: MapSection,
+  'cta-banner': CtaBannerSection,
+  'logo-strip': LogoStripSection,
+  'html-embed': HtmlEmbedSection,
+  spacer: SpacerSection
 };
 
 function PageRenderer({ page }) {
@@ -677,7 +1142,9 @@ function Nav({ site, navigation, ctaButton, onMobileToggle }) {
     <nav className="fixed top-0 left-0 right-0 z-50 nav-backdrop">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
         <a href="#/" className="flex items-center gap-3">
-          <div className="seal">{site.logoSeal || '慈'}</div>
+          {site.logoImage
+            ? <img src={site.logoImage} alt={site.title} className="logo-img" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
+            : <div className="seal">{site.logoSeal || '慈'}</div>}
           <div>
             <div className="font-serif-tc text-lg font-semibold tracking-wide" style={{ color: 'var(--ink)' }}>{site.title}</div>
             {site.titleEn && <div className="font-cormorant italic text-xs" style={{ color: 'var(--gold)', letterSpacing: '0.15em' }}>{site.titleEn}</div>}
@@ -744,7 +1211,9 @@ function Footer({ site, footer, navigation }) {
         <div className="grid md:grid-cols-12 gap-12 mb-16">
           <div className="md:col-span-5">
             <div className="flex items-center gap-3 mb-6">
-              <div className="seal">{site.logoSeal || '慈'}</div>
+              {site.logoImage
+                ? <img src={site.logoImage} alt={site.title} style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
+                : <div className="seal">{site.logoSeal || '慈'}</div>}
               <div>
                 <div className="font-serif-tc text-xl font-semibold" style={{ color: 'var(--paper-warm)' }}>{site.title}</div>
                 {site.titleEn && <div className="font-cormorant italic text-sm" style={{ color: 'var(--gold-light)', letterSpacing: '0.15em' }}>{site.titleEn}</div>}
