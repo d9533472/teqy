@@ -494,9 +494,11 @@ const SECTION_SCHEMAS = {
       { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
       { key: 'description', label: '說明文字', type: 'textarea' },
       { key: 'cards', label: '卡片清單', type: 'repeater', itemFields: [
+        { key: 'image', label: '圖片 (選填,留空則只顯示文字)', type: 'image' },
         { key: 'englishLabel', label: '英文標籤', type: 'text' },
         { key: 'title', label: '標題', type: 'text' },
-        { key: 'body', label: '內文', type: 'textarea' }
+        { key: 'body', label: '內文', type: 'textarea' },
+        { key: 'url', label: '連結 (選填,設定後整張卡片可點)', type: 'text' }
       ]}
     ]
   },
@@ -755,6 +757,25 @@ const SECTION_SCHEMAS = {
         { value: 'medium', label: '中 (64px)' },
         { value: 'large', label: '大 (120px)' },
         { value: 'xlarge', label: '特大 (200px)' }
+      ]}
+    ]
+  },
+  marquee: {
+    label: '跑馬燈公告',
+    icon: '🔔',
+    summary: (d) => `跑馬燈 (${(d.items || []).length} 則)`,
+    fields: [
+      { key: 'label', label: '左側標籤文字', type: 'text', placeholder: '最新訊息', help: '預設「最新訊息」,可改成「公告」「法會通知」等' },
+      { key: 'style', label: '樣式', type: 'select', options: [
+        { value: 'classic', label: '米紙(淺色)— 與頁面融合' },
+        { value: 'dark', label: '深色(墨黑)— 比較突顯' },
+        { value: 'accent', label: '強調(寺廟紅)— 最醒目' }
+      ]},
+      { key: 'interval', label: '切換秒數', type: 'text', placeholder: '4', help: '每隔幾秒切換下一條,預設 4 秒' },
+      { key: 'items', label: '公告清單', type: 'repeater', itemFields: [
+        { key: 'date', label: '日期 (選填,例: 2026.05.15)', type: 'text' },
+        { key: 'text', label: '公告內容', type: 'text' },
+        { key: 'url', label: '連結 (選填,點擊前往)', type: 'text' }
       ]}
     ]
   }

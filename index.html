@@ -186,10 +186,42 @@
     transition: all 0.5s cubic-bezier(0.22,1,0.36,1);
     background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper-deep) 100%);
     border: 1px solid rgba(184,134,11,0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
   }
   .space-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 32px -12px rgba(94,23,20,0.12);
+  }
+  .space-card-linked { text-decoration: none; color: inherit; cursor: pointer; }
+  .space-card-linked:hover { border-color: var(--gold); }
+  .space-card-image {
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--paper-deep);
+    position: relative;
+  }
+  .space-card-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(184,134,11,0.08) 100%);
+    pointer-events: none;
+  }
+  .space-card-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .space-card:hover .space-card-image img { transform: scale(1.05); }
+  .space-card-body { padding: 28px; flex: 1; }
+  .space-card-body.has-image { padding: 24px; }
+  .space-card-body.fill-empty {
+    /* When some sibling cards have images but this one doesn't,
+       add extra top padding so heights align nicely */
+    padding-top: 40px;
   }
 
   ::selection { background: var(--temple-red); color: var(--paper-warm); }
@@ -534,6 +566,97 @@
 
   /* Logo image rendering — keep crisp, no background wash */
   .logo-img { background: transparent; }
+
+  /* Marquee announcement bar */
+  .marquee-section { padding: 16px 0; }
+  .marquee-section.marquee-classic { background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper-deep) 100%); border-top: 1px solid rgba(184,134,11,0.2); border-bottom: 1px solid rgba(184,134,11,0.2); }
+  .marquee-section.marquee-dark { background: var(--ink); }
+  .marquee-section.marquee-accent { background: linear-gradient(90deg, var(--temple-red-deep) 0%, var(--temple-red) 100%); }
+
+  .marquee-bar {
+    display: flex; align-items: center; gap: 16px;
+    min-height: 28px;
+  }
+  .marquee-label {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 14px;
+    font-family: 'Noto Serif TC', serif; font-size: 13px;
+    font-weight: 500; letter-spacing: 0.1em;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .marquee-classic .marquee-label { background: var(--temple-red); color: var(--paper-warm); }
+  .marquee-dark .marquee-label { background: var(--gold); color: var(--ink); }
+  .marquee-accent .marquee-label { background: var(--paper-warm); color: var(--temple-red); }
+
+  .marquee-track {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-width: 0;
+  }
+  .marquee-item {
+    display: inline-flex; align-items: center; gap: 12px;
+    text-decoration: none;
+    transition: opacity 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    opacity: 1; transform: translateY(0);
+    white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    width: 100%;
+  }
+  .marquee-item.fading { opacity: 0; transform: translateY(-8px); }
+  .marquee-item:hover { color: inherit; }
+
+  .marquee-classic .marquee-item { color: var(--ink); }
+  .marquee-classic .marquee-item:hover .marquee-text { color: var(--temple-red); }
+  .marquee-dark .marquee-item { color: var(--paper-deep); }
+  .marquee-dark .marquee-item:hover .marquee-text { color: var(--gold-light); }
+  .marquee-accent .marquee-item { color: var(--paper-warm); }
+
+  .marquee-date {
+    flex-shrink: 0;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 12px; letter-spacing: 0.08em;
+    padding: 2px 10px; border-radius: 3px;
+  }
+  .marquee-classic .marquee-date { background: rgba(184,134,11,0.15); color: var(--gold); }
+  .marquee-dark .marquee-date { background: rgba(184,134,11,0.2); color: var(--gold-light); }
+  .marquee-accent .marquee-date { background: rgba(245,239,228,0.2); color: var(--paper-warm); }
+
+  .marquee-text {
+    font-size: 14px; font-weight: 400;
+    overflow: hidden; text-overflow: ellipsis;
+    transition: color 0.3s ease;
+  }
+  .marquee-arrow {
+    flex-shrink: 0; opacity: 0.6;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .marquee-item:hover .marquee-arrow { opacity: 1; transform: translateX(3px); }
+
+  .marquee-pager {
+    flex-shrink: 0;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 12px; letter-spacing: 0.05em;
+    display: flex; gap: 4px; align-items: baseline;
+  }
+  .marquee-classic .marquee-pager { color: var(--ink-light); }
+  .marquee-classic .marquee-num { color: var(--temple-red); font-weight: 600; }
+  .marquee-classic .marquee-divider { color: var(--gold); }
+  .marquee-dark .marquee-pager { color: rgba(245,239,228,0.5); }
+  .marquee-dark .marquee-num { color: var(--gold-light); font-weight: 600; }
+  .marquee-accent .marquee-pager { color: rgba(245,239,228,0.7); }
+  .marquee-accent .marquee-num { color: var(--paper-warm); font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .marquee-bar { gap: 10px; }
+    .marquee-label { padding: 4px 10px; font-size: 12px; }
+    .marquee-label svg { display: none; }
+    .marquee-text { font-size: 13px; }
+    .marquee-date { font-size: 11px; padding: 2px 8px; }
+    .marquee-pager { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -732,6 +855,8 @@ function TimelineSection({ data, anchorId }) {
 }
 
 function CardsGradientSection({ data, anchorId }) {
+  const cards = data.cards || [];
+  const anyHasImage = cards.some(c => c.image);
   return (
     <section id={anchorId} className="py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -745,13 +870,30 @@ function CardsGradientSection({ data, anchorId }) {
           </div>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
-          {(data.cards || []).map((c, i) => (
-            <div key={i} className="space-card p-8">
-              {c.englishLabel && <div className="font-cormorant italic text-sm mb-3" style={{ color: 'var(--gold)' }}>{c.englishLabel}</div>}
-              {c.title && <h3 className="font-serif-tc text-xl font-medium mb-3" style={{ color: 'var(--ink)' }}>{c.title}</h3>}
-              {c.body && <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-light)' }}>{c.body}</p>}
-            </div>
-          ))}
+          {cards.map((c, i) => {
+            const cardInner = (
+              <>
+                {c.image && (
+                  <div className="space-card-image">
+                    <img src={c.image} alt={c.title || ''} loading="lazy" />
+                  </div>
+                )}
+                <div className={`space-card-body ${c.image ? 'has-image' : ''} ${anyHasImage && !c.image ? 'fill-empty' : ''}`}>
+                  {c.englishLabel && <div className="font-cormorant italic text-sm mb-3" style={{ color: 'var(--gold)' }}>{c.englishLabel}</div>}
+                  {c.title && <h3 className="font-serif-tc text-xl font-medium mb-3" style={{ color: 'var(--ink)' }}>{c.title}</h3>}
+                  {c.body && <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-light)' }}>{c.body}</p>}
+                </div>
+              </>
+            );
+            if (c.url) {
+              return (
+                <a key={i} href={c.url} target={c.url.startsWith('http') ? '_blank' : '_self'} rel={c.url.startsWith('http') ? 'noreferrer' : ''} className="space-card space-card-linked">
+                  {cardInner}
+                </a>
+              );
+            }
+            return <div key={i} className="space-card">{cardInner}</div>;
+          })}
         </div>
       </div>
     </section>
@@ -1293,8 +1435,71 @@ function SpacerSection({ data }) {
   return <div style={{ height: h }} />;
 }
 
+function MarqueeSection({ data, anchorId }) {
+  const items = (data.items || []).filter(it => it.text);
+  const [idx, setIdx] = useState(0);
+  const [fading, setFading] = useState(false);
+  const intervalSec = parseInt(data.interval || 4, 10);
+  const style = data.style || 'classic';
+
+  useEffect(() => {
+    if (items.length <= 1) return;
+    const t = setInterval(() => {
+      setFading(true);
+      setTimeout(() => {
+        setIdx(i => (i + 1) % items.length);
+        setFading(false);
+      }, 400);
+    }, intervalSec * 1000);
+    return () => clearInterval(t);
+  }, [items.length, intervalSec]);
+
+  if (!items.length) return null;
+  const cur = items[idx] || items[0];
+  const labelText = data.label || '最新訊息';
+
+  return (
+    <section id={anchorId} className={`marquee-section marquee-${style}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="marquee-bar">
+          <div className="marquee-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span>{labelText}</span>
+          </div>
+          <div className="marquee-track">
+            <a className={`marquee-item ${fading ? 'fading' : ''}`}
+               href={cur.url || '#'}
+               target={cur.url && cur.url.startsWith('http') ? '_blank' : '_self'}
+               rel={cur.url && cur.url.startsWith('http') ? 'noreferrer' : ''}
+               style={{ pointerEvents: cur.url ? 'auto' : 'none' }}>
+              {cur.date && <span className="marquee-date">{cur.date}</span>}
+              <span className="marquee-text">{cur.text}</span>
+              {cur.url && (
+                <svg className="marquee-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              )}
+            </a>
+          </div>
+          {items.length > 1 && (
+            <div className="marquee-pager">
+              <span className="marquee-num">{idx + 1}</span>
+              <span className="marquee-divider">/</span>
+              <span className="marquee-total">{items.length}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const SECTION_RENDERERS = {
   hero: HeroSection,
+  marquee: MarqueeSection,
   'cards-corner': CardsCornerSection,
   timeline: TimelineSection,
   'cards-gradient': CardsGradientSection,
