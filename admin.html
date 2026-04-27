@@ -201,13 +201,115 @@
   /* Drag-handle */
   .drag-handle { cursor: grab; color: var(--ink-mute); }
 
-  /* Login screen */
+  /* Login screen — 莊嚴寺廟意境 */
   .login-bg {
+    position: relative;
     background:
-      linear-gradient(180deg, rgba(26,20,16,0.4) 0%, rgba(245,239,228,0.95) 100%),
-      url('https://teqy.weebly.com/uploads/1/1/7/4/117421609/published/jcc.jpg?1715482972');
+      radial-gradient(ellipse at 50% 20%, #2d2520 0%, #1a1410 45%, #0f0a08 100%);
+    overflow: hidden;
+  }
+  /* Distant mountain silhouettes */
+  .login-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='xMidYEnd slice'%3E%3Cdefs%3E%3ClinearGradient id='m1' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23433428' stop-opacity='0.4'/%3E%3Cstop offset='100%25' stop-color='%23433428' stop-opacity='0'/%3E%3C/linearGradient%3E%3ClinearGradient id='m2' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%235e1714' stop-opacity='0.35'/%3E%3Cstop offset='100%25' stop-color='%235e1714' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23m1)' d='M0 600 L120 540 L240 580 L380 480 L520 560 L660 460 L800 540 L940 440 L1080 530 L1220 460 L1360 540 L1500 480 L1600 520 L1600 900 L0 900 Z'/%3E%3Cpath fill='url(%23m2)' d='M0 700 L160 620 L300 680 L460 580 L620 660 L780 580 L940 660 L1100 580 L1260 670 L1420 600 L1600 660 L1600 900 L0 900 Z'/%3E%3C/svg%3E");
     background-size: cover;
-    background-position: center;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+  /* Subtle paper texture overlay */
+  .login-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.06;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 1;
+  }
+  /* Zen circle (enso) — large faint ring centered behind card */
+  .login-enso {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: min(580px, 90vw); height: min(580px, 90vw);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid rgba(184,134,11,0.25);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .login-enso::before {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    border-radius: 50%;
+    border: 1px solid rgba(184,134,11,0.08);
+  }
+  /* Floating gold dust (incense embers) */
+  @keyframes drift1 {
+    0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+    50% { transform: translate(20px, -30px); opacity: 0.8; }
+  }
+  @keyframes drift2 {
+    0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+    50% { transform: translate(-25px, -40px); opacity: 0.7; }
+  }
+  @keyframes drift3 {
+    0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+    50% { transform: translate(15px, -50px); opacity: 0.9; }
+  }
+  .login-dust {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold-light);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .login-dust.d1 { top: 30%; left: 20%; animation: drift1 7s ease-in-out infinite; }
+  .login-dust.d2 { top: 45%; left: 80%; animation: drift2 9s ease-in-out infinite; }
+  .login-dust.d3 { top: 65%; left: 15%; animation: drift3 6s ease-in-out infinite; }
+  .login-dust.d4 { top: 25%; left: 70%; animation: drift1 8s 1s ease-in-out infinite; width: 2px; height: 2px; }
+  .login-dust.d5 { top: 70%; left: 60%; animation: drift2 10s 2s ease-in-out infinite; width: 2px; height: 2px; }
+  .login-dust.d6 { top: 35%; left: 45%; animation: drift3 12s 3s ease-in-out infinite; width: 2px; height: 2px; }
+  /* Center vertical accent text */
+  .login-vertical-text {
+    position: absolute;
+    top: 50%;
+    right: 6%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 0.6em;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 11px;
+    color: rgba(184,134,11,0.4);
+    z-index: 1;
+    pointer-events: none;
+  }
+  @media (max-width: 768px) {
+    .login-vertical-text { display: none; }
+  }
+  /* Login card refinement */
+  .login-card {
+    position: relative;
+    z-index: 2;
+    background: rgba(247, 245, 241, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(184,134,11,0.25);
+    box-shadow:
+      0 32px 80px -16px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(245,239,228,0.05),
+      inset 0 1px 0 rgba(245,239,228,0.5);
+  }
+  .login-card-accent {
+    width: 32px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 24px;
   }
 
   /* Save indicator */
@@ -224,6 +326,58 @@
   /* Anchor for inputs grid */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Mobile-responsive admin layout */
+  .app-shell { display: flex; min-height: 100vh; }
+  .admin-sidebar {
+    flex-shrink: 0;
+    width: 280px;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .sidebar-overlay { display: none; }
+  .mobile-hamburger { display: none; }
+  .mobile-only { display: none; }
+
+  @media (max-width: 900px) {
+    .admin-sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 80;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+      box-shadow: 4px 0 24px -8px rgba(0,0,0,0.15);
+    }
+    .admin-sidebar.open { transform: translateX(0); }
+    .sidebar-overlay {
+      display: block;
+      position: fixed; inset: 0;
+      background: rgba(26,20,16,0.4);
+      z-index: 70;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+    .mobile-hamburger { display: flex; }
+    .desktop-only { display: none !important; }
+    .mobile-only { display: inline-flex !important; }
+    .top-save-bar { padding: 12px 16px !important; gap: 8px; }
+    .top-save-bar .save-status { font-size: 12px; }
+    .admin-content { padding: 16px !important; }
+    .repeater-item { padding: 36px 12px 12px !important; }
+    .repeater-controls { top: 6px; right: 6px; }
+    .section-header { padding: 12px !important; }
+    .section-body { padding: 12px !important; }
+    .modal-card { padding: 16px !important; max-height: 85vh; overflow-y: auto; }
+    .type-picker-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important; }
+    .type-picker-card { padding: 10px !important; }
+    .type-picker-card .icon { font-size: 20px !important; }
+    .type-picker-card .name { font-size: 12px !important; }
+  }
+  @media (max-width: 480px) {
+    .admin-sidebar { width: min(280px, 85vw); }
+  }
 </style>
 </head>
 <body>
@@ -1417,13 +1571,23 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-bg min-h-screen flex items-center justify-center p-6">
-      <div className="card p-10" style={{ maxWidth: 420, width: '100%' }}>
-        <div className="flex items-center gap-3 mb-8">
-          <div className="seal" style={{ width: 48, height: 48, fontSize: '1.3rem' }}>慈</div>
-          <div>
-            <div className="font-serif font-semibold text-lg">淨慈寺 CMS</div>
-            <div className="text-xs" style={{ color: 'var(--ink-mute)', letterSpacing: '0.15em' }}>Admin Panel</div>
-          </div>
+      {/* Decorative layers */}
+      <div className="login-enso" aria-hidden="true"></div>
+      <div className="login-dust d1" aria-hidden="true"></div>
+      <div className="login-dust d2" aria-hidden="true"></div>
+      <div className="login-dust d3" aria-hidden="true"></div>
+      <div className="login-dust d4" aria-hidden="true"></div>
+      <div className="login-dust d5" aria-hidden="true"></div>
+      <div className="login-dust d6" aria-hidden="true"></div>
+      <div className="login-vertical-text" aria-hidden="true">清淨慈悲・廣結善緣</div>
+
+      {/* Login card */}
+      <div className="card login-card p-10" style={{ maxWidth: 420, width: '100%' }}>
+        <div className="login-card-accent"></div>
+        <div className="text-center mb-8">
+          <div className="font-cormorant italic text-sm tracking-[0.4em] mb-2" style={{ color: 'var(--gold)' }}>JING CI</div>
+          <div className="font-serif font-semibold text-2xl" style={{ color: 'var(--ink)' }}>淨慈寺 CMS</div>
+          <div className="text-xs mt-1" style={{ color: 'var(--ink-mute)', letterSpacing: '0.25em' }}>ADMIN PANEL</div>
         </div>
         <div className="mb-4">
           <label className="field-label">管理密碼</label>
@@ -1431,6 +1595,9 @@ function Login({ onLogin }) {
         </div>
         {err && <div className="text-sm mb-4" style={{ color: 'var(--danger)' }}>{err}</div>}
         <button className="btn btn-primary w-full" onClick={submit} disabled={busy}>{busy ? '登入中⋯' : '登入'}</button>
+        <div className="text-center mt-6 font-cormorant italic text-xs" style={{ color: 'var(--ink-mute)', letterSpacing: '0.2em' }}>
+          以一寺之力 · 渡萬千有緣
+        </div>
       </div>
     </div>
   );
@@ -1447,6 +1614,7 @@ function App() {
   const [active, setActive] = useState({ type: 'site' });
   const [toast, setToast] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const showToast = (msg, kind = '') => {
     setToast({ msg, kind });
@@ -1551,11 +1719,20 @@ function App() {
 
   const currentPage = active.type === 'page' ? content.pages.find(p => p.id === active.pageId) : null;
 
+  // On mobile, clicking a sidebar item should close the sidebar
+  const goTo = (target) => {
+    setActive(target);
+    setSidebarOpen(false);
+  };
+
   return (
-    <div className="min-h-screen flex">
+    <div className="app-shell">
+      {/* Mobile sidebar overlay */}
+      <div className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)} />
+
       {/* Sidebar */}
-      <aside className="flex-shrink-0" style={{ width: 280, background: 'var(--bg-card)', borderRight: '1px solid var(--border)' }}>
-        <div className="p-5 border-b" style={{ borderColor: 'var(--border)' }}>
+      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
           <div className="flex items-center gap-3">
             <div className="seal">慈</div>
             <div>
@@ -1563,16 +1740,17 @@ function App() {
               <div className="text-xs" style={{ color: 'var(--ink-mute)' }}>Admin Panel</div>
             </div>
           </div>
+          <button className="mobile-only btn btn-ghost btn-sm" onClick={() => setSidebarOpen(false)} aria-label="關閉側邊欄" style={{ fontSize: 20, padding: '4px 8px' }}>✕</button>
         </div>
-        <div className="p-3 overflow-y-auto" style={{ height: 'calc(100vh - 72px - 80px)' }}>
+        <div className="p-3 overflow-y-auto" style={{ flex: 1 }}>
           <div className="sidebar-section-title">設定</div>
-          <div className={`sidebar-link ${active.type === 'site' ? 'active' : ''}`} onClick={() => setActive({ type: 'site' })}>
+          <div className={`sidebar-link ${active.type === 'site' ? 'active' : ''}`} onClick={() => goTo({ type: 'site' })}>
             <span>⚙</span> 網站設定
           </div>
-          <div className={`sidebar-link ${active.type === 'navigation' ? 'active' : ''}`} onClick={() => setActive({ type: 'navigation' })}>
+          <div className={`sidebar-link ${active.type === 'navigation' ? 'active' : ''}`} onClick={() => goTo({ type: 'navigation' })}>
             <span>≡</span> 導覽列
           </div>
-          <div className={`sidebar-link ${active.type === 'footer' ? 'active' : ''}`} onClick={() => setActive({ type: 'footer' })}>
+          <div className={`sidebar-link ${active.type === 'footer' ? 'active' : ''}`} onClick={() => goTo({ type: 'footer' })}>
             <span>▭</span> 頁尾
           </div>
 
@@ -1584,7 +1762,7 @@ function App() {
             <div
               key={p.id}
               className={`sidebar-link ${active.type === 'page' && active.pageId === p.id ? 'active' : ''}`}
-              onClick={() => setActive({ type: 'page', pageId: p.id })}
+              onClick={() => goTo({ type: 'page', pageId: p.id })}
             >
               <span>{p.isHome ? '⌂' : '◢'}</span>
               <span className="truncate">{p.title}</span>
@@ -1593,10 +1771,10 @@ function App() {
           ))}
 
           <div className="sidebar-section-title">工具</div>
-          <div className={`sidebar-link ${active.type === 'backups' ? 'active' : ''}`} onClick={() => setActive({ type: 'backups' })}>
+          <div className={`sidebar-link ${active.type === 'backups' ? 'active' : ''}`} onClick={() => goTo({ type: 'backups' })}>
             <span>↻</span> 備份歷史
           </div>
-          <div className={`sidebar-link ${active.type === 'visitors' ? 'active' : ''}`} onClick={() => setActive({ type: 'visitors' })}>
+          <div className={`sidebar-link ${active.type === 'visitors' ? 'active' : ''}`} onClick={() => goTo({ type: 'visitors' })}>
             <span>👁</span> 訪客統計
           </div>
         </div>
@@ -1608,26 +1786,34 @@ function App() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-y-auto" style={{ height: '100vh' }}>
+      <main className="flex-1 overflow-y-auto" style={{ height: '100vh', minWidth: 0 }}>
         {/* Top save bar */}
-        <div className="sticky top-0 z-10 px-8 py-4 flex items-center justify-between border-b"
+        <div className="top-save-bar sticky top-0 z-10 px-8 py-4 flex items-center justify-between border-b gap-3"
              style={{ background: 'rgba(247,245,241,0.92)', backdropFilter: 'blur(8px)', borderColor: 'var(--border)' }}>
-          <div className="flex items-center gap-3 text-sm">
-            {dirty ? (
-              <><span className="dirty-dot"></span><span style={{ color: 'var(--ink-soft)' }}>有未儲存的變更</span></>
-            ) : (
-              <span style={{ color: 'var(--ink-mute)' }}>所有變更已儲存</span>
-            )}
+          <div className="flex items-center gap-3 min-w-0">
+            <button className="mobile-hamburger btn btn-ghost btn-sm" onClick={() => setSidebarOpen(true)} aria-label="選單" style={{ padding: '6px 8px', fontSize: 18 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                <path d="M4 7h16M4 12h16M4 17h16"/>
+              </svg>
+            </button>
+            <div className="save-status flex items-center gap-2 text-sm min-w-0">
+              {dirty ? (
+                <><span className="dirty-dot"></span><span className="truncate" style={{ color: 'var(--ink-soft)' }}>有未儲存的變更</span></>
+              ) : (
+                <span className="truncate" style={{ color: 'var(--ink-mute)' }}>已儲存</span>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <a href="index.html" target="_blank" className="btn btn-secondary btn-sm">預覽公開頁 ↗</a>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <a href="index.html" target="_blank" className="btn btn-secondary btn-sm desktop-only">預覽公開頁 ↗</a>
+            <a href="index.html" target="_blank" className="btn btn-secondary btn-sm mobile-only" aria-label="預覽" title="預覽公開頁" style={{ padding: '4px 10px' }}>↗</a>
             <button className="btn btn-primary" onClick={save} disabled={!dirty || saving}>
-              {saving ? '儲存中⋯' : '儲存所有變更'}
+              {saving ? '儲存中⋯' : '儲存'}
             </button>
           </div>
         </div>
 
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="admin-content p-8 max-w-5xl mx-auto">
           {active.type === 'site' && <SiteEditor site={content.site} onUpdate={(s) => setContent({ ...content, site: s })} password={password} showToast={showToast} />}
           {active.type === 'navigation' && <NavEditor navigation={content.navigation} onUpdate={(n) => setContent({ ...content, navigation: n })} />}
           {active.type === 'footer' && <FooterEditor footer={content.footer} onUpdate={(f) => setContent({ ...content, footer: f })} />}
