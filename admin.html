@@ -551,6 +551,71 @@
     border-top: 1px solid var(--border);
   }
   .photo-edit-fields input[type="text"] { font-size: 12px; padding: 6px 8px; }
+
+  .cover-pick {
+    width: 40px; height: 40px;
+    border-radius: 4px;
+    background: var(--bg) center/cover;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s;
+  }
+  .cover-pick:hover { transform: scale(1.05); }
+  .cover-pick.active { border-color: var(--temple-red); box-shadow: 0 0 0 1px var(--temple-red); }
+
+  /* Albums picker (in section editor) */
+  .albums-picker {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    padding: 12px;
+  }
+  .albums-picker-empty {
+    text-align: center; padding: 24px;
+    color: var(--ink-mute); font-size: 13px;
+  }
+  .albums-picker-list {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-bottom: 12px;
+  }
+  .albums-picker-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: grab;
+  }
+  .albums-picker-row.selected { border-color: var(--temple-red); background: rgba(139,36,33,0.04); }
+  .albums-picker-row:active { cursor: grabbing; }
+  .albums-picker-row.drag-over { border-color: var(--temple-red); transform: translateY(-1px); }
+  .albums-picker-thumb {
+    width: 36px; height: 28px;
+    background: var(--bg) center/cover;
+    border-radius: 3px; flex-shrink: 0;
+  }
+  .albums-picker-name { flex: 1; font-size: 13px; color: var(--ink); min-width: 0; }
+  .albums-picker-name-meta { font-size: 11px; color: var(--ink-mute); }
+  .albums-picker-add {
+    background: var(--bg-card);
+    border: 1px dashed var(--border-strong);
+    border-radius: 4px;
+    padding: 8px;
+  }
+  .albums-picker-checklist {
+    max-height: 240px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .albums-picker-checklist-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px; cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+    font-size: 13px;
+  }
+  .albums-picker-checklist-row:hover { background: var(--bg); }
+  .albums-picker-checklist-row.disabled { opacity: 0.4; cursor: default; }
 </style>
 </head>
 <body>
@@ -571,7 +636,7 @@ const BUNDLED_TEMPLE_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA
 const { useState, useEffect, useRef, useCallback, useMemo, createContext, useContext } = React;
 
 // Context to expose current content (pages + anchors) to deeply-nested LinkField
-const ContentCtx = createContext({ pages: [] });
+const ContentCtx = createContext({ pages: [], albums: [] });
 
 // ============================================================
 // API
@@ -983,14 +1048,21 @@ const SECTION_SCHEMAS = {
     ]
   },
   albums: {
-    label: '相簿(進階)',
+    label: '相簿展示',
     icon: '📸',
-    summary: (d) => `相簿 (${(d.albums || []).length} 本)`,
+    summary: (d) => {
+      const n = (d.selectedAlbumIds || []).length;
+      return d.showAll ? `展示全部相簿` : (n ? `展示 ${n} 本相簿` : '尚未選擇相簿');
+    },
     fields: [
       { key: 'eyebrow', label: '小標', type: 'text' },
       { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
       { key: 'description', label: '說明文字', type: 'textarea' },
-      { key: 'albums', label: '相簿清單', type: 'albums-editor' }
+      { key: 'showAll', label: '展示模式', type: 'select', options: [
+        { value: '', label: '只顯示下方選取的相簿' },
+        { value: '1', label: '顯示全部相簿(自動同步「相簿管理」裡的內容)' }
+      ]},
+      { key: 'selectedAlbumIds', label: '選擇要顯示的相簿', type: 'albums-picker', help: '只有上方「展示模式」設為「只顯示選取相簿」時才會生效。順序就是公開頁顯示順序,可拖拉調整' }
     ]
   }
 };
@@ -1297,6 +1369,105 @@ function RepeaterField({ value, onChange, itemFields, password, showToast }) {
   );
 }
 
+function AlbumsPicker({ value, onChange }) {
+  const { albums = [] } = useContext(ContentCtx);
+  const selectedIds = value || [];
+  const [showPicker, setShowPicker] = useState(false);
+  const [draggedIdx, setDraggedIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
+
+  // Build selected album rows in their selected order
+  const selectedAlbums = selectedIds
+    .map(id => albums.find(a => a.id === id))
+    .filter(Boolean);
+
+  const removeAt = (i) => {
+    onChange(selectedIds.filter((_, idx) => idx !== i));
+  };
+  const onDragStart = (i) => setDraggedIdx(i);
+  const onDragOver = (e, i) => { e.preventDefault(); setDragOverIdx(i); };
+  const onDrop = (e, i) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === i) return;
+    const next = [...selectedIds];
+    const [moved] = next.splice(draggedIdx, 1);
+    next.splice(i, 0, moved);
+    onChange(next);
+    setDraggedIdx(null); setDragOverIdx(null);
+  };
+  const onDragEnd = () => { setDraggedIdx(null); setDragOverIdx(null); };
+
+  const toggle = (id) => {
+    if (selectedIds.includes(id)) {
+      onChange(selectedIds.filter(x => x !== id));
+    } else {
+      onChange([...selectedIds, id]);
+    }
+  };
+
+  if (albums.length === 0) {
+    return (
+      <div className="albums-picker">
+        <div className="albums-picker-empty">
+          相簿庫是空的。請先到左側選單「📸 相簿管理」新增相簿
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="albums-picker">
+      {selectedAlbums.length > 0 ? (
+        <div className="albums-picker-list">
+          {selectedAlbums.map((a, i) => (
+            <div key={a.id}
+                 className={`albums-picker-row selected ${dragOverIdx === i ? 'drag-over' : ''}`}
+                 draggable
+                 onDragStart={() => onDragStart(i)}
+                 onDragOver={(e) => onDragOver(e, i)}
+                 onDrop={(e) => onDrop(e, i)}
+                 onDragEnd={onDragEnd}>
+              <span style={{ color: 'var(--ink-mute)', fontSize: 12 }}>⋮⋮</span>
+              <div className="albums-picker-thumb" style={{ backgroundImage: a.cover ? `url('${a.cover}')` : 'none' }} />
+              <div className="albums-picker-name">
+                <div>{a.title || a.eventName || '未命名相簿'}</div>
+                <div className="albums-picker-name-meta">{[a.year, a.eventName].filter(Boolean).join(' · ')}</div>
+              </div>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeAt(i)} style={{ color: 'var(--danger)' }}>✕</button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="albums-picker-empty">尚未選擇任何相簿</div>
+      )}
+
+      <div className="albums-picker-add">
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowPicker(!showPicker)} style={{ width: '100%' }}>
+          {showPicker ? '收起選單' : '+ 從相簿庫挑選'}
+        </button>
+        {showPicker && (
+          <div className="albums-picker-checklist mt-2">
+            {albums.map(a => {
+              const isSel = selectedIds.includes(a.id);
+              return (
+                <div key={a.id} className="albums-picker-checklist-row" onClick={() => toggle(a.id)}>
+                  <input type="checkbox" checked={isSel} readOnly style={{ pointerEvents: 'none' }} />
+                  <div className="albums-picker-thumb" style={{ backgroundImage: a.cover ? `url('${a.cover}')` : 'none' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div>{a.title || a.eventName || '未命名相簿'}</div>
+                    <div className="albums-picker-name-meta">{[a.year, a.eventName, `${(a.photos || []).length} 張`].filter(Boolean).join(' · ')}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 // ============================================================
 // Albums editor — manages a list of albums, each can be 'manual' or 'drive' source
 // ============================================================
@@ -1377,6 +1548,16 @@ function AlbumsEditor({ value, onChange, password, showToast }) {
                     <input type="text" value={album.year || ''} onChange={(e) => update(i, { year: e.target.value })} placeholder="2025" />
                   </div>
                 </div>
+                <div className="grid-2 mt-3">
+                  <div>
+                    <label className="field-label">活動名稱 (選填)</label>
+                    <input type="text" value={album.eventName || ''} onChange={(e) => update(i, { eventName: e.target.value })} placeholder="例: 春節法會、八月浴佛節" />
+                  </div>
+                  <div>
+                    <label className="field-label">活動日期 (選填)</label>
+                    <input type="date" value={album.eventDate || ''} onChange={(e) => update(i, { eventDate: e.target.value })} />
+                  </div>
+                </div>
                 <div className="mt-3">
                   <label className="field-label">描述 (選填)</label>
                   <textarea value={album.description || ''} onChange={(e) => update(i, { description: e.target.value })} />
@@ -1384,6 +1565,19 @@ function AlbumsEditor({ value, onChange, password, showToast }) {
                 <div className="mt-3">
                   <label className="field-label">封面圖片</label>
                   <ImageField value={album.cover} onChange={(v) => update(i, { cover: v })} password={password} showToast={showToast} />
+                  {album.source !== 'drive' && (album.photos || []).length > 0 && (
+                    <div className="mt-2">
+                      <div className="text-xs mb-1" style={{ color: 'var(--ink-mute)' }}>或從相簿照片中選一張當封面:</div>
+                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                        {(album.photos || []).slice(0, 12).map((p, pi) => (
+                          <button key={pi} type="button" onClick={() => update(i, { cover: p.src })}
+                                  className={`cover-pick ${album.cover === p.src ? 'active' : ''}`}
+                                  title={p.caption || `第 ${pi+1} 張`}
+                                  style={{ backgroundImage: `url('${p.thumb || p.src}')` }} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Source selector */}
@@ -1652,6 +1846,7 @@ function FieldRenderer({ field, value, onChange, password, showToast }) {
       {type === 'richtext' && <RichTextField value={value} onChange={onChange} />}
       {type === 'link' && <LinkField value={value} onChange={onChange} placeholder={placeholder} />}
       {type === 'albums-editor' && <AlbumsEditor value={value} onChange={onChange} password={password} showToast={showToast} />}
+      {type === 'albums-picker' && <AlbumsPicker value={value} onChange={onChange} />}
       {type === 'repeater' && <RepeaterField value={value} onChange={onChange} itemFields={field.itemFields} password={password} showToast={showToast} />}
       {type === 'group' && <GroupField value={value} onChange={onChange} subFields={field.subFields} password={password} showToast={showToast} />}
       {help && <div className="field-help">{help}</div>}
@@ -2230,6 +2425,33 @@ function VisitorStatsView({ password, showToast }) {
 }
 
 // ============================================================
+// Albums Manager — top-level page for managing the album library
+// ============================================================
+function AlbumsManagerView({ albums, onUpdate, password, showToast }) {
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
+          <div>
+            <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>📸 相簿管理</h2>
+            <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>
+              所有相簿集中管理。在「區塊」設定裡的「相簿展示」可以挑選要顯示哪幾本
+            </div>
+          </div>
+          <div className="text-sm" style={{ color: 'var(--ink-light)' }}>
+            <strong style={{ color: 'var(--temple-red)' }}>{albums.length}</strong> 本相簿 ·
+            手動模式共 <strong>{albums.filter(a => a.source !== 'drive').reduce((acc, a) => acc + (a.photos || []).length, 0)}</strong> 張照片
+          </div>
+        </div>
+      </div>
+      <div className="card p-6">
+        <AlbumsEditor value={albums} onChange={onUpdate} password={password} showToast={showToast} />
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // Login screen
 // ============================================================
 function Login({ onLogin }) {
@@ -2411,7 +2633,7 @@ function App() {
   };
 
   return (
-    <ContentCtx.Provider value={{ pages: content.pages || [] }}>
+    <ContentCtx.Provider value={{ pages: content.pages || [], albums: content.albums || [] }}>
     <div className="app-shell">
       {/* Mobile sidebar overlay */}
       <div className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)} />
@@ -2455,6 +2677,12 @@ function App() {
               {p.isHome && <span className="ml-auto text-xs" style={{ color: 'var(--gold)' }}>首頁</span>}
             </div>
           ))}
+
+          <div className="sidebar-section-title">媒體</div>
+          <div className={`sidebar-link ${active.type === 'albums-manager' ? 'active' : ''}`} onClick={() => goTo({ type: 'albums-manager' })}>
+            <span>📸</span> 相簿管理
+            {(content.albums || []).length > 0 && <span className="ml-auto text-xs" style={{ color: 'var(--gold)' }}>{(content.albums || []).length}</span>}
+          </div>
 
           <div className="sidebar-section-title">工具</div>
           <div className={`sidebar-link ${active.type === 'backups' ? 'active' : ''}`} onClick={() => goTo({ type: 'backups' })}>
@@ -2515,6 +2743,14 @@ function App() {
           )}
           {active.type === 'backups' && <BackupsView password={password} showToast={showToast} onRestore={loadContent} />}
           {active.type === 'visitors' && <VisitorStatsView password={password} showToast={showToast} />}
+          {active.type === 'albums-manager' && (
+            <AlbumsManagerView
+              albums={content.albums || []}
+              onUpdate={(albums) => setContent({ ...content, albums })}
+              password={password}
+              showToast={showToast}
+            />
+          )}
         </div>
       </main>
 
