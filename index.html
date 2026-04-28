@@ -567,6 +567,52 @@
   /* Logo image rendering — keep crisp, no background wash */
   .logo-img { background: transparent; }
 
+  /* Universal "Read more" link — appears at the bottom of various sections */
+  .readmore-wrap {
+    display: flex;
+    margin-top: 40px;
+  }
+  .readmore-link {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 10px 24px 10px 28px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px; letter-spacing: 0.15em;
+    color: var(--temple-red);
+    background: transparent;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .readmore-link::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--temple-red);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    z-index: 0;
+  }
+  .readmore-link:hover {
+    color: var(--paper-warm);
+    border-color: var(--temple-red);
+    box-shadow: 0 12px 28px -10px rgba(94,23,20,0.4);
+  }
+  .readmore-link:hover::before { transform: scaleX(1); }
+  .readmore-link > * { position: relative; z-index: 1; }
+  .readmore-arrow {
+    display: inline-flex;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .readmore-link:hover .readmore-arrow { transform: translateX(4px); }
+  /* Variant when inside dark sections (quote/dark) */
+  .quote-dark .readmore-link, .marquee-dark + section .readmore-link {
+    color: var(--gold-light); border-color: var(--gold-light);
+  }
+  .quote-dark .readmore-link::before { background: var(--gold); }
+  .quote-dark .readmore-link:hover { color: var(--ink); border-color: var(--gold); }
+
   /* Marquee announcement bar */
   .marquee-section { padding: 16px 0; }
   .marquee-section.marquee-classic { background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper-deep) 100%); border-top: 1px solid rgba(184,134,11,0.2); border-bottom: 1px solid rgba(184,134,11,0.2); }
@@ -725,6 +771,25 @@ function HtmlContent({ html, className }) {
   return <div className={className} dangerouslySetInnerHTML={{ __html: html || '' }} />;
 }
 
+function ReadMoreLink({ url, label, align }) {
+  if (!url) return null;
+  const isExternal = url.startsWith('http');
+  const text = label && label.trim() ? label : '閱讀更多 Read more';
+  const justify = align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center';
+  return (
+    <div className="readmore-wrap" style={{ justifyContent: justify }}>
+      <a href={url} target={isExternal ? '_blank' : '_self'} rel={isExternal ? 'noreferrer' : ''} className="readmore-link">
+        <span className="readmore-text">{text}</span>
+        <span className="readmore-arrow">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 6h13M9 1l5 5-5 5"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  );
+}
+
 function navTargetUrl(item) {
   if (!item) return '#';
   if (item.type === 'external') return item.target;
@@ -822,6 +887,9 @@ function CardsCornerSection({ data, anchorId }) {
           </div>
         </div>
       </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
+      </div>
     </section>
   );
 }
@@ -849,6 +917,9 @@ function TimelineSection({ data, anchorId }) {
             </div>
           ))}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
       </div>
     </section>
   );
@@ -895,6 +966,9 @@ function CardsGradientSection({ data, anchorId }) {
             return <div key={i} className="space-card">{cardInner}</div>;
           })}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
       </div>
     </section>
   );
@@ -1007,6 +1081,9 @@ function RichTextSection({ data, anchorId }) {
         <div className="lg:col-span-7">
           {data.body && <HtmlContent className="rich-content text-base" html={data.body} />}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
       </div>
     </section>
   );
@@ -1205,6 +1282,9 @@ function GallerySection({ data, anchorId }) {
           {lightbox.caption && <div className="lightbox-caption">{lightbox.caption}</div>}
         </div>
       )}
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
+      </div>
     </section>
   );
 }
@@ -1243,6 +1323,9 @@ function QuoteSection({ data, anchorId }) {
         {data.quote && <HtmlContent className="font-serif-tc text-2xl lg:text-3xl font-light leading-relaxed mb-6" html={data.quote} />}
         {data.author && <div className="font-cormorant italic text-sm tracking-widest" style={{ color: dark ? 'var(--gold-light)' : 'var(--gold)' }}>— {data.author}</div>}
       </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
+      </div>
     </section>
   );
 }
@@ -1268,6 +1351,9 @@ function StatsSection({ data, anchorId }) {
             </div>
           ))}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
       </div>
     </section>
   );
@@ -1299,6 +1385,9 @@ function FaqSection({ data, anchorId }) {
         <div className="reveal">
           {(data.items || []).map((it, i) => <FAQItem key={i} q={it.question} a={it.answer} />)}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
       </div>
     </section>
   );
@@ -1413,6 +1502,9 @@ function LogoStripSection({ data, anchorId }) {
               : <div key={i} className="logo-strip-item"><img src={l.image} alt={l.name || ''} /></div>
           ))}
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <ReadMoreLink url={data.readMoreUrl} label={data.readMoreLabel} align={data.readMoreAlign} />
       </div>
     </section>
   );
