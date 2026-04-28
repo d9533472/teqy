@@ -613,6 +613,183 @@
   .quote-dark .readmore-link::before { background: var(--gold); }
   .quote-dark .readmore-link:hover { color: var(--ink); border-color: var(--gold); }
 
+  /* Albums section */
+  .albums-section {
+    background: linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+  }
+  .album-year-tabs {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin-bottom: 32px;
+  }
+  .album-year-tab {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 999px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px; letter-spacing: 0.1em;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .album-year-tab:hover { border-color: var(--gold); color: var(--temple-red); }
+  .album-year-tab.active {
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    border-color: var(--temple-red);
+  }
+
+  .album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .album-card {
+    display: flex; flex-direction: column;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+    transition: all 0.5s cubic-bezier(0.22,1,0.36,1);
+    font-family: inherit;
+  }
+  .album-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 40px -16px rgba(94,23,20,0.18);
+    border-color: var(--gold);
+  }
+  .album-cover {
+    aspect-ratio: 4/3;
+    background-color: var(--paper-deep);
+    background-size: cover; background-position: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .album-cover-empty {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; opacity: 0.3;
+  }
+  .album-cover-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(26,20,16,0.7) 100%);
+    display: flex; align-items: flex-end; justify-content: flex-end;
+    padding: 16px;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .album-card:hover .album-cover-overlay { opacity: 1; }
+  .album-cover-cta {
+    color: var(--paper-warm);
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px; letter-spacing: 0.15em;
+  }
+  .album-meta {
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 6px;
+    flex: 1;
+  }
+  .album-year {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 13px; letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+  .album-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.15rem; font-weight: 500;
+    color: var(--ink); line-height: 1.4;
+  }
+  .album-desc {
+    font-size: 13px; color: var(--ink-light); line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .album-count {
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: auto; padding-top: 8px;
+  }
+
+  /* Album detail view */
+  .album-back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 999px;
+    font-size: 13px; letter-spacing: 0.05em;
+    color: var(--ink-light); cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 32px;
+    font-family: inherit;
+  }
+  .album-back-btn:hover { border-color: var(--temple-red); color: var(--temple-red); }
+  .album-detail-header { margin-bottom: 32px; }
+  .album-detail-year {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.2em;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .album-detail-title {
+    font-size: 2.5rem; font-weight: 300;
+    color: var(--ink); line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .album-detail-desc {
+    font-size: 15px; color: var(--ink-light); line-height: 1.7;
+    max-width: 720px;
+  }
+
+  .album-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .album-photo {
+    aspect-ratio: 1;
+    overflow: hidden; position: relative;
+    background: var(--paper-deep);
+    border: none; padding: 0;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    text-decoration: none;
+    color: inherit;
+  }
+  .album-photo:hover { transform: scale(0.98); }
+  .album-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .album-photo:hover img { transform: scale(1.06); }
+  .album-photo-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 12px 14px 10px;
+    background: linear-gradient(180deg, transparent 0%, rgba(26,20,16,0.85) 100%);
+    color: var(--paper-warm);
+    font-size: 12px; line-height: 1.4;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .album-photo:hover .album-photo-caption { transform: translateY(0); }
+  .album-photo-link-badge {
+    position: absolute; top: 8px; right: 8px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(245,239,228,0.9);
+    color: var(--temple-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .album-grid { grid-template-columns: 1fr; }
+    .album-photos-grid { grid-template-columns: repeat(2, 1fr); }
+    .album-detail-title { font-size: 1.75rem; }
+  }
+
   /* Marquee announcement bar */
   .marquee-section { padding: 16px 0; }
   .marquee-section.marquee-classic { background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper-deep) 100%); border-top: 1px solid rgba(184,134,11,0.2); border-bottom: 1px solid rgba(184,134,11,0.2); }
@@ -1589,9 +1766,211 @@ function MarqueeSection({ data, anchorId }) {
   );
 }
 
+function AlbumsSection({ data, anchorId }) {
+  const allAlbums = data.albums || [];
+  const [openAlbum, setOpenAlbum] = useState(null);
+  const [yearFilter, setYearFilter] = useState('all');
+  const [lightbox, setLightbox] = useState(null);
+  const [driveImagesCache, setDriveImagesCache] = useState({}); // { albumId: [images] }
+  const [loadingAlbumId, setLoadingAlbumId] = useState(null);
+
+  // Collect unique years
+  const years = useMemo(() => {
+    const set = new Set();
+    allAlbums.forEach(a => { if (a.year) set.add(String(a.year)); });
+    return Array.from(set).sort((a, b) => b.localeCompare(a));
+  }, [allAlbums]);
+
+  const filteredAlbums = yearFilter === 'all'
+    ? allAlbums
+    : allAlbums.filter(a => String(a.year) === yearFilter);
+
+  // When opening a Drive-mode album, fetch images via GAS
+  useEffect(() => {
+    if (!openAlbum) return;
+    if (openAlbum.source !== 'drive' || !openAlbum.driveFolderId) return;
+    if (driveImagesCache[openAlbum.id]) return; // already loaded
+    setLoadingAlbumId(openAlbum.id);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', GAS_URL);
+    xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xhr.onload = () => {
+      try {
+        const r = JSON.parse(xhr.responseText);
+        if (r.ok) {
+          setDriveImagesCache(prev => ({ ...prev, [openAlbum.id]: r.images || [] }));
+        } else {
+          setDriveImagesCache(prev => ({ ...prev, [openAlbum.id]: { error: r.error || 'load failed' } }));
+        }
+      } catch (e) {
+        setDriveImagesCache(prev => ({ ...prev, [openAlbum.id]: { error: 'parse error' } }));
+      }
+      setLoadingAlbumId(null);
+    };
+    xhr.onerror = () => {
+      setDriveImagesCache(prev => ({ ...prev, [openAlbum.id]: { error: 'network error' } }));
+      setLoadingAlbumId(null);
+    };
+    xhr.send(JSON.stringify({ action: 'listFolderImages', folderId: openAlbum.driveFolderId }));
+  }, [openAlbum]);
+
+  // Get the actual photos for the open album
+  const openAlbumPhotos = useMemo(() => {
+    if (!openAlbum) return [];
+    if (openAlbum.source === 'drive') {
+      const cached = driveImagesCache[openAlbum.id];
+      if (!cached || cached.error) return [];
+      return cached.map(img => ({ src: img.url, thumb: img.thumbUrl, caption: img.filename }));
+    }
+    // manual mode
+    return (openAlbum.photos || []).map(p => ({ src: p.src, thumb: p.thumb || p.src, caption: p.caption, link: p.link }));
+  }, [openAlbum, driveImagesCache]);
+
+  // Lightbox keyboard navigation
+  useEffect(() => {
+    if (!lightbox) return;
+    const handler = (e) => {
+      if (e.key === 'Escape') setLightbox(null);
+      else if (e.key === 'ArrowRight') {
+        const idx = openAlbumPhotos.findIndex(p => p.src === lightbox.src);
+        if (idx < openAlbumPhotos.length - 1) setLightbox(openAlbumPhotos[idx + 1]);
+      } else if (e.key === 'ArrowLeft') {
+        const idx = openAlbumPhotos.findIndex(p => p.src === lightbox.src);
+        if (idx > 0) setLightbox(openAlbumPhotos[idx - 1]);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [lightbox, openAlbumPhotos]);
+
+  return (
+    <section id={anchorId} className="albums-section py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {/* Header */}
+        {(data.eyebrow || data.titleHtml) && !openAlbum && (
+          <div className="text-center mb-12 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-4" html={data.titleHtml} />}
+            {data.description && <p className="max-w-2xl mx-auto text-base" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+          </div>
+        )}
+
+        {/* Year filter tabs (mother view only) */}
+        {!openAlbum && years.length > 0 && (
+          <div className="album-year-tabs reveal">
+            <button className={`album-year-tab ${yearFilter === 'all' ? 'active' : ''}`} onClick={() => setYearFilter('all')}>全部</button>
+            {years.map(y => (
+              <button key={y} className={`album-year-tab ${yearFilter === y ? 'active' : ''}`} onClick={() => setYearFilter(y)}>{y}</button>
+            ))}
+          </div>
+        )}
+
+        {/* Mother view — album cards grid */}
+        {!openAlbum && (
+          <div className="album-grid reveal">
+            {filteredAlbums.map(album => (
+              <button key={album.id} className="album-card" onClick={() => setOpenAlbum(album)}>
+                <div className="album-cover" style={{ backgroundImage: album.cover ? `url('${album.cover}')` : 'none' }}>
+                  {!album.cover && <div className="album-cover-empty">📷</div>}
+                  <div className="album-cover-overlay">
+                    <span className="album-cover-cta">查看相簿 →</span>
+                  </div>
+                </div>
+                <div className="album-meta">
+                  {album.year && <div className="album-year">{album.year}</div>}
+                  <div className="album-title">{album.title || '未命名相簿'}</div>
+                  {album.description && <div className="album-desc">{album.description}</div>}
+                  {album.source === 'manual' && album.photos && (
+                    <div className="album-count">{album.photos.length} 張照片</div>
+                  )}
+                  {album.source === 'drive' && (
+                    <div className="album-count">📁 來自 Drive 資料夾</div>
+                  )}
+                </div>
+              </button>
+            ))}
+            {filteredAlbums.length === 0 && (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 0', color: 'var(--ink-mute)' }}>
+                這個年份還沒有相簿
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Single album view — photo grid */}
+        {openAlbum && (
+          <div className="album-detail reveal">
+            <button className="album-back-btn" onClick={() => setOpenAlbum(null)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span>回到相簿列表</span>
+            </button>
+            <div className="album-detail-header">
+              {openAlbum.year && <div className="album-detail-year">{openAlbum.year}</div>}
+              <h3 className="album-detail-title font-serif-tc">{openAlbum.title || '未命名相簿'}</h3>
+              {openAlbum.description && <p className="album-detail-desc">{openAlbum.description}</p>}
+            </div>
+
+            {loadingAlbumId === openAlbum.id ? (
+              <div style={{ textAlign: 'center', padding: 60, color: 'var(--ink-mute)' }}>
+                <div className="seal loading-seal" style={{ display: 'inline-flex', margin: '0 auto 16px' }}>慈</div>
+                <div>從 Google Drive 載入照片中⋯</div>
+              </div>
+            ) : driveImagesCache[openAlbum.id]?.error ? (
+              <div style={{ textAlign: 'center', padding: 60, color: 'var(--danger, #a83838)' }}>
+                載入失敗:{driveImagesCache[openAlbum.id].error}
+              </div>
+            ) : openAlbumPhotos.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: 60, color: 'var(--ink-mute)' }}>
+                這本相簿還沒有照片
+              </div>
+            ) : (
+              <div className="album-photos-grid">
+                {openAlbumPhotos.map((p, i) => {
+                  const inner = (
+                    <>
+                      <img src={p.thumb || p.src} alt={p.caption || ''} loading="lazy" />
+                      {p.caption && <div className="album-photo-caption">{p.caption}</div>}
+                      {p.link && <div className="album-photo-link-badge">↗</div>}
+                    </>
+                  );
+                  // If photo has a link, clicking opens link instead of lightbox
+                  if (p.link) {
+                    const isExt = p.link.startsWith('http');
+                    return (
+                      <a key={i} href={p.link} target={isExt ? '_blank' : '_self'} rel={isExt ? 'noreferrer' : ''} className="album-photo">
+                        {inner}
+                      </a>
+                    );
+                  }
+                  return (
+                    <button key={i} className="album-photo" onClick={() => setLightbox(p)}>
+                      {inner}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox.src} alt={lightbox.caption || ''} onClick={(e) => e.stopPropagation()} />
+          {lightbox.caption && <div className="lightbox-caption">{lightbox.caption}</div>}
+        </div>
+      )}
+    </section>
+  );
+}
+
+
 const SECTION_RENDERERS = {
   hero: HeroSection,
   marquee: MarqueeSection,
+  albums: AlbumsSection,
   'cards-corner': CardsCornerSection,
   timeline: TimelineSection,
   'cards-gradient': CardsGradientSection,

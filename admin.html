@@ -418,6 +418,139 @@
   @media (max-width: 480px) {
     .link-tab { font-size: 11px; padding: 6px 6px; min-width: 60px; }
   }
+
+  /* Albums editor */
+  .albums-editor-list { display: flex; flex-direction: column; gap: 10px; }
+  .album-editor-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .album-editor-item.open { border-color: var(--temple-red); }
+  .album-editor-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    background: var(--bg-card);
+    transition: background 0.15s;
+  }
+  .album-editor-header:hover { background: var(--bg); }
+  .album-editor-item.open .album-editor-header { border-bottom: 1px solid var(--border); }
+  .album-editor-cover {
+    flex-shrink: 0;
+    width: 56px; height: 42px;
+    background: var(--bg-card) center/cover;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; opacity: 0.5;
+  }
+  .album-editor-info { flex: 1; min-width: 0; }
+  .album-editor-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .album-editor-meta {
+    font-size: 12px; color: var(--ink-mute); margin-top: 2px;
+  }
+  .album-editor-controls { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+  .album-editor-body {
+    padding: 16px;
+    background: var(--bg);
+  }
+
+  /* Photo grid editor */
+  .photo-grid-toolbar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin-bottom: 12px;
+  }
+  .upload-progress {
+    height: 4px;
+    background: var(--bg-card);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .upload-progress-bar {
+    height: 100%;
+    background: var(--temple-red);
+    transition: width 0.3s ease;
+  }
+  .photo-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+  }
+  .photo-edit-item {
+    display: flex; flex-direction: column;
+    background: var(--bg-card);
+    border: 2px solid transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: grab;
+  }
+  .photo-edit-item:active { cursor: grabbing; }
+  .photo-edit-item.dragging { opacity: 0.4; }
+  .photo-edit-item.drag-over { border-color: var(--temple-red); transform: translateY(-2px); }
+  .photo-edit-item.selected { border-color: var(--temple-red); box-shadow: 0 0 0 2px rgba(139,36,33,0.2); }
+  .photo-edit-thumb {
+    aspect-ratio: 1;
+    background-size: cover; background-position: center;
+    background-color: var(--bg);
+    position: relative;
+    cursor: pointer;
+  }
+  .photo-edit-checkbox {
+    position: absolute; top: 6px; left: 6px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(245,239,228,0.9);
+    border: 2px solid var(--temple-red);
+    color: var(--temple-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    pointer-events: none;
+  }
+  .photo-edit-item.selected .photo-edit-checkbox {
+    background: var(--temple-red);
+    color: white;
+  }
+  .photo-edit-actions {
+    position: absolute; top: 6px; right: 6px;
+    display: flex; gap: 4px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .photo-edit-item:hover .photo-edit-actions { opacity: 1; }
+  .photo-edit-btn {
+    width: 22px; height: 22px;
+    background: rgba(245,239,228,0.95);
+    border: 1px solid var(--temple-red);
+    color: var(--temple-red);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .photo-edit-link-badge {
+    position: absolute; bottom: 6px; right: 6px;
+    background: rgba(26,20,16,0.7);
+    color: var(--gold-light);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+  .photo-edit-fields {
+    padding: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .photo-edit-fields input[type="text"] { font-size: 12px; padding: 6px 8px; }
 </style>
 </head>
 <body>
@@ -848,6 +981,17 @@ const SECTION_SCHEMAS = {
         { key: 'url', label: '連結 (選填,點擊前往)', type: 'link' }
       ]}
     ]
+  },
+  albums: {
+    label: '相簿(進階)',
+    icon: '📸',
+    summary: (d) => `相簿 (${(d.albums || []).length} 本)`,
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text' },
+      { key: 'titleHtml', label: '標題 (支援 HTML)', type: 'html' },
+      { key: 'description', label: '說明文字', type: 'textarea' },
+      { key: 'albums', label: '相簿清單', type: 'albums-editor' }
+    ]
   }
 };
 
@@ -1153,6 +1297,348 @@ function RepeaterField({ value, onChange, itemFields, password, showToast }) {
   );
 }
 
+// ============================================================
+// Albums editor — manages a list of albums, each can be 'manual' or 'drive' source
+// ============================================================
+function AlbumsEditor({ value, onChange, password, showToast }) {
+  const albums = value || [];
+  const [openIdx, setOpenIdx] = useState(null);
+
+  const update = (i, patch) => {
+    const newAlbums = [...albums];
+    newAlbums[i] = { ...newAlbums[i], ...patch };
+    onChange(newAlbums);
+  };
+  const move = (i, dir) => {
+    const j = i + dir;
+    if (j < 0 || j >= albums.length) return;
+    const newAlbums = [...albums];
+    [newAlbums[i], newAlbums[j]] = [newAlbums[j], newAlbums[i]];
+    onChange(newAlbums);
+    if (openIdx === i) setOpenIdx(j);
+    else if (openIdx === j) setOpenIdx(i);
+  };
+  const remove = (i) => {
+    if (!confirm(`確定刪除相簿「${albums[i].title || '未命名'}」?(只刪相簿項目,不會動到 Drive 上的照片)`)) return;
+    onChange(albums.filter((_, idx) => idx !== i));
+    if (openIdx === i) setOpenIdx(null);
+  };
+  const add = () => {
+    const newAlbum = {
+      id: 'album-' + Math.random().toString(36).slice(2, 9),
+      title: '新相簿',
+      year: String(new Date().getFullYear()),
+      description: '',
+      cover: '',
+      source: 'manual',
+      photos: [],
+      driveFolderId: ''
+    };
+    onChange([...albums, newAlbum]);
+    setOpenIdx(albums.length);
+  };
+
+  return (
+    <div>
+      <div className="albums-editor-list">
+        {albums.map((album, i) => (
+          <div key={album.id || i} className={`album-editor-item ${openIdx === i ? 'open' : ''}`}>
+            <div className="album-editor-header" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
+              <div className="album-editor-cover" style={{ backgroundImage: album.cover ? `url('${album.cover}')` : 'none' }}>
+                {!album.cover && '📷'}
+              </div>
+              <div className="album-editor-info">
+                <div className="album-editor-title">
+                  {album.year && <span style={{ color: 'var(--gold)', marginRight: 8, fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic' }}>{album.year}</span>}
+                  {album.title || '未命名相簿'}
+                </div>
+                <div className="album-editor-meta">
+                  {album.source === 'drive'
+                    ? `📁 Drive 資料夾${album.driveFolderId ? ' · 已設定' : ' · 未設定'}`
+                    : `${(album.photos || []).length} 張照片`}
+                </div>
+              </div>
+              <div className="album-editor-controls" onClick={(e) => e.stopPropagation()}>
+                <button type="button" className="btn btn-ghost btn-sm" disabled={i === 0} onClick={() => move(i, -1)}>↑</button>
+                <button type="button" className="btn btn-ghost btn-sm" disabled={i === albums.length - 1} onClick={() => move(i, 1)}>↓</button>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => remove(i)} style={{ color: 'var(--danger)' }}>✕</button>
+                <span style={{ color: 'var(--ink-mute)', marginLeft: 4 }}>{openIdx === i ? '▾' : '▸'}</span>
+              </div>
+            </div>
+            {openIdx === i && (
+              <div className="album-editor-body">
+                <div className="grid-2">
+                  <div>
+                    <label className="field-label">相簿標題</label>
+                    <input type="text" value={album.title || ''} onChange={(e) => update(i, { title: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="field-label">年份</label>
+                    <input type="text" value={album.year || ''} onChange={(e) => update(i, { year: e.target.value })} placeholder="2025" />
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="field-label">描述 (選填)</label>
+                  <textarea value={album.description || ''} onChange={(e) => update(i, { description: e.target.value })} />
+                </div>
+                <div className="mt-3">
+                  <label className="field-label">封面圖片</label>
+                  <ImageField value={album.cover} onChange={(v) => update(i, { cover: v })} password={password} showToast={showToast} />
+                </div>
+
+                {/* Source selector */}
+                <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+                  <label className="field-label">照片來源</label>
+                  <div className="link-field-tabs" style={{ marginBottom: 12 }}>
+                    <button type="button" className={`link-tab ${album.source !== 'drive' ? 'active' : ''}`}
+                            onClick={() => update(i, { source: 'manual' })}>📤 手動上傳</button>
+                    <button type="button" className={`link-tab ${album.source === 'drive' ? 'active' : ''}`}
+                            onClick={() => update(i, { source: 'drive' })}>📁 Drive 資料夾</button>
+                  </div>
+
+                  {album.source === 'drive' ? (
+                    <DriveSourceEditor album={album} onUpdate={(patch) => update(i, patch)} password={password} showToast={showToast} />
+                  ) : (
+                    <PhotoGridEditor photos={album.photos || []} onChange={(photos) => update(i, { photos })} password={password} showToast={showToast} />
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <button type="button" className="btn btn-primary btn-sm mt-3" onClick={add}>+ 新增相簿</button>
+    </div>
+  );
+}
+
+function DriveSourceEditor({ album, onUpdate, password, showToast }) {
+  const [previewing, setPreviewing] = useState(false);
+  const [previewImages, setPreviewImages] = useState(null);
+
+  const fetchPreview = async () => {
+    if (!album.driveFolderId) {
+      showToast('請先填入 Drive 資料夾 ID', 'error');
+      return;
+    }
+    setPreviewing(true);
+    setPreviewImages(null);
+    try {
+      const r = await gasPost({ action: 'listFolderImages', folderId: album.driveFolderId.trim() });
+      if (r.ok) {
+        setPreviewImages(r.images || []);
+        showToast(`找到 ${r.images?.length || 0} 張照片 ✓`, 'success');
+      } else {
+        showToast('讀取失敗: ' + (r.error || ''), 'error');
+      }
+    } catch (e) {
+      showToast('讀取失敗: ' + e.message, 'error');
+    }
+    setPreviewing(false);
+  };
+
+  return (
+    <div>
+      <label className="field-label">Drive 資料夾 ID</label>
+      <input type="text" value={album.driveFolderId || ''} onChange={(e) => onUpdate({ driveFolderId: e.target.value })}
+             placeholder="例: 1B4t4jFK37OxhPVec7HLd9oIAHF1bQMT8" className="font-mono" style={{ fontSize: 12 }}/>
+      <div className="field-help">資料夾網址末段 /folders/ 後面那串。資料夾必須在 GAS 帳號可存取的 Drive 中。所有圖片會自動設成「知道連結的人可檢視」</div>
+      <div className="mt-3 flex gap-2 items-center flex-wrap">
+        <button type="button" className="btn btn-secondary btn-sm" onClick={fetchPreview} disabled={previewing}>
+          {previewing ? '載入中⋯' : '🔍 預覽資料夾照片'}
+        </button>
+        {previewImages && <span className="text-sm" style={{ color: 'var(--ink-light)' }}>共 {previewImages.length} 張照片</span>}
+      </div>
+      {previewImages && previewImages.length > 0 && (
+        <div className="mt-3" style={{ background: 'var(--bg)', padding: 12, borderRadius: 6 }}>
+          <div className="text-xs mb-2" style={{ color: 'var(--ink-mute)' }}>前 12 張預覽:</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
+            {previewImages.slice(0, 12).map((img, i) => (
+              <div key={i} style={{ aspectRatio: '1', background: `url('${img.thumbUrl}') center/cover`, borderRadius: 3 }} />
+            ))}
+          </div>
+          <div className="text-xs mt-2" style={{ color: 'var(--ink-mute)' }}>
+            ✓ 公開頁開啟此相簿時會即時從 Drive 讀取最新照片(加新照片進資料夾就會自動出現,不用回後台)
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PhotoGridEditor({ photos, onChange, password, showToast }) {
+  const [batchUploading, setBatchUploading] = useState(false);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [selected, setSelected] = useState(new Set());
+  const fileInputRef = useRef(null);
+  const [editingPhotoIdx, setEditingPhotoIdx] = useState(null);
+  const [draggedIdx, setDraggedIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
+
+  // Batch upload handler
+  const handleFiles = async (files) => {
+    if (!files || files.length === 0) return;
+    const fileArr = Array.from(files);
+    setBatchUploading(true);
+    setProgress({ done: 0, total: fileArr.length });
+
+    // Upload in chunks of 5 to avoid GAS payload limits
+    const CHUNK = 3;
+    const newPhotos = [];
+    for (let i = 0; i < fileArr.length; i += CHUNK) {
+      const chunk = fileArr.slice(i, i + CHUNK);
+      // Read all chunk files as base64
+      const fileData = await Promise.all(chunk.map(file => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve({
+          base64: e.target.result.split(',')[1],
+          filename: file.name,
+          mimeType: file.type
+        });
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+      })));
+      const validFiles = fileData.filter(f => f);
+
+      try {
+        const resp = await gasPost({ action: 'batchUploadImages', password, files: validFiles });
+        if (resp.ok && resp.images) {
+          resp.images.forEach(r => {
+            if (r.ok) newPhotos.push({ src: r.url, thumb: r.thumbUrl, caption: r.filename, link: '' });
+          });
+        }
+      } catch (e) {
+        showToast('部分上傳失敗: ' + e.message, 'error');
+      }
+      setProgress({ done: Math.min(i + CHUNK, fileArr.length), total: fileArr.length });
+    }
+
+    onChange([...photos, ...newPhotos]);
+    showToast(`成功上傳 ${newPhotos.length} 張`, 'success');
+    setBatchUploading(false);
+    setProgress({ done: 0, total: 0 });
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const toggleSelect = (i) => {
+    const next = new Set(selected);
+    if (next.has(i)) next.delete(i); else next.add(i);
+    setSelected(next);
+  };
+  const selectAll = () => setSelected(new Set(photos.map((_, i) => i)));
+  const clearSelection = () => setSelected(new Set());
+  const deleteSelected = () => {
+    if (selected.size === 0) return;
+    if (!confirm(`確定刪除 ${selected.size} 張照片?(只從相簿移除,不會動到 Drive 上的檔案)`)) return;
+    onChange(photos.filter((_, i) => !selected.has(i)));
+    setSelected(new Set());
+  };
+
+  // Drag & drop reorder
+  const onDragStart = (e, i) => { setDraggedIdx(i); e.dataTransfer.effectAllowed = 'move'; };
+  const onDragOver = (e, i) => { e.preventDefault(); setDragOverIdx(i); };
+  const onDrop = (e, i) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === i) return;
+    const newPhotos = [...photos];
+    const [moved] = newPhotos.splice(draggedIdx, 1);
+    newPhotos.splice(i, 0, moved);
+    onChange(newPhotos);
+    setDraggedIdx(null); setDragOverIdx(null);
+  };
+  const onDragEnd = () => { setDraggedIdx(null); setDragOverIdx(null); };
+
+  const updatePhoto = (i, patch) => {
+    const newPhotos = [...photos];
+    newPhotos[i] = { ...newPhotos[i], ...patch };
+    onChange(newPhotos);
+  };
+
+  return (
+    <div>
+      {/* Top toolbar */}
+      <div className="photo-grid-toolbar">
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          ref={fileInputRef}
+          onChange={(e) => handleFiles(e.target.files)}
+          style={{ display: 'none' }}
+        />
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => fileInputRef.current?.click()} disabled={batchUploading}>
+          {batchUploading ? `上傳中 ${progress.done}/${progress.total}` : '📤 批次上傳照片'}
+        </button>
+        {photos.length > 0 && (
+          <>
+            <span className="text-xs" style={{ color: 'var(--ink-mute)' }}>共 {photos.length} 張</span>
+            {selected.size > 0 ? (
+              <>
+                <span className="text-xs" style={{ color: 'var(--temple-red)', fontWeight: 500 }}>已選 {selected.size}</span>
+                <button type="button" className="btn btn-danger btn-sm" onClick={deleteSelected}>刪除選取</button>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={clearSelection}>清除選取</button>
+              </>
+            ) : (
+              <button type="button" className="btn btn-ghost btn-sm" onClick={selectAll}>全選</button>
+            )}
+          </>
+        )}
+      </div>
+
+      {batchUploading && progress.total > 0 && (
+        <div className="upload-progress">
+          <div className="upload-progress-bar" style={{ width: `${(progress.done / progress.total) * 100}%` }}></div>
+        </div>
+      )}
+
+      {/* Photo grid */}
+      {photos.length > 0 && (
+        <div className="photo-edit-grid">
+          {photos.map((p, i) => (
+            <div
+              key={i}
+              className={`photo-edit-item ${selected.has(i) ? 'selected' : ''} ${dragOverIdx === i ? 'drag-over' : ''} ${draggedIdx === i ? 'dragging' : ''}`}
+              draggable
+              onDragStart={(e) => onDragStart(e, i)}
+              onDragOver={(e) => onDragOver(e, i)}
+              onDrop={(e) => onDrop(e, i)}
+              onDragEnd={onDragEnd}
+            >
+              <div className="photo-edit-thumb" style={{ backgroundImage: `url('${p.thumb || p.src}')` }}
+                   onClick={() => toggleSelect(i)}>
+                <div className="photo-edit-checkbox">{selected.has(i) ? '✓' : ''}</div>
+                <div className="photo-edit-actions" onClick={(e) => e.stopPropagation()}>
+                  <button type="button" className="photo-edit-btn" onClick={() => setEditingPhotoIdx(editingPhotoIdx === i ? null : i)} title="編輯">✎</button>
+                </div>
+                {p.link && <div className="photo-edit-link-badge" title="有連結">🔗</div>}
+              </div>
+              {editingPhotoIdx === i && (
+                <div className="photo-edit-fields">
+                  <input type="text" placeholder="圖說" value={p.caption || ''} onChange={(e) => updatePhoto(i, { caption: e.target.value })} style={{ marginBottom: 6 }} />
+                  <LinkField value={p.link || ''} onChange={(v) => updatePhoto(i, { link: v })} placeholder="連結 (選填)" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {photos.length === 0 && !batchUploading && (
+        <div className="link-field-help" style={{ textAlign: 'center', padding: 24 }}>
+          還沒有照片。點上方「批次上傳照片」一次選多張上傳
+        </div>
+      )}
+
+      {photos.length > 0 && (
+        <div className="text-xs mt-3" style={{ color: 'var(--ink-mute)' }}>
+          💡 提示:點縮圖可選取(用於批次刪除)、按住拖拉可重新排序、點 ✎ 可編輯圖說和連結
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 function FieldRenderer({ field, value, onChange, password, showToast }) {
   const { type, label, key, help, placeholder } = field;
   return (
@@ -1165,6 +1651,7 @@ function FieldRenderer({ field, value, onChange, password, showToast }) {
       {type === 'image' && <ImageField value={value} onChange={onChange} password={password} showToast={showToast} />}
       {type === 'richtext' && <RichTextField value={value} onChange={onChange} />}
       {type === 'link' && <LinkField value={value} onChange={onChange} placeholder={placeholder} />}
+      {type === 'albums-editor' && <AlbumsEditor value={value} onChange={onChange} password={password} showToast={showToast} />}
       {type === 'repeater' && <RepeaterField value={value} onChange={onChange} itemFields={field.itemFields} password={password} showToast={showToast} />}
       {type === 'group' && <GroupField value={value} onChange={onChange} subFields={field.subFields} password={password} showToast={showToast} />}
       {help && <div className="field-help">{help}</div>}
