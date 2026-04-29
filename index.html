@@ -698,6 +698,142 @@
     animation: fadeUp 0.4s ease-out;
   }
 
+  /* Auth success modal — appears after register / forgot password */
+  .auth-success-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+    padding: 24px;
+    animation: authOverlayIn 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes authOverlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .auth-success-modal {
+    position: relative;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.4);
+    border-radius: 8px;
+    max-width: 480px; width: 100%;
+    padding: 48px 36px 36px;
+    text-align: center;
+    box-shadow:
+      0 32px 80px -16px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(245,239,228,0.05),
+      inset 0 1px 0 rgba(245,239,228,0.5);
+    animation: authModalIn 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes authModalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .auth-success-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: transparent; border: none;
+    font-size: 16px; color: var(--ink-mute);
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .auth-success-close:hover { background: var(--paper-deep); color: var(--ink); }
+
+  .auth-success-ring {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    animation: authRingPulse 2s ease-in-out infinite;
+  }
+  .auth-success-ring::before {
+    content: '';
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    border: 1px solid rgba(184,134,11,0.25);
+  }
+  @keyframes authRingPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184,134,11,0.3); }
+    50% { box-shadow: 0 0 0 14px rgba(184,134,11,0); }
+  }
+  .auth-success-icon {
+    font-size: 44px;
+    line-height: 1;
+  }
+  .auth-success-eyebrow {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .auth-success-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.75rem; font-weight: 500; line-height: 1.2;
+    color: var(--ink); margin: 0 0 16px;
+  }
+  .auth-success-greeting {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px; color: var(--ink-soft);
+    margin: 0 0 24px; line-height: 1.6;
+  }
+  .auth-success-mail-card {
+    background: var(--paper-deep);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  .auth-success-mail-label {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .auth-success-mail-addr {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px; font-weight: 500; color: var(--temple-red);
+    word-break: break-all;
+  }
+  .auth-success-instructions {
+    text-align: left;
+    background: rgba(245,239,228,0.5);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .auth-success-step {
+    display: flex; align-items: center; gap: 12px;
+    padding: 6px 0;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .auth-success-step-num {
+    flex-shrink: 0;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--temple-red); color: var(--paper-warm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+  }
+  .auth-success-tip {
+    background: rgba(184,134,11,0.08);
+    border-left: 2px solid var(--gold);
+    padding: 10px 14px;
+    font-size: 12px; color: var(--ink-light); line-height: 1.6;
+    text-align: left;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 24px;
+  }
+  .auth-success-modal .auth-btn {
+    margin-top: 0; width: 100%;
+  }
+  @media (max-width: 480px) {
+    .auth-success-modal { padding: 36px 24px 24px; }
+    .auth-success-ring { width: 80px; height: 80px; }
+    .auth-success-icon { font-size: 36px; }
+    .auth-success-title { font-size: 1.5rem; }
+  }
+
   /* Login state in nav */
   .nav-user-pill {
     display: inline-flex; align-items: center; gap: 8px;
@@ -2192,6 +2328,7 @@ function AuthSection({ data, anchorId }) {
   const [region, setRegion] = useState('');
   const [gender, setGender] = useState('');
   const [job, setJob] = useState('');
+  const [successModal, setSuccessModal] = useState(null); // { type, title, message, email }
 
   useEffect(() => {
     gasPost({ action: 'userGetConfig' }).then(r => {
@@ -2241,7 +2378,17 @@ function AuthSection({ data, anchorId }) {
         email, password, nickname, country, region, gender, job
       });
       if (r.ok) {
-        setMsg({ type: 'success', text: r.message || '註冊成功!驗證信已寄出' });
+        const registeredEmail = email;
+        const registeredNickname = nickname;
+        // Show big modal instead of small message
+        setSuccessModal({
+          type: 'register',
+          title: r.flow === 'verify' ? '註冊完成 🪷' : '歡迎加入 🪷',
+          email: registeredEmail,
+          nickname: registeredNickname,
+          flow: r.flow || 'welcome',
+          requireVerification: r.requireVerification
+        });
         if (r.token) login(r.user, r.token);
         reset();
         setMode('login');
@@ -2268,7 +2415,11 @@ function AuthSection({ data, anchorId }) {
     setBusy(true); setMsg(null);
     try {
       await gasPost({ action: 'userRequestPasswordReset', email });
-      setMsg({ type: 'success', text: '若該信箱已註冊,重設密碼信已寄出。請至信箱查收(1 小時內有效)。' });
+      setSuccessModal({
+        type: 'forgot',
+        title: '重設信已寄出 ✉',
+        email,
+      });
     } catch (err) {
       setMsg({ type: 'error', text: '連線失敗' });
     }
@@ -2393,6 +2544,93 @@ function AuthSection({ data, anchorId }) {
           {msg && <div className={`auth-msg auth-msg-${msg.type}`}>{msg.text}</div>}
         </div>
       </div>
+
+      {successModal && (
+        <div className="auth-success-overlay" onClick={() => setSuccessModal(null)}>
+          <div className="auth-success-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="auth-success-close" onClick={() => setSuccessModal(null)} aria-label="關閉">✕</button>
+
+            {/* Decorative ring */}
+            <div className="auth-success-ring">
+              <div className="auth-success-icon">
+                {successModal.type === 'register' ? '🪷' : '✉'}
+              </div>
+            </div>
+
+            <div className="auth-success-eyebrow">
+              {successModal.type === 'register' ? 'Registration Complete' : 'Email Sent'}
+            </div>
+            <h3 className="auth-success-title">{successModal.title}</h3>
+
+            {successModal.type === 'register' && successModal.flow !== 'verify' && (
+              <>
+                <p className="auth-success-greeting">
+                  {successModal.nickname ? `${successModal.nickname} 道親,` : ''}歡迎加入 淨慈寺文化園區
+                </p>
+                <div className="auth-success-mail-card">
+                  <div className="auth-success-mail-label">歡迎信已寄至</div>
+                  <div className="auth-success-mail-addr">{successModal.email}</div>
+                </div>
+                <div className="auth-success-instructions">
+                  <div className="auth-success-step">
+                    <span className="auth-success-step-num">✓</span>
+                    <span>您的帳號已建立並可立即登入</span>
+                  </div>
+                  <div className="auth-success-step">
+                    <span className="auth-success-step-num">✉</span>
+                    <span>請至信箱查收歡迎信件</span>
+                  </div>
+                </div>
+                <div className="auth-success-tip">
+                  💡 若 5 分鐘內未收到歡迎信,請檢查垃圾郵件夾
+                </div>
+              </>
+            )}
+
+            {successModal.type === 'register' && successModal.flow === 'verify' && (
+              <>
+                <p className="auth-success-greeting">
+                  {successModal.nickname ? `${successModal.nickname} 道親,` : ''}歡迎加入 淨慈寺文化園區
+                </p>
+                <div className="auth-success-mail-card">
+                  <div className="auth-success-mail-label">驗證信已寄至</div>
+                  <div className="auth-success-mail-addr">{successModal.email}</div>
+                </div>
+                <div className="auth-success-instructions">
+                  <div className="auth-success-step">
+                    <span className="auth-success-step-num">1</span>
+                    <span>請至信箱收信</span>
+                  </div>
+                  <div className="auth-success-step">
+                    <span className="auth-success-step-num">2</span>
+                    <span>點擊信中的「完成驗證」按鈕</span>
+                  </div>
+                  <div className="auth-success-step">
+                    <span className="auth-success-step-num">3</span>
+                    <span>驗證後即可回此頁登入</span>
+                  </div>
+                </div>
+                <div className="auth-success-tip">
+                  💡 若 5 分鐘內未收到,請檢查垃圾郵件夾,或於下方登入後點選「重新寄送驗證信」
+                </div>
+              </>
+            )}
+
+            {successModal.type === 'forgot' && (
+              <>
+                <p className="auth-success-greeting">若該信箱已註冊,重設密碼信已寄出</p>
+                <div className="auth-success-mail-card">
+                  <div className="auth-success-mail-label">寄送至</div>
+                  <div className="auth-success-mail-addr">{successModal.email}</div>
+                </div>
+                <div className="auth-success-tip">⏱ 連結 1 小時內有效。請盡快點擊信中的「重設密碼」按鈕。</div>
+              </>
+            )}
+
+            <button className="auth-btn" onClick={() => setSuccessModal(null)}>我知道了</button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
