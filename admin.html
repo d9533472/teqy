@@ -3829,6 +3829,500 @@ function ForumCategoriesEditor({ categories, onSave, threads }) {
 
 
 // ============================================================
+// System Health — disk usage, Gmail quota, system stats
+// ============================================================
+function SystemHealthView({ password, showToast }) {
+  const [health, setHealth] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const r = await gasPost({ action: 'adminGetSystemHealth', password });
+      if (r.ok) setHealth(r.health);
+      else showToast('讀取失敗: ' + (r.error || ''), 'error');
+    } catch (e) { showToast('連線失敗', 'error'); }
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  if (loading || !health) {
+    return <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mute)' }}>讀取系統狀態⋯</div>;
+  }
+
+  const fileLabel = {
+    content: '網站內容',
+    users: '使用者資料',
+    forum: '討論區',
+    calendar: '行事曆'
+  };
+
+  const statusBadge = (status) => {
+    if (status === 'danger') return <span className="badge danger">⚠️ 過大</span>;
+    if (status === 'warn') return <span className="badge warn">注意</span>;
+    if (status === 'ok') return <span className="badge success">健康</span>;
+    return <span className="badge">未建立</span>;
+  };
+
+  const formatBytes = (b) => {
+    if (b < 1024) return b + ' B';
+    if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+    return (b / (1024 * 1024)).toFixed(2) + ' MB';
+  };
+
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <div>
+            <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>⚙️ 系統健康檢查</h2>
+            <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>
+              即時監控資料檔大小、Gmail 配額、系統狀態
+            </div>
+          </div>
+          <button className="btn btn-secondary btn-sm" onClick={load}>重新整理</button>
+        </div>
+        <div className="text-xs" style={{ color: 'var(--ink-mute)' }}>
+          檢查時間:{new Date(health.timestamp).toLocaleString('zh-TW')}
+        </div>
+      </div>
+
+      {/* Files */}
+      <div className="card p-6 mb-4">
+        <h3 className="font-serif text-lg font-medium mb-1">📂 資料檔狀態</h3>
+        <div className="text-sm mb-4" style={{ color: 'var(--ink-mute)' }}>
+          每個資料檔在 1 MB 以下健康、1-3 MB 注意、超過 3 MB 建議分檔。
+        </div>
+        <div className="users-table-wrap">
+          <table className="users-table">
+            <thead>
+              <tr>
+                <th>檔案</th>
+                <th>狀態</th>
+                <th>大小</th>
+                <th>最後更新</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(health.files).map(([key, f]) => (
+                <tr key={key}>
+                  <td>
+                    <strong>{fileLabel[key] || key}</strong>
+                    <div className="text-xs font-mono" style={{ color: 'var(--ink-mute)' }}>{f.filename}</div>
+                  </td>
+                  <td>{statusBadge(f.exists ? f.status : 'none')}</td>
+                  <td style={{ fontFamily: 'monospace', fontSize: 13 }}>{f.exists ? formatBytes(f.sizeBytes) : '—'}</td>
+                  <td style={{ fontSize: 12, color: 'var(--ink-mute)' }}>
+                    {f.lastModified ? new Date(f.lastModified).toLocaleString('zh-TW') : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {health.files.forum.status === 'warn' || health.files.forum.status === 'danger' ? (
+          <div className="mt-4 p-3" style={{ background: 'rgba(184,134,11,0.1)', border: '1px solid rgba(184,134,11,0.3)', borderRadius: 6, fontSize: 13 }}>
+            💡 <strong>討論區檔案偏大</strong> — 隨討論串和留言累積會繼續成長。建議近期內聯絡 Claude 進行「分檔遷移」(把每篇文章拆成獨立檔),可大幅降低讀取時間。
+          </div>
+        ) : null}
+      </div>
+
+      {/* Gmail quota */}
+      <div className="card p-6 mb-4">
+        <h3 className="font-serif text-lg font-medium mb-1">📧 Gmail 寄信配額</h3>
+        <div className="text-sm mb-4" style={{ color: 'var(--ink-mute)' }}>
+          一般 Gmail 每天 100 封、Workspace 1500 封。配額每日 UTC 重置。
+        </div>
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="user-stat-card" style={{ minWidth: 160 }}>
+            <div className="user-stat-num" style={{
+              color: health.gmail.status === 'danger' ? 'var(--danger)' :
+                     health.gmail.status === 'warn' ? 'var(--gold)' : 'var(--temple-red)'
+            }}>{health.gmail.remaining ?? '?'}</div>
+            <div className="user-stat-label">今日剩餘配額</div>
+          </div>
+          <div style={{ flex: 1, minWidth: 200, fontSize: 13, color: 'var(--ink-light)' }}>
+            {health.gmail.status === 'danger' && '⚠️ 配額即將耗盡 — 暫停所有非必要寄信'}
+            {health.gmail.status === 'warn' && '⚠ 配額偏低 — 大量註冊或群發信時可能撞限'}
+            {health.gmail.status === 'ok' && '✓ 配額充足'}
+            {health.gmail.status === 'unknown' && '無法讀取配額(請確認 GAS 已授權 MailApp)'}
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid-2 mb-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+        {health.userStats && (
+          <div className="card p-6">
+            <h3 className="font-serif text-lg font-medium mb-3">👥 使用者統計</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+              <div className="user-stat-card"><div className="user-stat-num">{health.userStats.total}</div><div className="user-stat-label">總註冊</div></div>
+              <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--success)' }}>{health.userStats.verified}</div><div className="user-stat-label">已驗證</div></div>
+              <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--danger)' }}>{health.userStats.blocked}</div><div className="user-stat-label">已停用</div></div>
+            </div>
+          </div>
+        )}
+
+        {health.forumStats && (
+          <div className="card p-6">
+            <h3 className="font-serif text-lg font-medium mb-3">💬 討論區統計</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+              <div className="user-stat-card"><div className="user-stat-num">{health.forumStats.threadCount}</div><div className="user-stat-label">文章</div></div>
+              <div className="user-stat-card"><div className="user-stat-num">{health.forumStats.replyCount}</div><div className="user-stat-label">留言</div></div>
+              <div className="user-stat-card"><div className="user-stat-num">{health.forumStats.categoryCount}</div><div className="user-stat-label">分類</div></div>
+            </div>
+            {health.forumStats.largestThreadReplies > 100 && (
+              <div className="text-xs mt-3" style={{ color: 'var(--gold)' }}>
+                💡 最大單篇文章已有 {health.forumStats.largestThreadReplies} 則留言,建議考慮拆分長討論
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="grid-2 mb-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+        <div className="card p-5">
+          <div className="text-sm mb-1" style={{ color: 'var(--ink-mute)' }}>網站訪問次數</div>
+          <div className="font-cormorant" style={{ fontSize: 28, fontWeight: 500, color: 'var(--temple-red)' }}>{health.visits || 0}</div>
+        </div>
+        <div className="card p-5">
+          <div className="text-sm mb-1" style={{ color: 'var(--ink-mute)' }}>備份檔案數</div>
+          <div className="font-cormorant" style={{ fontSize: 28, fontWeight: 500, color: 'var(--ink)' }}>{health.backupCount}</div>
+        </div>
+        <div className="card p-5">
+          <div className="text-sm mb-1" style={{ color: 'var(--ink-mute)' }}>進行中的群發信</div>
+          <div className="font-cormorant" style={{ fontSize: 28, fontWeight: 500, color: health.pendingBroadcasts > 0 ? 'var(--gold)' : 'var(--ink)' }}>
+            {health.pendingBroadcasts}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+// ============================================================
+// Broadcast Manager — schedule mass emails to user groups
+// ============================================================
+function BroadcastManagerView({ password, showToast }) {
+  const [tab, setTab] = useState('list'); // list | compose
+  const [broadcasts, setBroadcasts] = useState([]);
+  const [userConfig, setUserConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [r1, r2] = await Promise.all([
+        gasPost({ action: 'adminBroadcastList', password }),
+        gasPost({ action: 'userGetConfig' })
+      ]);
+      if (r1.ok) setBroadcasts(r1.broadcasts);
+      if (r2.ok) setUserConfig(r2.config);
+    } catch (e) { showToast('讀取失敗', 'error'); }
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  const cancelBroadcast = async (b) => {
+    if (!confirm(`確定取消「${b.subject}」?已寄出的信不會收回,只會停止後續寄送。`)) return;
+    const r = await gasPost({ action: 'adminBroadcastCancel', password, broadcastId: b.id });
+    if (r.ok) { showToast('已取消', 'success'); load(); }
+  };
+  const deleteBroadcast = async (b) => {
+    if (!confirm(`確定刪除這筆群發信記錄?`)) return;
+    const r = await gasPost({ action: 'adminBroadcastDelete', password, broadcastId: b.id });
+    if (r.ok) { showToast('已刪除', 'success'); load(); }
+  };
+
+  const statusBadge = (s) => {
+    if (s === 'pending') return <span className="badge warn">⏳ 等待寄送</span>;
+    if (s === 'sending') return <span className="badge warn">🚀 寄送中</span>;
+    if (s === 'done') return <span className="badge success">✓ 已完成</span>;
+    if (s === 'cancelled') return <span className="badge">已取消</span>;
+    return <span className="badge">{s}</span>;
+  };
+
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-1">
+          <div>
+            <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>📨 群發信</h2>
+            <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>對所有會員或特定族群發信。系統會自動分批寄送,避開 Gmail 配額限制。</div>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={() => setTab('compose')}>+ 新增群發信</button>
+        </div>
+      </div>
+
+      <div className="card p-6">
+        <div className="link-field-tabs" style={{ marginBottom: 16 }}>
+          <button type="button" className={`link-tab ${tab === 'list' ? 'active' : ''}`} onClick={() => setTab('list')}>歷史記錄</button>
+          <button type="button" className={`link-tab ${tab === 'compose' ? 'active' : ''}`} onClick={() => setTab('compose')}>撰寫新群發信</button>
+        </div>
+
+        {tab === 'compose' && userConfig && (
+          <BroadcastComposeForm
+            userConfig={userConfig}
+            password={password}
+            showToast={showToast}
+            onSent={() => { setTab('list'); load(); }}
+          />
+        )}
+
+        {tab === 'list' && (
+          <div>
+            {loading ? (
+              <div style={{ padding: 24, textAlign: 'center', color: 'var(--ink-mute)' }}>載入中⋯</div>
+            ) : broadcasts.length === 0 ? (
+              <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mute)' }}>
+                尚未發送過任何群發信
+              </div>
+            ) : (
+              <div className="users-table-wrap">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th>主旨</th>
+                      <th>對象</th>
+                      <th>狀態</th>
+                      <th>進度</th>
+                      <th>排程時間</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {broadcasts.map(b => (
+                      <tr key={b.id}>
+                        <td><strong>{b.subject}</strong></td>
+                        <td style={{ fontSize: 12 }}>{describeAudience(b.audience, b.audienceFilter)} ({b.totalRecipients} 人)</td>
+                        <td>{statusBadge(b.status)}</td>
+                        <td style={{ fontSize: 12 }}>
+                          已寄 <strong>{b.sentCount}</strong> · 失敗 {b.failedCount} · 待寄 {b.pendingCount}
+                          <div style={{ height: 4, background: 'var(--bg)', borderRadius: 2, overflow: 'hidden', marginTop: 4 }}>
+                            <div style={{
+                              height: '100%',
+                              width: `${b.totalRecipients > 0 ? (b.sentCount / b.totalRecipients) * 100 : 0}%`,
+                              background: 'var(--temple-red)',
+                              transition: 'width 0.3s'
+                            }} />
+                          </div>
+                        </td>
+                        <td style={{ fontSize: 11, color: 'var(--ink-mute)' }}>
+                          {b.scheduledAt ? new Date(b.scheduledAt).toLocaleString('zh-TW') : '立即'}
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          {(b.status === 'pending' || b.status === 'sending') && (
+                            <button className="btn btn-ghost btn-sm" onClick={() => cancelBroadcast(b)}>取消</button>
+                          )}
+                          {(b.status === 'done' || b.status === 'cancelled') && (
+                            <button className="btn btn-ghost btn-sm" onClick={() => deleteBroadcast(b)} style={{ color: 'var(--danger)' }}>刪除記錄</button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="mt-3 flex justify-end">
+              <button className="btn btn-secondary btn-sm" onClick={load}>重新整理</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function describeAudience(audience, filter) {
+  if (audience === 'all') return '全部會員';
+  if (audience === 'job') return `天職:${(filter?.jobs || []).join(', ') || '?'}`;
+  if (audience === 'gender') return `${filter?.gender || ''}`;
+  if (audience === 'country') return `國家:${filter?.country || ''}`;
+  if (audience === 'specific') return `特定 ${(filter?.userIds || []).length} 人`;
+  return audience;
+}
+
+function BroadcastComposeForm({ userConfig, password, showToast, onSent }) {
+  const [subject, setSubject] = useState('');
+  const [bodyHtml, setBodyHtml] = useState('<p>各位道親 平安:</p>\n<p></p>\n<p>...信件內容...</p>\n<p></p>\n<p>清淨慈悲、廣結善緣</p>');
+  const [audience, setAudience] = useState('all');
+  const [filterJobs, setFilterJobs] = useState([]);
+  const [filterGender, setFilterGender] = useState('乾道');
+  const [filterCountry, setFilterCountry] = useState('台灣');
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
+  const [scheduleAt, setScheduleAt] = useState('');
+  const [testEmail, setTestEmail] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const toggleJob = (j) => {
+    if (filterJobs.indexOf(j) >= 0) setFilterJobs(filterJobs.filter(x => x !== j));
+    else setFilterJobs([...filterJobs, j]);
+  };
+
+  const buildFilter = () => {
+    if (audience === 'job') return { jobs: filterJobs };
+    if (audience === 'gender') return { gender: filterGender };
+    if (audience === 'country') return { country: filterCountry };
+    return {};
+  };
+
+  const sendTest = async () => {
+    if (!testEmail.trim()) { showToast('請輸入測試信箱', 'error'); return; }
+    if (!subject.trim() || !bodyHtml.trim()) { showToast('請先填寫主旨與內文', 'error'); return; }
+    setBusy(true);
+    const r = await gasPost({
+      action: 'adminBroadcastSendTest',
+      password,
+      subject, bodyHtml,
+      testEmail: testEmail.trim()
+    });
+    setBusy(false);
+    if (r.ok) showToast(`測試信已寄至 ${testEmail}`, 'success');
+    else showToast('寄送失敗: ' + (r.error || ''), 'error');
+  };
+
+  const submit = async () => {
+    if (!subject.trim() || !bodyHtml.trim()) { showToast('請填寫主旨和內文', 'error'); return; }
+    if (audience === 'job' && filterJobs.length === 0) { showToast('請選擇至少一個天職', 'error'); return; }
+
+    const payload = {
+      subject: subject.trim(),
+      bodyHtml,
+      audience,
+      audienceFilter: buildFilter(),
+      scheduledAt: scheduleEnabled && scheduleAt ? new Date(scheduleAt).toISOString() : null
+    };
+    setBusy(true);
+    const r = await gasPost({ action: 'adminBroadcastCreate', password, ...payload });
+    setBusy(false);
+    if (r.ok) {
+      showToast(`已建立群發任務,共 ${r.recipientCount} 位收件者`, 'success');
+      onSent();
+    } else {
+      const errs = {
+        no_recipients: '符合條件的收件者為 0 人',
+        missing_subject: '主旨不可空白',
+        missing_body: '內文不可空白'
+      };
+      showToast(errs[r.error] || ('失敗: ' + r.error), 'error');
+    }
+  };
+
+  return (
+    <div>
+      <div className="text-sm mb-4 p-3" style={{ background: 'var(--bg)', borderRadius: 6, color: 'var(--ink-soft)' }}>
+        💡 <strong>運作方式:</strong> 系統建立任務後會自動每 5 分鐘寄出一批(每批 30 封),避開 Gmail 每日 100 封的限制。一旦完成會自動停止 trigger。<br/>
+        <strong>變數可用:</strong> <code>{'{nickname}'}</code> <code>{'{job}'}</code> <code>{'{gender}'}</code> <code>{'{email}'}</code> <code>{'{country}'}</code> <code>{'{region}'}</code> <code>{'{siteName}'}</code>
+      </div>
+
+      <label className="field-label">郵件主旨</label>
+      <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="【{siteName}】法會通知" />
+
+      <label className="field-label mt-3">內文(支援 HTML)</label>
+      <textarea
+        value={bodyHtml}
+        onChange={(e) => setBodyHtml(e.target.value)}
+        rows={10}
+        style={{ fontFamily: 'monospace', fontSize: 13 }}
+      />
+      <div className="field-help">
+        可用 HTML:<code>&lt;p&gt;</code> <code>&lt;strong&gt;</code> <code>&lt;ul&gt;&lt;li&gt;</code> <code>&lt;a href=""&gt;</code> <code>&lt;br&gt;</code>
+      </div>
+
+      <label className="field-label mt-4">收件對象</label>
+      <select value={audience} onChange={(e) => setAudience(e.target.value)}>
+        <option value="all">全部會員(已驗證 + 未停用)</option>
+        <option value="job">特定天職</option>
+        <option value="gender">特定道號(乾道/坤道)</option>
+        <option value="country">特定國家</option>
+      </select>
+
+      {audience === 'job' && (
+        <div className="mt-2 p-3" style={{ background: 'var(--bg)', borderRadius: 6 }}>
+          <div className="text-sm mb-2" style={{ color: 'var(--ink-soft)' }}>選擇要寄送的天職(可多選):</div>
+          <div className="flex flex-wrap gap-2">
+            {(userConfig.jobs || []).map(j => (
+              <label key={j} className="flex items-center gap-1 text-sm" style={{ padding: '6px 12px', background: filterJobs.indexOf(j) >= 0 ? 'var(--temple-red)' : 'var(--bg-card)', color: filterJobs.indexOf(j) >= 0 ? 'white' : 'var(--ink)', borderRadius: 999, cursor: 'pointer', border: '1px solid var(--border)' }}>
+                <input type="checkbox" checked={filterJobs.indexOf(j) >= 0} onChange={() => toggleJob(j)} style={{ display: 'none' }} />
+                {j}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {audience === 'gender' && (
+        <div className="mt-2">
+          <select value={filterGender} onChange={(e) => setFilterGender(e.target.value)}>
+            <option value="乾道">乾道</option>
+            <option value="坤道">坤道</option>
+          </select>
+        </div>
+      )}
+
+      {audience === 'country' && (
+        <div className="mt-2">
+          <select value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)}>
+            {(userConfig.countries || []).map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+      )}
+
+      <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+        <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--ink-soft)' }}>
+          <input type="checkbox" checked={scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} />
+          排程定時寄送(不勾就立即排隊寄)
+        </label>
+        {scheduleEnabled && (
+          <div className="mt-2">
+            <input type="datetime-local" value={scheduleAt} onChange={(e) => setScheduleAt(e.target.value)} />
+            <div className="field-help">時區為 GAS 設定的時區(預設台北時間)</div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+        <label className="field-label">先寄一封測試信(選填,但建議先測試格式)</label>
+        <div className="flex gap-2">
+          <input type="email" value={testEmail} onChange={(e) => setTestEmail(e.target.value)} placeholder="your@email.com" style={{ flex: 1 }} />
+          <button type="button" className="btn btn-secondary btn-sm" onClick={sendTest} disabled={busy}>📧 寄測試</button>
+        </div>
+      </div>
+
+      <div className="mt-6 pt-4 border-t flex gap-2 justify-end" style={{ borderColor: 'var(--border)' }}>
+        <button className="btn btn-primary" onClick={() => setConfirmOpen(true)} disabled={busy || !subject.trim() || !bodyHtml.trim()}>
+          {busy ? '處理中⋯' : '建立群發任務'}
+        </button>
+      </div>
+
+      {confirmOpen && (
+        <div className="modal-overlay" onClick={() => setConfirmOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 460 }}>
+            <h3 className="font-serif text-xl font-medium mb-3">確認寄送</h3>
+            <div className="text-sm" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
+              <div className="mb-2"><strong>主旨:</strong>{subject}</div>
+              <div className="mb-2"><strong>對象:</strong>{describeAudience(audience, buildFilter())}</div>
+              <div className="mb-2"><strong>排程:</strong>{scheduleEnabled && scheduleAt ? new Date(scheduleAt).toLocaleString('zh-TW') : '建立後立即進入寄送佇列'}</div>
+              <div className="mt-3 p-3" style={{ background: 'rgba(184,134,11,0.1)', borderRadius: 4, fontSize: 13 }}>
+                ⚠️ 寄出後無法收回。系統會自動分批寄送以避免 Gmail 配額耗盡。
+              </div>
+            </div>
+            <div className="mt-4 flex gap-2 justify-end">
+              <button className="btn btn-secondary btn-sm" onClick={() => setConfirmOpen(false)}>取消</button>
+              <button className="btn btn-primary btn-sm" onClick={() => { setConfirmOpen(false); submit(); }} disabled={busy}>確認建立</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+// ============================================================
 // Calendar Manager — events, categories, import (CSV/ICS/Google)
 // ============================================================
 function CalendarManagerView({ password, showToast }) {
@@ -4614,11 +5108,17 @@ function App() {
           </div>
 
           <div className="sidebar-section-title">工具</div>
+          <div className={`sidebar-link ${active.type === 'broadcast' ? 'active' : ''}`} onClick={() => goTo({ type: 'broadcast' })}>
+            <span>📨</span> 群發信
+          </div>
           <div className={`sidebar-link ${active.type === 'backups' ? 'active' : ''}`} onClick={() => goTo({ type: 'backups' })}>
             <span>↻</span> 備份歷史
           </div>
           <div className={`sidebar-link ${active.type === 'visitors' ? 'active' : ''}`} onClick={() => goTo({ type: 'visitors' })}>
             <span>👁</span> 訪客統計
+          </div>
+          <div className={`sidebar-link ${active.type === 'system-health' ? 'active' : ''}`} onClick={() => goTo({ type: 'system-health' })}>
+            <span>⚙️</span> 系統健康檢查
           </div>
         </div>
         <div className="p-3 border-t" style={{ borderColor: 'var(--border)' }}>
@@ -4672,6 +5172,8 @@ function App() {
           )}
           {active.type === 'backups' && <BackupsView password={password} showToast={showToast} onRestore={loadContent} />}
           {active.type === 'visitors' && <VisitorStatsView password={password} showToast={showToast} />}
+          {active.type === 'broadcast' && <BroadcastManagerView password={password} showToast={showToast} />}
+          {active.type === 'system-health' && <SystemHealthView password={password} showToast={showToast} />}
           {active.type === 'albums-manager' && (
             <AlbumsManagerView
               albums={content.albums || []}
