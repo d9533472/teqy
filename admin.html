@@ -552,6 +552,57 @@
   }
   .photo-edit-fields input[type="text"] { font-size: 12px; padding: 6px 8px; }
 
+  /* Users management */
+  .user-stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .user-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 500;
+    color: var(--temple-red);
+    line-height: 1;
+  }
+  .user-stat-label {
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 6px; letter-spacing: 0.1em;
+  }
+  .users-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .users-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+  .users-table th {
+    text-align: left; padding: 10px 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500; color: var(--ink-soft);
+    font-size: 12px; letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .users-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .users-table tr:last-child td { border-bottom: none; }
+  .users-table tr:hover td { background: var(--bg); }
+  .users-table tr.blocked td { opacity: 0.5; }
+  .badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 999px; font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .badge.success { background: rgba(74,124,79,0.15); color: var(--success); }
+  .badge.warn { background: rgba(184,134,11,0.15); color: var(--gold); }
+  .badge.danger { background: rgba(168,56,56,0.12); color: var(--danger); }
+
   .cover-pick {
     width: 40px; height: 40px;
     border-radius: 4px;
@@ -1045,6 +1096,16 @@ const SECTION_SCHEMAS = {
         { key: 'text', label: '公告內容', type: 'text' },
         { key: 'url', label: '連結 (選填,點擊前往)', type: 'link' }
       ]}
+    ]
+  },
+  auth: {
+    label: '會員登入註冊',
+    icon: '🔐',
+    summary: (d) => d.eyebrow || '會員登入',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: '會員專區' },
+      { key: 'titleHtml', label: '標題 (留空用預設「會員登入/註冊」)', type: 'html' },
+      { key: 'description', label: '說明文字 (顯示在登入分頁)', type: 'textarea' }
     ]
   },
   albums: {
@@ -2425,6 +2486,297 @@ function VisitorStatsView({ password, showToast }) {
 }
 
 // ============================================================
+// Users Manager — top-level page for managing registered users + config
+// ============================================================
+function UsersManagerView({ password, showToast }) {
+  const [users, setUsers] = useState([]);
+  const [config, setConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState('users'); // users | settings
+  const [filter, setFilter] = useState('all'); // all | verified | unverified | blocked
+  const [search, setSearch] = useState('');
+  const [editingUser, setEditingUser] = useState(null);
+
+  const loadAll = async () => {
+    setLoading(true);
+    try {
+      const [r1, r2] = await Promise.all([
+        gasPost({ action: 'adminListUsers', password }),
+        gasPost({ action: 'userGetConfig' })
+      ]);
+      if (r1.ok) setUsers(r1.users);
+      if (r2.ok) setConfig(r2.config);
+    } catch (e) {
+      showToast('載入失敗: ' + e.message, 'error');
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadAll(); }, []);
+
+  const filtered = users.filter(u => {
+    if (filter === 'verified' && !u.verified) return false;
+    if (filter === 'unverified' && u.verified) return false;
+    if (filter === 'blocked' && !u.blocked) return false;
+    if (search) {
+      const s = search.toLowerCase();
+      if (!u.email.toLowerCase().includes(s) && !(u.nickname || '').toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+
+  const stats = {
+    total: users.length,
+    verified: users.filter(u => u.verified).length,
+    unverified: users.filter(u => !u.verified && !u.blocked).length,
+    blocked: users.filter(u => u.blocked).length
+  };
+
+  const updateUser = async (userId, patch) => {
+    const r = await gasPost({ action: 'adminUpdateUser', password, userId, patch });
+    if (r.ok) {
+      showToast('已更新', 'success');
+      loadAll();
+    } else {
+      showToast('更新失敗: ' + (r.error || ''), 'error');
+    }
+  };
+
+  const deleteUser = async (user) => {
+    if (!confirm(`確定刪除使用者「${user.nickname}」(${user.email})?\n此操作無法復原。`)) return;
+    const r = await gasPost({ action: 'adminDeleteUser', password, userId: user.id });
+    if (r.ok) {
+      showToast('已刪除', 'success');
+      loadAll();
+    } else {
+      showToast('刪除失敗', 'error');
+    }
+  };
+
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+          <div>
+            <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>👥 使用者管理</h2>
+            <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>管理註冊會員、信箱驗證、停用等</div>
+          </div>
+          <button className="btn btn-secondary btn-sm" onClick={loadAll}>重新整理</button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid-2" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          <div className="user-stat-card"><div className="user-stat-num">{stats.total}</div><div className="user-stat-label">總人數</div></div>
+          <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--success)' }}>{stats.verified}</div><div className="user-stat-label">已驗證</div></div>
+          <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--gold)' }}>{stats.unverified}</div><div className="user-stat-label">未驗證</div></div>
+          <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--danger)' }}>{stats.blocked}</div><div className="user-stat-label">已停用</div></div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="card p-6">
+        <div className="link-field-tabs" style={{ marginBottom: 16 }}>
+          <button type="button" className={`link-tab ${tab === 'users' ? 'active' : ''}`} onClick={() => setTab('users')}>使用者列表</button>
+          <button type="button" className={`link-tab ${tab === 'settings' ? 'active' : ''}`} onClick={() => setTab('settings')}>註冊欄位設定</button>
+        </div>
+
+        {tab === 'users' && (
+          <div>
+            {/* Filter bar */}
+            <div className="flex flex-wrap gap-2 items-center mb-4">
+              <input type="text" placeholder="🔍 搜尋姓名/信箱" value={search} onChange={(e) => setSearch(e.target.value)} style={{ flex: 1, minWidth: 180 }} />
+              <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: 130 }}>
+                <option value="all">全部</option>
+                <option value="verified">已驗證</option>
+                <option value="unverified">未驗證</option>
+                <option value="blocked">已停用</option>
+              </select>
+            </div>
+
+            {loading ? (
+              <div style={{ color: 'var(--ink-mute)', padding: 24, textAlign: 'center' }}>載入中⋯</div>
+            ) : filtered.length === 0 ? (
+              <div style={{ color: 'var(--ink-mute)', padding: 32, textAlign: 'center' }}>
+                {users.length === 0 ? '尚未有任何使用者註冊' : '沒有符合條件的使用者'}
+              </div>
+            ) : (
+              <div className="users-table-wrap">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th>稱呼</th>
+                      <th>信箱</th>
+                      <th>道號/天職</th>
+                      <th>地區</th>
+                      <th>狀態</th>
+                      <th>註冊</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map(u => (
+                      <tr key={u.id} className={u.blocked ? 'blocked' : ''}>
+                        <td><strong>{u.nickname}</strong></td>
+                        <td className="font-mono" style={{ fontSize: 12 }}>{u.email}</td>
+                        <td>
+                          <div>{u.gender || '—'}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-mute)' }}>{u.job || '—'}</div>
+                        </td>
+                        <td style={{ fontSize: 12 }}>
+                          {u.country}{u.region ? ` · ${u.region}` : ''}
+                        </td>
+                        <td>
+                          {u.blocked ? <span className="badge danger">停用</span> :
+                           u.verified ? <span className="badge success">已驗證</span> :
+                           <span className="badge warn">未驗證</span>}
+                        </td>
+                        <td style={{ fontSize: 11, color: 'var(--ink-mute)' }}>
+                          {u.createdAt ? new Date(u.createdAt).toLocaleDateString('zh-TW') : '—'}
+                        </td>
+                        <td>
+                          <button className="btn btn-ghost btn-sm" onClick={() => setEditingUser(u)}>編輯</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'settings' && config && (
+          <UserConfigEditor config={config} onSave={async (newConfig) => {
+            const r = await gasPost({ action: 'adminSaveUserConfig', password, config: newConfig });
+            if (r.ok) {
+              showToast('設定已儲存', 'success');
+              setConfig(newConfig);
+            } else {
+              showToast('儲存失敗: ' + (r.error || ''), 'error');
+            }
+          }} />
+        )}
+      </div>
+
+      {editingUser && (
+        <UserEditModal
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+          onSave={(patch) => { updateUser(editingUser.id, patch); setEditingUser(null); }}
+          onDelete={() => { deleteUser(editingUser); setEditingUser(null); }}
+        />
+      )}
+    </div>
+  );
+}
+
+function UserEditModal({ user, onClose, onSave, onDelete }) {
+  const [draft, setDraft] = useState({
+    nickname: user.nickname || '',
+    verified: user.verified,
+    blocked: user.blocked,
+    role: user.role || 'user'
+  });
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 480 }}>
+        <h3 className="font-serif text-xl font-medium mb-2">編輯使用者</h3>
+        <div className="text-sm mb-4" style={{ color: 'var(--ink-mute)' }}>{user.email}</div>
+
+        <label className="field-label">稱呼</label>
+        <input type="text" value={draft.nickname} onChange={(e) => setDraft({ ...draft, nickname: e.target.value })} />
+
+        <div className="mt-4">
+          <label className="flex items-center gap-2 text-sm mb-2" style={{ color: 'var(--ink-soft)' }}>
+            <input type="checkbox" checked={draft.verified} onChange={(e) => setDraft({ ...draft, verified: e.target.checked })} />
+            已驗證信箱
+          </label>
+          <label className="flex items-center gap-2 text-sm mb-2" style={{ color: 'var(--ink-soft)' }}>
+            <input type="checkbox" checked={draft.blocked} onChange={(e) => setDraft({ ...draft, blocked: e.target.checked })} />
+            停用此帳號 (停用後現有 session 會失效,無法登入)
+          </label>
+        </div>
+
+        <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+          <div className="text-xs mb-2" style={{ color: 'var(--ink-mute)' }}>
+            <div>性別 / 道號:{user.gender || '—'}</div>
+            <div>天職:{user.job || '—'}</div>
+            <div>地區:{user.country}{user.region ? ` · ${user.region}` : ''}</div>
+            <div>註冊時間:{user.createdAt}</div>
+            <div>最後登入:{user.lastLoginAt || '從未登入'}</div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-2 flex-wrap justify-between">
+          <button className="btn btn-danger btn-sm" onClick={onDelete}>刪除使用者</button>
+          <div className="flex gap-2">
+            <button className="btn btn-secondary btn-sm" onClick={onClose}>取消</button>
+            <button className="btn btn-primary btn-sm" onClick={() => onSave(draft)}>儲存變更</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UserConfigEditor({ config, onSave }) {
+  const [draft, setDraft] = useState(config);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(config);
+
+  const updateList = (key, text) => {
+    const items = text.split('\n').map(s => s.trim()).filter(Boolean);
+    setDraft({ ...draft, [key]: items });
+  };
+
+  return (
+    <div>
+      <div className="text-sm mb-4" style={{ color: 'var(--ink-light)' }}>
+        編輯註冊表單上的下拉選項。每行一個項目。
+      </div>
+
+      <label className="field-label">是否強制信箱驗證才能登入</label>
+      <select value={draft.requireVerification ? '1' : ''} onChange={(e) => setDraft({ ...draft, requireVerification: e.target.value === '1' })}>
+        <option value="1">是 — 必須驗證信箱才能登入</option>
+        <option value="">否 — 註冊後即可登入(驗證信仍會寄)</option>
+      </select>
+
+      <div className="grid-2 mt-4">
+        <div>
+          <label className="field-label">國家清單(每行一個)</label>
+          <textarea
+            value={(draft.countries || []).join('\n')}
+            onChange={(e) => updateList('countries', e.target.value)}
+            style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
+          />
+        </div>
+        <div>
+          <label className="field-label">天職選項(每行一個)</label>
+          <textarea
+            value={(draft.jobs || []).join('\n')}
+            onChange={(e) => updateList('jobs', e.target.value)}
+            style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
+          />
+        </div>
+      </div>
+
+      <label className="field-label mt-4">台灣縣市清單(每行一個,使用者選擇國家為「台灣」時才會顯示)</label>
+      <textarea
+        value={(draft.twRegions || []).join('\n')}
+        onChange={(e) => updateList('twRegions', e.target.value)}
+        style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
+      />
+
+      <div className="mt-6">
+        <button className="btn btn-primary" onClick={() => onSave(draft)} disabled={!dirty}>
+          {dirty ? '儲存設定' : '尚無變更'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+// ============================================================
 // Albums Manager — top-level page for managing the album library
 // ============================================================
 function AlbumsManagerView({ albums, onUpdate, password, showToast }) {
@@ -2684,6 +3036,11 @@ function App() {
             {(content.albums || []).length > 0 && <span className="ml-auto text-xs" style={{ color: 'var(--gold)' }}>{(content.albums || []).length}</span>}
           </div>
 
+          <div className="sidebar-section-title">會員</div>
+          <div className={`sidebar-link ${active.type === 'users-manager' ? 'active' : ''}`} onClick={() => goTo({ type: 'users-manager' })}>
+            <span>👥</span> 使用者管理
+          </div>
+
           <div className="sidebar-section-title">工具</div>
           <div className={`sidebar-link ${active.type === 'backups' ? 'active' : ''}`} onClick={() => goTo({ type: 'backups' })}>
             <span>↻</span> 備份歷史
@@ -2750,6 +3107,9 @@ function App() {
               password={password}
               showToast={showToast}
             />
+          )}
+          {active.type === 'users-manager' && (
+            <UsersManagerView password={password} showToast={showToast} />
           )}
         </div>
       </main>

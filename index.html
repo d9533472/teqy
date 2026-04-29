@@ -567,6 +567,157 @@
   /* Logo image rendering — keep crisp, no background wash */
   .logo-img { background: transparent; }
 
+  /* Auth section */
+  .auth-section { background: linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%); min-height: 60vh; }
+  .auth-card {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 4px;
+    padding: 40px 32px;
+    box-shadow: 0 24px 48px -16px rgba(26,20,16,0.12);
+  }
+  .auth-eyebrow {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .auth-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.75rem; font-weight: 500; line-height: 1.3;
+    color: var(--ink); margin-bottom: 16px;
+  }
+  .auth-desc { color: var(--ink-light); font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+  .auth-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid rgba(184,134,11,0.25);
+    margin-bottom: 24px;
+  }
+  .auth-tabs button {
+    flex: 1; padding: 12px;
+    background: transparent; border: none; cursor: pointer;
+    font-family: 'Noto Serif TC', serif; font-size: 15px;
+    color: var(--ink-light); letter-spacing: 0.1em;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+  }
+  .auth-tabs button:hover { color: var(--ink); }
+  .auth-tabs button.active {
+    color: var(--temple-red);
+    border-bottom-color: var(--temple-red);
+    font-weight: 500;
+  }
+  .auth-form { display: flex; flex-direction: column; gap: 8px; }
+  .auth-label {
+    font-size: 13px; color: var(--ink-soft); font-weight: 500;
+    margin-top: 8px;
+  }
+  .auth-form input, .auth-form select {
+    padding: 11px 14px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 4px;
+    font-family: inherit; font-size: 14px;
+    color: var(--ink);
+    transition: all 0.2s ease;
+  }
+  .auth-form input:focus, .auth-form select:focus {
+    outline: none;
+    border-color: var(--temple-red);
+    box-shadow: 0 0 0 3px rgba(139,36,33,0.1);
+  }
+  .auth-radio-group {
+    display: flex; gap: 24px; padding: 8px 0;
+  }
+  .auth-radio-group label {
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+    font-family: 'Noto Serif TC', serif; font-size: 15px;
+    color: var(--ink);
+  }
+  .auth-radio-group input[type="radio"] {
+    accent-color: var(--temple-red);
+    width: 16px; height: 16px;
+  }
+  .auth-btn {
+    margin-top: 16px;
+    padding: 12px 24px;
+    background: var(--temple-red); color: var(--paper-warm);
+    border: none; border-radius: 4px;
+    font-family: 'Noto Serif TC', serif; font-size: 15px;
+    font-weight: 500; letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .auth-btn:hover:not(:disabled) { background: var(--temple-red-deep); }
+  .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .auth-btn-secondary {
+    margin-top: 8px;
+    padding: 10px 20px;
+    background: transparent; color: var(--temple-red);
+    border: 1px solid var(--temple-red); border-radius: 4px;
+    font-family: 'Noto Serif TC', serif; font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .auth-btn-secondary:hover:not(:disabled) { background: var(--temple-red); color: var(--paper-warm); }
+  .auth-link {
+    margin-top: 12px;
+    background: transparent; border: none;
+    color: var(--ink-light); font-size: 13px;
+    cursor: pointer; text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .auth-link:hover { color: var(--temple-red); }
+  .auth-msg {
+    margin-top: 16px; padding: 12px 14px;
+    border-radius: 4px; font-size: 13px; line-height: 1.6;
+  }
+  .auth-msg-success { background: rgba(74,124,79,0.1); color: #2d5530; border: 1px solid rgba(74,124,79,0.3); }
+  .auth-msg-error { background: rgba(168,56,56,0.08); color: #8b2421; border: 1px solid rgba(168,56,56,0.25); }
+  .auth-user-meta {
+    margin: 16px 0 24px;
+    background: var(--paper-deep);
+    border-radius: 4px;
+    padding: 16px;
+  }
+  .auth-user-meta > div {
+    display: flex; justify-content: space-between; gap: 16px;
+    padding: 6px 0; font-size: 14px;
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+  }
+  .auth-user-meta > div:last-child { border-bottom: none; }
+  .auth-user-meta span:first-child { color: var(--ink-mute); font-size: 12px; }
+  .auth-user-meta span:last-child { color: var(--ink); }
+
+  /* Reset password modal */
+  .reset-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.6);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    animation: fadeUp 0.4s ease-out;
+  }
+
+  /* Login state in nav */
+  .nav-user-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    background: rgba(184,134,11,0.12);
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 999px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px; color: var(--ink);
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .nav-user-pill:hover {
+    background: var(--temple-red); color: var(--paper-warm); border-color: var(--temple-red);
+  }
+  .nav-user-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--temple-red);
+  }
+
   /* Universal "Read more" link — appears at the bottom of various sections */
   .readmore-wrap {
     display: flex;
@@ -917,8 +1068,9 @@ const BUNDLED_TEMPLE_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA
 // ============================================================
 const { useState, useEffect, useRef, useCallback, useMemo, createContext, useContext } = React;
 
-// Context for global content access (albums library)
+// Context for global content + user state
 const ContentCtx = createContext({ albums: [] });
+const UserCtx = createContext({ user: null, login: () => {}, logout: () => {}, refresh: () => {} });
 
 // ============================================================
 // API
@@ -933,6 +1085,20 @@ function gasGet(action) {
     };
     xhr.onerror = () => reject(new Error('network'));
     xhr.send();
+  });
+}
+
+function gasPost(payload) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', GAS_URL);
+    xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xhr.onload = () => {
+      try { resolve(JSON.parse(xhr.responseText)); }
+      catch (e) { reject(e); }
+    };
+    xhr.onerror = () => reject(new Error('network'));
+    xhr.send(JSON.stringify(payload));
   });
 }
 
@@ -2010,9 +2176,288 @@ function AlbumsSection({ data, anchorId }) {
 }
 
 
+function AuthSection({ data, anchorId }) {
+  const { user, login, logout } = useContext(UserCtx);
+  const [mode, setMode] = useState('login'); // login | register | forgot
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+  const [config, setConfig] = useState(null);
+
+  // Form state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [country, setCountry] = useState('台灣');
+  const [region, setRegion] = useState('');
+  const [gender, setGender] = useState('');
+  const [job, setJob] = useState('');
+
+  useEffect(() => {
+    gasPost({ action: 'userGetConfig' }).then(r => {
+      if (r.ok) setConfig(r.config);
+    });
+  }, []);
+
+  const reset = () => {
+    setMsg(null); setEmail(''); setPassword(''); setConfirmPw('');
+    setNickname(''); setRegion(''); setGender(''); setJob('');
+  };
+
+  const submitLogin = async (e) => {
+    e?.preventDefault?.();
+    setBusy(true); setMsg(null);
+    try {
+      const r = await gasPost({ action: 'userLogin', email, password });
+      if (r.ok) {
+        login(r.user, r.token);
+        setMsg({ type: 'success', text: `${r.user.nickname} 您好,登入成功 🪷` });
+        reset();
+      } else {
+        const errors = {
+          invalid_credentials: '帳號或密碼錯誤',
+          missing_credentials: '請填寫信箱與密碼',
+          blocked: '此帳號已被停用,請聯繫管理員',
+          not_verified: '此信箱尚未完成驗證,請至信箱收信',
+        };
+        setMsg({ type: 'error', text: errors[r.error] || ('登入失敗: ' + r.error) });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗,請稍後再試' });
+    }
+    setBusy(false);
+  };
+
+  const submitRegister = async (e) => {
+    e?.preventDefault?.();
+    if (password !== confirmPw) {
+      setMsg({ type: 'error', text: '兩次密碼輸入不一致' });
+      return;
+    }
+    setBusy(true); setMsg(null);
+    try {
+      const r = await gasPost({
+        action: 'userRegister',
+        email, password, nickname, country, region, gender, job
+      });
+      if (r.ok) {
+        setMsg({ type: 'success', text: r.message || '註冊成功!驗證信已寄出' });
+        if (r.token) login(r.user, r.token);
+        reset();
+        setMode('login');
+      } else {
+        const errors = {
+          invalid_email: '信箱格式錯誤',
+          password_too_short: '密碼至少 6 個字',
+          email_exists: '此信箱已被註冊',
+          missing_nickname: '請填寫稱呼',
+          missing_country: '請選擇國家',
+          missing_gender: '請選擇乾道/坤道',
+          missing_job: '請選擇天職',
+        };
+        setMsg({ type: 'error', text: errors[r.error] || ('註冊失敗: ' + r.error) });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗,請稍後再試' });
+    }
+    setBusy(false);
+  };
+
+  const submitForgot = async (e) => {
+    e?.preventDefault?.();
+    setBusy(true); setMsg(null);
+    try {
+      await gasPost({ action: 'userRequestPasswordReset', email });
+      setMsg({ type: 'success', text: '若該信箱已註冊,重設密碼信已寄出。請至信箱查收(1 小時內有效)。' });
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗' });
+    }
+    setBusy(false);
+  };
+
+  const resendVerify = async () => {
+    setBusy(true);
+    try {
+      await gasPost({ action: 'userResendVerification', email });
+      setMsg({ type: 'success', text: '驗證信已重新寄出,請至信箱查收' });
+    } catch (e) {}
+    setBusy(false);
+  };
+
+  // Logged-in state
+  if (user) {
+    return (
+      <section id={anchorId} className="auth-section">
+        <div className="max-w-md mx-auto px-6 lg:px-12 py-16">
+          <div className="auth-card reveal">
+            <div className="auth-eyebrow">已登入</div>
+            <h3 className="auth-title">{user.nickname} 道親</h3>
+            <div className="auth-user-meta">
+              <div><span>信箱</span><span>{user.email}</span></div>
+              {user.gender && <div><span>道號</span><span>{user.gender}</span></div>}
+              {user.job && <div><span>天職</span><span>{user.job}</span></div>}
+              {user.country && <div><span>國家</span><span>{user.country}{user.region ? ` · ${user.region}` : ''}</span></div>}
+              <div><span>狀態</span><span style={{ color: user.verified ? 'var(--temple-red)' : 'var(--gold)' }}>{user.verified ? '已驗證 ✓' : '尚未驗證'}</span></div>
+            </div>
+            {!user.verified && (
+              <button className="auth-btn-secondary" onClick={resendVerify} disabled={busy}>重新寄送驗證信</button>
+            )}
+            <button className="auth-btn" onClick={logout}>登出</button>
+            {msg && <div className={`auth-msg auth-msg-${msg.type}`}>{msg.text}</div>}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section id={anchorId} className="auth-section">
+      <div className="max-w-md mx-auto px-6 lg:px-12 py-16">
+        <div className="auth-card reveal">
+          {data.eyebrow && <div className="auth-eyebrow">{data.eyebrow}</div>}
+          {data.titleHtml
+            ? <HtmlContent className="auth-title" html={data.titleHtml} />
+            : <h3 className="auth-title">{mode === 'login' ? '會員登入' : mode === 'register' ? '會員註冊' : '忘記密碼'}</h3>}
+          {data.description && mode === 'login' && (
+            <p className="auth-desc">{data.description}</p>
+          )}
+
+          <div className="auth-tabs">
+            <button className={mode === 'login' ? 'active' : ''} onClick={() => { setMode('login'); setMsg(null); }}>登入</button>
+            <button className={mode === 'register' ? 'active' : ''} onClick={() => { setMode('register'); setMsg(null); }}>註冊</button>
+          </div>
+
+          {mode === 'login' && (
+            <form onSubmit={submitLogin} className="auth-form">
+              <label className="auth-label">電子信箱</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+              <label className="auth-label">密碼</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+              <button type="submit" className="auth-btn" disabled={busy}>{busy ? '登入中⋯' : '登入'}</button>
+              <button type="button" className="auth-link" onClick={() => { setMode('forgot'); setMsg(null); }}>忘記密碼?</button>
+            </form>
+          )}
+
+          {mode === 'register' && config && (
+            <form onSubmit={submitRegister} className="auth-form">
+              <label className="auth-label">稱呼 / 法名</label>
+              <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} required />
+              <label className="auth-label">電子信箱</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+              <label className="auth-label">密碼(至少 6 字)</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} autoComplete="new-password" />
+              <label className="auth-label">確認密碼</label>
+              <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} required minLength={6} autoComplete="new-password" />
+
+              <label className="auth-label">道號</label>
+              <div className="auth-radio-group">
+                <label><input type="radio" name="gender" value="乾道" checked={gender === '乾道'} onChange={(e) => setGender(e.target.value)} /> 乾道</label>
+                <label><input type="radio" name="gender" value="坤道" checked={gender === '坤道'} onChange={(e) => setGender(e.target.value)} /> 坤道</label>
+              </div>
+
+              <label className="auth-label">天職</label>
+              <select value={job} onChange={(e) => setJob(e.target.value)} required>
+                <option value="">請選擇 ⋯</option>
+                {(config.jobs || []).map(j => <option key={j} value={j}>{j}</option>)}
+              </select>
+
+              <label className="auth-label">所在國家</label>
+              <select value={country} onChange={(e) => { setCountry(e.target.value); if (e.target.value !== '台灣') setRegion(''); }} required>
+                {(config.countries || []).map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+
+              {country === '台灣' && (
+                <>
+                  <label className="auth-label">縣市</label>
+                  <select value={region} onChange={(e) => setRegion(e.target.value)}>
+                    <option value="">請選擇 ⋯</option>
+                    {(config.twRegions || []).map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </>
+              )}
+
+              <button type="submit" className="auth-btn" disabled={busy}>{busy ? '註冊中⋯' : '註冊'}</button>
+            </form>
+          )}
+
+          {mode === 'forgot' && (
+            <form onSubmit={submitForgot} className="auth-form">
+              <p className="auth-desc">輸入您註冊時使用的信箱,我們會寄送重設密碼連結。</p>
+              <label className="auth-label">電子信箱</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <button type="submit" className="auth-btn" disabled={busy}>{busy ? '寄送中⋯' : '寄送重設信'}</button>
+              <button type="button" className="auth-link" onClick={() => { setMode('login'); setMsg(null); }}>← 返回登入</button>
+            </form>
+          )}
+
+          {msg && <div className={`auth-msg auth-msg-${msg.type}`}>{msg.text}</div>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Reset password modal — appears when URL has #reset-password/{token}
+function ResetPasswordModal() {
+  const [token, setToken] = useState(null);
+  const [pw, setPw] = useState('');
+  const [pw2, setPw2] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  useEffect(() => {
+    const check = () => {
+      const m = window.location.hash.match(/^#reset-password\/(.+)$/);
+      setToken(m ? m[1] : null);
+    };
+    check();
+    window.addEventListener('hashchange', check);
+    return () => window.removeEventListener('hashchange', check);
+  }, []);
+
+  if (!token) return null;
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (pw !== pw2) { setMsg({ type: 'error', text: '兩次密碼不一致' }); return; }
+    setBusy(true); setMsg(null);
+    try {
+      const r = await gasPost({ action: 'userResetPassword', token, newPassword: pw });
+      if (r.ok) {
+        setMsg({ type: 'success', text: '密碼已重設,請使用新密碼登入。3 秒後返回首頁。' });
+        setTimeout(() => { window.location.hash = '#/'; }, 3000);
+      } else {
+        const errs = { invalid_token: '連結無效', token_expired: '連結已過期(請重新申請)', password_too_short: '密碼至少 6 字' };
+        setMsg({ type: 'error', text: errs[r.error] || r.error });
+      }
+    } catch (e) { setMsg({ type: 'error', text: '連線失敗' }); }
+    setBusy(false);
+  };
+
+  return (
+    <div className="reset-modal-overlay">
+      <div className="auth-card" style={{ maxWidth: 420, width: '100%', margin: 24 }}>
+        <div className="auth-eyebrow">重設密碼</div>
+        <h3 className="auth-title">設定新密碼</h3>
+        <form onSubmit={submit} className="auth-form">
+          <label className="auth-label">新密碼(至少 6 字)</label>
+          <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required minLength={6} autoFocus />
+          <label className="auth-label">確認新密碼</label>
+          <input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} required minLength={6} />
+          <button type="submit" className="auth-btn" disabled={busy}>{busy ? '處理中⋯' : '確認重設'}</button>
+          <button type="button" className="auth-link" onClick={() => { window.location.hash = '#/'; }}>取消</button>
+        </form>
+        {msg && <div className={`auth-msg auth-msg-${msg.type}`}>{msg.text}</div>}
+      </div>
+    </div>
+  );
+}
+
+
 const SECTION_RENDERERS = {
   hero: HeroSection,
   marquee: MarqueeSection,
+  auth: AuthSection,
   albums: AlbumsSection,
   'cards-corner': CardsCornerSection,
   timeline: TimelineSection,
@@ -2056,6 +2501,12 @@ function PageRenderer({ page }) {
 // ============================================================
 
 function Nav({ site, navigation, ctaButton, onMobileToggle }) {
+  const { user } = useContext(UserCtx);
+  // Find an auth section's anchor in any page so we can link there
+  const authAnchor = useMemo(() => {
+    // Look up via ContentCtx not directly available here; just fallback to '#auth' which users can name their section
+    return '#auth';
+  }, []);
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-backdrop">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
@@ -2083,6 +2534,12 @@ function Nav({ site, navigation, ctaButton, onMobileToggle }) {
               <a key={item.id} href={navTargetUrl(item)} className="nav-link" target={item.type === 'external' ? '_blank' : '_self'}>{item.label}</a>
             )
           ))}
+          {user && (
+            <a href={authAnchor} className="nav-user-pill desktop-only" style={{ display: 'inline-flex' }}>
+              <span className="dot"></span>
+              <span>{user.nickname}</span>
+            </a>
+          )}
           {ctaButton && ctaButton.label && (
             <a href={ctaButton.url || '#'} target={ctaButton.url?.startsWith('http') ? '_blank' : '_self'} className="btn-primary px-6 py-2.5 text-sm">
               <span>{ctaButton.label}</span>
@@ -2187,8 +2644,35 @@ function App() {
   const [visits, setVisits] = useState(null);
   const [error, setError] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const route = useHashRoute();
   useReveal();
+
+  // Restore user session from localStorage on mount
+  useEffect(() => {
+    const token = localStorage.getItem('jc_user_token');
+    if (!token) return;
+    gasPost({ action: 'userGetMe', token })
+      .then(r => { if (r.ok) setUser(r.user); else localStorage.removeItem('jc_user_token'); })
+      .catch(() => {});
+  }, []);
+
+  const userLogin = (userObj, token) => {
+    setUser(userObj);
+    if (token) localStorage.setItem('jc_user_token', token);
+  };
+  const userLogout = async () => {
+    const token = localStorage.getItem('jc_user_token');
+    localStorage.removeItem('jc_user_token');
+    setUser(null);
+    if (token) gasPost({ action: 'userLogout', token }).catch(() => {});
+  };
+  const refreshUser = async () => {
+    const token = localStorage.getItem('jc_user_token');
+    if (!token) return;
+    const r = await gasPost({ action: 'userGetMe', token });
+    if (r.ok) setUser(r.user);
+  };
 
   useEffect(() => {
     gasGet('getContent')
@@ -2279,11 +2763,13 @@ function App() {
 
   return (
     <ContentCtx.Provider value={{ albums: content.albums || [] }}>
+    <UserCtx.Provider value={{ user, login: userLogin, logout: userLogout, refresh: refreshUser }}>
     <>
       <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} />
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} />
       <PageRenderer page={currentPage} />
       <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
+      <ResetPasswordModal />
       {showVisitBadge && typeof visits === 'number' && (
         <div className="visit-fab" title={`${visitLabel}: ${visits.toLocaleString()}`}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -2302,6 +2788,7 @@ function App() {
         </a>
       )}
     </>
+    </UserCtx.Provider>
     </ContentCtx.Provider>
   );
 }
