@@ -637,6 +637,37 @@
     accent-color: var(--temple-red);
     width: 16px; height: 16px;
   }
+
+  /* Field-level validation */
+  .auth-field { display: flex; flex-direction: column; gap: 4px; }
+  .auth-field input,
+  .auth-field select { transition: border-color 0.2s, box-shadow 0.2s; }
+  .auth-field.has-error input,
+  .auth-field.has-error select {
+    border-color: #a83838 !important;
+    background: rgba(168,56,56,0.04);
+  }
+  .auth-field.has-error input:focus,
+  .auth-field.has-error select:focus {
+    box-shadow: 0 0 0 3px rgba(168,56,56,0.15) !important;
+  }
+  .auth-field-err {
+    font-size: 12px;
+    color: #a83838;
+    margin-top: 2px;
+    line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 4px;
+  }
+  .auth-field-err::before {
+    content: '⚠';
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+  .auth-required {
+    color: var(--temple-red);
+    margin-left: 2px;
+    font-weight: 400;
+  }
   .auth-btn {
     margin-top: 16px;
     padding: 12px 24px;
@@ -852,6 +883,971 @@
   .nav-user-pill .dot {
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--temple-red);
+  }
+
+  /* Forum section */
+  .forum-section { background: linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%); min-height: 60vh; }
+
+  .forum-cats {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center;
+    margin-bottom: 24px; padding-bottom: 24px;
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+  }
+  .forum-cat-tab {
+    padding: 8px 18px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 999px;
+    font-family: 'Noto Serif TC', serif; font-size: 14px;
+    color: var(--ink-light); cursor: pointer;
+    transition: all 0.3s;
+  }
+  .forum-cat-tab:hover { border-color: var(--gold); color: var(--ink); }
+  .forum-cat-tab.active {
+    background: var(--temple-red); color: var(--paper-warm); border-color: var(--temple-red);
+  }
+  .forum-cat-desc {
+    text-align: center;
+    font-style: italic; color: var(--ink-light);
+    margin-bottom: 24px; font-size: 14px;
+  }
+
+  /* Breadcrumb */
+  .forum-breadcrumb {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .forum-crumb {
+    background: transparent; border: none; padding: 4px 0;
+    color: var(--ink-light); cursor: pointer;
+    font-family: 'Noto Serif TC', serif;
+    transition: color 0.2s;
+  }
+  .forum-crumb:hover:not(.current) { color: var(--temple-red); text-decoration: underline; }
+  .forum-crumb.current { color: var(--ink); font-weight: 500; cursor: default; }
+  .forum-crumb-sep { color: var(--gold); font-size: 14px; }
+
+  /* Sub-categories */
+  .forum-subcats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .forum-subcat-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    font-family: inherit;
+  }
+  .forum-subcat-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px -8px rgba(94,23,20,0.15);
+  }
+  .forum-subcat-icon {
+    flex-shrink: 0;
+    font-size: 26px;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(184,134,11,0.08);
+    border-radius: 4px;
+  }
+  .forum-subcat-info { flex: 1; min-width: 0; }
+  .forum-subcat-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px; font-weight: 500;
+    color: var(--ink);
+  }
+  .forum-subcat-desc {
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 2px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .forum-subcat-count {
+    flex-shrink: 0;
+    background: rgba(184,134,11,0.12);
+    color: var(--gold);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+  }
+
+  .forum-empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--ink-mute);
+    background: var(--paper-warm);
+    border: 1px dashed rgba(184,134,11,0.3);
+    border-radius: 4px;
+  }
+
+  .forum-thread-list {
+    display: flex; flex-direction: column;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .forum-thread-row {
+    display: flex; gap: 16px;
+    padding: 18px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(184,134,11,0.12);
+    text-align: left; cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+  .forum-thread-row:last-child { border-bottom: none; }
+  .forum-thread-row:hover { background: rgba(184,134,11,0.04); }
+  .forum-thread-icon {
+    flex-shrink: 0; width: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .forum-thread-main { flex: 1; min-width: 0; }
+  .forum-thread-title {
+    font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 500;
+    color: var(--ink); margin-bottom: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .forum-thread-row:hover .forum-thread-title { color: var(--temple-red); }
+  .forum-thread-excerpt {
+    color: var(--ink-light); font-size: 13px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    margin-bottom: 6px;
+  }
+  .forum-thread-meta {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    font-size: 12px; color: var(--ink-mute);
+  }
+  .forum-meta-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    background: rgba(184,134,11,0.15);
+    color: var(--gold);
+    border-radius: 999px;
+    font-size: 11px;
+  }
+  .forum-thread-stats {
+    flex-shrink: 0;
+    display: flex; gap: 16px;
+    align-items: center;
+    text-align: center;
+  }
+  .forum-thread-stats > div {
+    min-width: 40px;
+  }
+  .forum-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 500; color: var(--temple-red);
+    line-height: 1;
+  }
+  .forum-stat-label {
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: 2px;
+  }
+  @media (max-width: 640px) {
+    .forum-thread-row { gap: 10px; padding: 14px; }
+    .forum-thread-icon { display: none; }
+    .forum-thread-stats { gap: 10px; }
+    .forum-thread-stats > div { min-width: 32px; }
+    .forum-stat-num { font-size: 1.1rem; }
+  }
+
+  /* Forum buttons */
+  .forum-btn-primary {
+    padding: 9px 22px;
+    background: var(--temple-red); color: var(--paper-warm);
+    border: none; border-radius: 4px;
+    font-family: 'Noto Serif TC', serif; font-size: 14px;
+    font-weight: 500; letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .forum-btn-primary:hover:not(:disabled) { background: var(--temple-red-deep); }
+  .forum-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .forum-btn-ghost {
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 4px;
+    font-family: inherit; font-size: 13px;
+    color: var(--ink-light); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .forum-btn-ghost:hover { border-color: var(--temple-red); color: var(--temple-red); }
+  .forum-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    background: transparent; border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 999px; font-family: inherit; font-size: 13px;
+    color: var(--ink-light); cursor: pointer;
+    margin-bottom: 24px;
+    transition: all 0.3s;
+  }
+  .forum-back:hover { border-color: var(--temple-red); color: var(--temple-red); }
+
+  /* Thread detail */
+  .forum-thread-detail {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .forum-thread-flags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .forum-flag {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .forum-flag.pinned { background: rgba(184,134,11,0.18); color: var(--gold); }
+  .forum-flag.locked { background: rgba(168,56,56,0.12); color: var(--temple-red); }
+  .forum-thread-title-big {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.75rem; font-weight: 500; line-height: 1.4;
+    color: var(--ink); margin: 0 0 12px;
+  }
+  .forum-author-row {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding-bottom: 16px; margin-bottom: 24px;
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+    font-size: 14px;
+  }
+  .forum-author-name {
+    color: var(--ink); font-weight: 500;
+  }
+  .forum-author-job {
+    background: rgba(139,36,33,0.08); color: var(--temple-red);
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 12px;
+  }
+  .forum-author-time {
+    color: var(--ink-mute); font-size: 12px;
+  }
+  .forum-thread-body {
+    color: var(--ink); font-size: 15px; line-height: 1.85;
+  }
+  .forum-thread-body p { margin-bottom: 1em; }
+  .forum-thread-body img {
+    max-width: 100%; height: auto;
+    border-radius: 4px; margin: 8px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .forum-thread-body a { color: var(--temple-red); text-decoration: underline; text-underline-offset: 2px; }
+  .forum-thread-body ul, .forum-thread-body ol { margin: 0 0 1em 1.5em; }
+
+  .forum-thread-actions {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    padding-top: 20px; margin-top: 24px;
+    border-top: 1px solid rgba(184,134,11,0.15);
+  }
+
+  .forum-like-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 999px;
+    font-family: inherit; font-size: 14px;
+    color: var(--ink); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .forum-like-btn:hover:not(:disabled) { border-color: var(--temple-red); }
+  .forum-like-btn.active {
+    background: rgba(168,56,56,0.08); border-color: var(--temple-red); color: var(--temple-red);
+  }
+  .forum-like-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Replies */
+  .forum-replies-section {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .forum-replies-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.1rem; font-weight: 500;
+    color: var(--ink); margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+  }
+  .forum-count {
+    color: var(--gold); margin-left: 4px;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+  }
+  .forum-reply {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(184,134,11,0.1);
+  }
+  .forum-reply:last-child { border-bottom: none; }
+  .forum-reply-header {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin-bottom: 8px; font-size: 14px;
+  }
+  .forum-reply-body {
+    color: var(--ink-soft); font-size: 14px; line-height: 1.7;
+  }
+  .forum-reply-body p { margin-bottom: 0.6em; }
+  .forum-reply-body p:last-child { margin-bottom: 0; }
+  .forum-reply-body img { max-width: 100%; height: auto; border-radius: 4px; margin: 6px 0; }
+  .forum-reply-actions {
+    display: flex; gap: 12px; align-items: center;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .forum-like-mini {
+    background: transparent; border: none;
+    cursor: pointer; padding: 4px 8px;
+    color: var(--ink-mute); font-size: 13px;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .forum-like-mini:hover:not(:disabled) { color: var(--temple-red); background: rgba(168,56,56,0.05); }
+  .forum-like-mini.active { color: var(--temple-red); }
+  .forum-like-mini:disabled { opacity: 0.5; cursor: not-allowed; }
+  .forum-link {
+    background: transparent; border: none;
+    cursor: pointer; color: var(--ink-light); font-size: 13px;
+    padding: 4px 0;
+  }
+  .forum-link:hover { color: var(--temple-red); text-decoration: underline; }
+
+  .forum-reply-children {
+    margin-left: 20px;
+    padding-left: 16px;
+    border-left: 2px solid rgba(184,134,11,0.15);
+    margin-top: 8px;
+  }
+
+  /* Compose modal */
+  .forum-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.65);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; padding: 24px;
+    overflow-y: auto;
+    animation: authOverlayIn 0.3s ease-out;
+  }
+  .forum-modal {
+    position: relative;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.4);
+    border-radius: 8px;
+    max-width: 720px; width: 100%;
+    padding: 36px 32px 28px;
+    box-shadow: 0 32px 80px -16px rgba(0,0,0,0.4);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    animation: authModalIn 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .forum-modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: transparent; border: none;
+    font-size: 16px; color: var(--ink-mute);
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .forum-modal-close:hover { background: var(--paper-deep); color: var(--ink); }
+  .forum-modal-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.4rem; font-weight: 500;
+    color: var(--ink); margin: 0 0 16px;
+  }
+
+  /* Editor (contentEditable) */
+  .forum-editor {
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 4px;
+    background: var(--paper-warm);
+    overflow: hidden;
+  }
+  .forum-editor:focus-within { border-color: var(--temple-red); }
+  .forum-editor-toolbar {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    padding: 6px;
+    background: var(--paper-deep);
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+  }
+  .forum-editor-toolbar button {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-family: inherit; font-size: 14px;
+    color: var(--ink); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .forum-editor-toolbar button:hover:not(:disabled) {
+    background: var(--paper-warm); border-color: rgba(184,134,11,0.3);
+  }
+  .forum-editor-toolbar button:disabled { opacity: 0.5; }
+  .forum-editor-divider {
+    width: 1px; background: rgba(184,134,11,0.25);
+    margin: 4px 4px;
+  }
+  .forum-editor-area {
+    min-height: 180px;
+    padding: 14px 16px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px; line-height: 1.7;
+    color: var(--ink);
+    outline: none;
+  }
+  .forum-editor-area.compact { min-height: 80px; }
+  .forum-editor-area:empty::before {
+    content: attr(data-placeholder);
+    color: var(--ink-mute);
+    pointer-events: none;
+  }
+  .forum-editor-area img { max-width: 100%; height: auto; border-radius: 4px; }
+
+  .forum-reply-form, .forum-inline-edit {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--paper-deep);
+    border-radius: 4px;
+  }
+  .forum-reply-parent-hint {
+    padding: 8px 12px;
+    background: rgba(184,134,11,0.08);
+    border-left: 3px solid var(--gold);
+    margin-bottom: 12px;
+    font-size: 13px; color: var(--ink-light);
+  }
+
+  .forum-msg {
+    padding: 12px 16px; border-radius: 4px;
+    margin-bottom: 16px; font-size: 14px;
+  }
+  .forum-msg-success { background: rgba(74,124,79,0.1); color: #2d5530; border: 1px solid rgba(74,124,79,0.3); }
+  .forum-msg-error { background: rgba(168,56,56,0.1); color: var(--temple-red); border: 1px solid rgba(168,56,56,0.3); }
+
+  @media (max-width: 640px) {
+    .forum-thread-detail { padding: 20px; }
+    .forum-thread-title-big { font-size: 1.4rem; }
+    .forum-replies-section { padding: 18px; }
+    .forum-reply-children { margin-left: 12px; padding-left: 10px; }
+    .forum-modal { padding: 24px 20px; }
+  }
+
+  /* ============================================================ */
+  /* CALENDAR SECTIONS */
+  /* ============================================================ */
+
+  /* Mini calendar (homepage widget) */
+  .cal-mini-section {
+    background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
+    border-top: 1px solid rgba(184,134,11,0.15);
+  }
+  .cal-mini-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .cal-mini-subtitle {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.1em;
+    color: var(--gold); margin-top: 6px;
+  }
+  .cal-mini-more {
+    color: var(--temple-red); font-size: 14px;
+    text-decoration: none; padding: 8px 16px;
+    border: 1px solid rgba(139,36,33,0.3);
+    border-radius: 999px;
+    transition: all 0.3s;
+  }
+  .cal-mini-more:hover {
+    background: var(--temple-red); color: var(--paper-warm); border-color: var(--temple-red);
+  }
+  .cal-mini-empty {
+    text-align: center; padding: 40px 16px;
+    color: var(--ink-mute);
+    background: var(--paper-warm);
+    border: 1px dashed rgba(184,134,11,0.3);
+    border-radius: 4px;
+  }
+  .cal-mini-list {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .cal-mini-card {
+    display: flex; gap: 16px;
+    padding: 14px 18px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 4px;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    text-decoration: none; color: inherit;
+  }
+  .cal-mini-clickable { cursor: pointer; }
+  .cal-mini-clickable:hover {
+    transform: translateX(4px);
+    border-color: var(--gold);
+    box-shadow: 0 8px 20px -10px rgba(94,23,20,0.15);
+  }
+  .cal-mini-date {
+    flex-shrink: 0;
+    width: 72px;
+    border-left: 3px solid var(--gold);
+    padding-left: 12px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cal-mini-day {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 500; line-height: 1;
+    color: var(--temple-red);
+  }
+  .cal-mini-month {
+    font-size: 12px; color: var(--ink-mute); letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+  .cal-mini-multi {
+    font-size: 11px; color: var(--gold);
+    margin-top: 2px;
+  }
+  .cal-mini-info { flex: 1; min-width: 0; }
+  .cal-mini-cat-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .cal-mini-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px; font-weight: 500;
+    color: var(--ink); line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .cal-mini-meta {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    font-size: 12px; color: var(--ink-light);
+  }
+
+  /* Full calendar */
+  .cal-full-section {
+    background: var(--paper);
+    min-height: 60vh;
+  }
+  .cal-toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(184,134,11,0.18);
+  }
+  .cal-nav { display: flex; gap: 8px; align-items: center; }
+  .cal-nav-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.3);
+    font-size: 18px; color: var(--ink-light);
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-nav-btn:hover { border-color: var(--temple-red); color: var(--temple-red); }
+  .cal-today-btn {
+    padding: 7px 14px;
+    background: transparent;
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 999px;
+    font-size: 13px; color: var(--ink-light);
+    font-family: inherit;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .cal-today-btn:hover { border-color: var(--temple-red); color: var(--temple-red); }
+  .cal-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.2rem; font-weight: 500;
+    color: var(--ink); margin-left: 8px;
+  }
+  .cal-mode {
+    display: flex; gap: 0;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 4px; overflow: hidden;
+  }
+  .cal-mode button {
+    padding: 8px 18px;
+    background: transparent; border: none;
+    font-family: inherit; font-size: 13px;
+    color: var(--ink-light); cursor: pointer;
+    transition: all 0.2s;
+    border-right: 1px solid rgba(184,134,11,0.18);
+  }
+  .cal-mode button:last-child { border-right: none; }
+  .cal-mode button:hover { background: rgba(184,134,11,0.08); }
+  .cal-mode button.active {
+    background: var(--temple-red); color: var(--paper-warm);
+  }
+
+  .cal-cat-filter {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 20px;
+  }
+  .cal-cat-filter button {
+    padding: 5px 14px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 999px;
+    font-family: inherit; font-size: 12px;
+    color: var(--ink-light); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cal-cat-filter button:hover { border-color: var(--temple-red); }
+  .cal-cat-filter button.active {
+    background: var(--ink); color: var(--paper-warm); border-color: var(--ink);
+  }
+
+  /* Month grid */
+  .cal-grid {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cal-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    background: var(--paper-deep);
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+  }
+  .cal-weekdays > div {
+    padding: 10px;
+    text-align: center;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink-light);
+    letter-spacing: 0.15em;
+  }
+  .cal-grid-body {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+  }
+  .cal-cell {
+    min-height: 100px;
+    padding: 6px;
+    border-right: 1px solid rgba(184,134,11,0.1);
+    border-bottom: 1px solid rgba(184,134,11,0.1);
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .cal-cell:hover { background: rgba(184,134,11,0.04); }
+  .cal-cell:nth-child(7n) { border-right: none; }
+  .cal-cell.empty { background: var(--paper-deep); cursor: default; }
+  .cal-cell.empty:hover { background: var(--paper-deep); }
+  .cal-cell.today {
+    background: rgba(184,134,11,0.08);
+  }
+  .cal-cell.today .cal-cell-day {
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 500;
+  }
+  .cal-cell.selected {
+    background: rgba(139,36,33,0.06);
+    box-shadow: inset 0 0 0 2px var(--temple-red);
+  }
+  .cal-cell-day {
+    font-size: 13px; color: var(--ink); font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .cal-cell-events {
+    display: flex; flex-direction: column; gap: 2px;
+    overflow: hidden;
+  }
+  .cal-cell-event {
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .cal-cell-event:hover { opacity: 0.85; }
+  .cal-cell-more {
+    font-size: 10px; color: var(--gold);
+    padding: 0 4px;
+  }
+
+  /* Day detail (under month view) */
+  .cal-day-detail {
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+  }
+  .cal-day-detail-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.1rem; font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+  }
+  .cal-day-empty {
+    color: var(--ink-mute); font-style: italic; padding: 12px 0;
+  }
+  .cal-day-list { display: flex; flex-direction: column; gap: 6px; }
+  .cal-day-item {
+    display: flex; gap: 12px; align-items: center;
+    padding: 10px 12px;
+    background: var(--paper);
+    border: 1px solid rgba(184,134,11,0.1);
+    border-radius: 4px;
+    cursor: pointer; text-align: left;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .cal-day-item:hover {
+    background: var(--paper-deep);
+    border-color: var(--gold);
+  }
+  .cal-day-cat {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 4px;
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .cal-day-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px; font-weight: 500;
+    color: var(--ink);
+  }
+  .cal-day-meta {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 2px;
+  }
+  .cal-day-arrow { color: var(--gold); font-size: 16px; }
+
+  /* Week view */
+  .cal-week {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    background: var(--paper-warm);
+    padding: 12px;
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+  }
+  .cal-week-day {
+    background: var(--paper);
+    border-radius: 4px;
+    border: 1px solid rgba(184,134,11,0.12);
+    overflow: hidden;
+    min-height: 200px;
+    display: flex; flex-direction: column;
+  }
+  .cal-week-day.today { box-shadow: inset 0 0 0 2px var(--temple-red); }
+  .cal-week-header {
+    padding: 8px;
+    background: var(--paper-deep);
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+    text-align: center;
+  }
+  .cal-week-weekday {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 12px; color: var(--ink-light);
+  }
+  .cal-week-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-weight: 500; color: var(--temple-red);
+    margin-top: 2px;
+  }
+  .cal-week-events {
+    padding: 6px;
+    display: flex; flex-direction: column; gap: 4px;
+    flex: 1;
+  }
+  .cal-week-empty { color: var(--ink-mute); text-align: center; padding: 12px 0; font-size: 12px; }
+  .cal-week-event {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-left: 3px solid var(--gold);
+    border-radius: 3px;
+    padding: 6px 8px;
+    text-align: left; cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .cal-week-event:hover { background: rgba(184,134,11,0.06); }
+  .cal-week-event-title {
+    font-size: 12px; font-weight: 500; color: var(--ink);
+    line-height: 1.3;
+  }
+  .cal-week-event-time {
+    font-size: 11px; color: var(--gold); margin-top: 2px;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+  }
+
+  /* List view */
+  .cal-list {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cal-list-row {
+    width: 100%;
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: transparent; border: none;
+    border-bottom: 1px solid rgba(184,134,11,0.12);
+    text-align: left; cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+  .cal-list-row:last-child { border-bottom: none; }
+  .cal-list-row:hover { background: rgba(184,134,11,0.04); }
+  .cal-list-date {
+    flex-shrink: 0;
+    width: 56px;
+    text-align: center;
+  }
+  .cal-list-day {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 500; color: var(--temple-red);
+    line-height: 1;
+  }
+  .cal-list-weekday {
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: 4px;
+  }
+  .cal-list-tag {
+    flex-shrink: 0;
+    width: 4px; height: 40px; border-radius: 2px;
+  }
+  .cal-list-info { flex: 1; min-width: 0; }
+  .cal-list-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px; font-weight: 500;
+    color: var(--ink); margin-bottom: 4px;
+  }
+  .cal-list-meta {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    font-size: 12px; color: var(--ink-mute);
+  }
+
+  .cal-empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--ink-mute);
+    background: var(--paper-warm);
+    border: 1px dashed rgba(184,134,11,0.25);
+    border-radius: 4px;
+  }
+
+  /* Calendar event modal */
+  .cal-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.65);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; padding: 24px;
+    overflow-y: auto;
+    animation: authOverlayIn 0.3s ease-out;
+  }
+  .cal-modal {
+    position: relative;
+    background: var(--paper-warm);
+    border-radius: 8px;
+    max-width: 520px; width: 100%;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    box-shadow: 0 32px 80px -16px rgba(0,0,0,0.4);
+    animation: authModalIn 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .cal-modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(245,239,228,0.85); border: none;
+    font-size: 16px; color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1; transition: all 0.2s;
+  }
+  .cal-modal-close:hover { background: var(--paper-warm); }
+  .cal-modal-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-size: cover; background-position: center;
+  }
+  .cal-modal-body { padding: 28px; }
+  .cal-modal-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: white;
+    font-size: 12px; font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .cal-modal-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.6rem; font-weight: 500; line-height: 1.4;
+    color: var(--ink); margin: 0 0 20px;
+  }
+  .cal-modal-info {
+    display: flex; flex-direction: column; gap: 8px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+  }
+  .cal-modal-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .cal-modal-icon {
+    flex-shrink: 0; width: 20px;
+  }
+  .cal-modal-desc {
+    color: var(--ink-soft); line-height: 1.7;
+    font-size: 14px;
+    margin-bottom: 16px;
+    white-space: pre-wrap;
+  }
+  .cal-modal-link {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--temple-red); color: var(--paper-warm);
+    border-radius: 4px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  .cal-modal-link:hover { background: var(--temple-red-deep); }
+
+  @media (max-width: 640px) {
+    .cal-cell { min-height: 64px; padding: 4px; }
+    .cal-cell-day { font-size: 12px; }
+    .cal-cell-event { font-size: 9px; padding: 1px 4px; }
+    .cal-week { grid-template-columns: 1fr; }
+    .cal-week-day { min-height: auto; }
+    .cal-mini-card { gap: 12px; padding: 12px; }
+    .cal-mini-date { width: 56px; }
+    .cal-mini-day { font-size: 1.7rem; }
+    .cal-modal-body { padding: 20px; }
   }
 
   /* Universal "Read more" link — appears at the bottom of various sections */
@@ -2339,6 +3335,7 @@ function AuthSection({ data, anchorId }) {
   const reset = () => {
     setMsg(null); setEmail(''); setPassword(''); setConfirmPw('');
     setNickname(''); setRegion(''); setGender(''); setJob('');
+    setFieldErrors({});
   };
 
   const submitLogin = async (e) => {
@@ -2348,7 +3345,7 @@ function AuthSection({ data, anchorId }) {
       const r = await gasPost({ action: 'userLogin', email, password });
       if (r.ok) {
         login(r.user, r.token);
-        setMsg({ type: 'success', text: `${r.user.nickname} 您好,登入成功 🪷` });
+        setMsg({ type: 'success', text: `${r.user.nickname}${r.user.job ? ' ' + r.user.job : ''} 您好,登入成功 🪷` });
         reset();
       } else {
         const errors = {
@@ -2365,27 +3362,63 @@ function AuthSection({ data, anchorId }) {
     setBusy(false);
   };
 
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  // Client-side validation before submitting register form
+  const validateRegister = () => {
+    const errs = {};
+    if (!nickname.trim()) errs.nickname = '請填寫稱呼';
+    if (!email.trim()) errs.email = '請填寫信箱';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errs.email = '信箱格式錯誤(需含 @ 與網域)';
+    if (!password) errs.password = '請設定密碼';
+    else if (password.length < 6) errs.password = '密碼至少需 6 個字元';
+    if (!confirmPw) errs.confirmPw = '請再次輸入密碼';
+    else if (password !== confirmPw) errs.confirmPw = '兩次密碼不一致';
+    if (!gender) errs.gender = '請選擇乾道或坤道';
+    if (!job) errs.job = '請選擇天職';
+    if (!country) errs.country = '請選擇國家';
+    return errs;
+  };
+
   const submitRegister = async (e) => {
     e?.preventDefault?.();
-    if (password !== confirmPw) {
-      setMsg({ type: 'error', text: '兩次密碼輸入不一致' });
+    setMsg(null);
+
+    // Client-side validation
+    const errs = validateRegister();
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
+      // Scroll to first error
+      const firstKey = Object.keys(errs)[0];
+      setTimeout(() => {
+        const el = document.querySelector(`[data-field="${firstKey}"]`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const input = el.querySelector('input, select');
+          if (input) input.focus();
+        }
+      }, 50);
+      setMsg({ type: 'error', text: '請修正下方標示的欄位' });
       return;
     }
-    setBusy(true); setMsg(null);
+
+    setBusy(true); setFieldErrors({});
     try {
       const r = await gasPost({
         action: 'userRegister',
-        email, password, nickname, country, region, gender, job
+        email: email.trim(), password, nickname: nickname.trim(),
+        country, region, gender, job
       });
       if (r.ok) {
         const registeredEmail = email;
         const registeredNickname = nickname;
-        // Show big modal instead of small message
+        const registeredJob = job;
         setSuccessModal({
           type: 'register',
           title: r.flow === 'verify' ? '註冊完成 🪷' : '歡迎加入 🪷',
           email: registeredEmail,
           nickname: registeredNickname,
+          job: registeredJob,
           flow: r.flow || 'welcome',
           requireVerification: r.requireVerification
         });
@@ -2393,16 +3426,31 @@ function AuthSection({ data, anchorId }) {
         reset();
         setMode('login');
       } else {
-        const errors = {
-          invalid_email: '信箱格式錯誤',
-          password_too_short: '密碼至少 6 個字',
-          email_exists: '此信箱已被註冊',
-          missing_nickname: '請填寫稱呼',
-          missing_country: '請選擇國家',
-          missing_gender: '請選擇乾道/坤道',
-          missing_job: '請選擇天職',
+        // Map server errors to field errors
+        const fieldMap = {
+          invalid_email: ['email', '信箱格式錯誤'],
+          password_too_short: ['password', '密碼至少需 6 個字元'],
+          email_exists: ['email', '此信箱已被註冊,請改用其他信箱或直接登入'],
+          missing_nickname: ['nickname', '請填寫稱呼'],
+          missing_country: ['country', '請選擇國家'],
+          missing_gender: ['gender', '請選擇乾道或坤道'],
+          missing_job: ['job', '請選擇天職'],
         };
-        setMsg({ type: 'error', text: errors[r.error] || ('註冊失敗: ' + r.error) });
+        if (fieldMap[r.error]) {
+          const [key, text] = fieldMap[r.error];
+          setFieldErrors({ [key]: text });
+          setMsg({ type: 'error', text });
+          setTimeout(() => {
+            const el = document.querySelector(`[data-field="${key}"]`);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const input = el.querySelector('input, select');
+              if (input) input.focus();
+            }
+          }, 50);
+        } else {
+          setMsg({ type: 'error', text: '註冊失敗: ' + r.error });
+        }
       }
     } catch (err) {
       setMsg({ type: 'error', text: '連線失敗,請稍後再試' });
@@ -2442,7 +3490,7 @@ function AuthSection({ data, anchorId }) {
         <div className="max-w-md mx-auto px-6 lg:px-12 py-16">
           <div className="auth-card reveal">
             <div className="auth-eyebrow">已登入</div>
-            <h3 className="auth-title">{user.nickname} 道親</h3>
+            <h3 className="auth-title">{user.nickname}{user.job ? ` ${user.job}` : ''}</h3>
             <div className="auth-user-meta">
               <div><span>信箱</span><span>{user.email}</span></div>
               {user.gender && <div><span>道號</span><span>{user.gender}</span></div>}
@@ -2474,8 +3522,8 @@ function AuthSection({ data, anchorId }) {
           )}
 
           <div className="auth-tabs">
-            <button className={mode === 'login' ? 'active' : ''} onClick={() => { setMode('login'); setMsg(null); }}>登入</button>
-            <button className={mode === 'register' ? 'active' : ''} onClick={() => { setMode('register'); setMsg(null); }}>註冊</button>
+            <button className={mode === 'login' ? 'active' : ''} onClick={() => { setMode('login'); setMsg(null); setFieldErrors({}); }}>登入</button>
+            <button className={mode === 'register' ? 'active' : ''} onClick={() => { setMode('register'); setMsg(null); setFieldErrors({}); }}>註冊</button>
           </div>
 
           {mode === 'login' && (
@@ -2485,46 +3533,81 @@ function AuthSection({ data, anchorId }) {
               <label className="auth-label">密碼</label>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
               <button type="submit" className="auth-btn" disabled={busy}>{busy ? '登入中⋯' : '登入'}</button>
-              <button type="button" className="auth-link" onClick={() => { setMode('forgot'); setMsg(null); }}>忘記密碼?</button>
+              <button type="button" className="auth-link" onClick={() => { setMode('forgot'); setMsg(null); setFieldErrors({}); }}>忘記密碼?</button>
             </form>
           )}
 
           {mode === 'register' && config && (
             <form onSubmit={submitRegister} className="auth-form">
-              <label className="auth-label">稱呼 / 法名</label>
-              <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} required />
-              <label className="auth-label">電子信箱</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
-              <label className="auth-label">密碼(至少 6 字)</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} autoComplete="new-password" />
-              <label className="auth-label">確認密碼</label>
-              <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} required minLength={6} autoComplete="new-password" />
-
-              <label className="auth-label">道號</label>
-              <div className="auth-radio-group">
-                <label><input type="radio" name="gender" value="乾道" checked={gender === '乾道'} onChange={(e) => setGender(e.target.value)} /> 乾道</label>
-                <label><input type="radio" name="gender" value="坤道" checked={gender === '坤道'} onChange={(e) => setGender(e.target.value)} /> 坤道</label>
+              <div data-field="nickname" className={`auth-field ${fieldErrors.nickname ? 'has-error' : ''}`}>
+                <label className="auth-label">稱呼 / 法名 <span className="auth-required">*</span></label>
+                <input type="text" value={nickname}
+                       onChange={(e) => { setNickname(e.target.value); if (fieldErrors.nickname) setFieldErrors({ ...fieldErrors, nickname: null }); }} />
+                {fieldErrors.nickname && <div className="auth-field-err">{fieldErrors.nickname}</div>}
               </div>
 
-              <label className="auth-label">天職</label>
-              <select value={job} onChange={(e) => setJob(e.target.value)} required>
-                <option value="">請選擇 ⋯</option>
-                {(config.jobs || []).map(j => <option key={j} value={j}>{j}</option>)}
-              </select>
+              <div data-field="email" className={`auth-field ${fieldErrors.email ? 'has-error' : ''}`}>
+                <label className="auth-label">電子信箱 <span className="auth-required">*</span></label>
+                <input type="email" value={email}
+                       onChange={(e) => { setEmail(e.target.value); if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: null }); }}
+                       autoComplete="email" />
+                {fieldErrors.email && <div className="auth-field-err">{fieldErrors.email}</div>}
+              </div>
 
-              <label className="auth-label">所在國家</label>
-              <select value={country} onChange={(e) => { setCountry(e.target.value); if (e.target.value !== '台灣') setRegion(''); }} required>
-                {(config.countries || []).map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <div data-field="password" className={`auth-field ${fieldErrors.password ? 'has-error' : ''}`}>
+                <label className="auth-label">密碼(至少 6 字) <span className="auth-required">*</span></label>
+                <input type="password" value={password}
+                       onChange={(e) => { setPassword(e.target.value); if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: null }); }}
+                       autoComplete="new-password" />
+                {fieldErrors.password && <div className="auth-field-err">{fieldErrors.password}</div>}
+              </div>
+
+              <div data-field="confirmPw" className={`auth-field ${fieldErrors.confirmPw ? 'has-error' : ''}`}>
+                <label className="auth-label">確認密碼 <span className="auth-required">*</span></label>
+                <input type="password" value={confirmPw}
+                       onChange={(e) => { setConfirmPw(e.target.value); if (fieldErrors.confirmPw) setFieldErrors({ ...fieldErrors, confirmPw: null }); }}
+                       autoComplete="new-password" />
+                {fieldErrors.confirmPw && <div className="auth-field-err">{fieldErrors.confirmPw}</div>}
+              </div>
+
+              <div data-field="gender" className={`auth-field ${fieldErrors.gender ? 'has-error' : ''}`}>
+                <label className="auth-label">道號 <span className="auth-required">*</span></label>
+                <div className="auth-radio-group">
+                  <label><input type="radio" name="gender" value="乾道" checked={gender === '乾道'}
+                          onChange={(e) => { setGender(e.target.value); if (fieldErrors.gender) setFieldErrors({ ...fieldErrors, gender: null }); }} /> 乾道</label>
+                  <label><input type="radio" name="gender" value="坤道" checked={gender === '坤道'}
+                          onChange={(e) => { setGender(e.target.value); if (fieldErrors.gender) setFieldErrors({ ...fieldErrors, gender: null }); }} /> 坤道</label>
+                </div>
+                {fieldErrors.gender && <div className="auth-field-err">{fieldErrors.gender}</div>}
+              </div>
+
+              <div data-field="job" className={`auth-field ${fieldErrors.job ? 'has-error' : ''}`}>
+                <label className="auth-label">天職 <span className="auth-required">*</span></label>
+                <select value={job}
+                        onChange={(e) => { setJob(e.target.value); if (fieldErrors.job) setFieldErrors({ ...fieldErrors, job: null }); }}>
+                  <option value="">請選擇 ⋯</option>
+                  {(config.jobs || []).map(j => <option key={j} value={j}>{j}</option>)}
+                </select>
+                {fieldErrors.job && <div className="auth-field-err">{fieldErrors.job}</div>}
+              </div>
+
+              <div data-field="country" className={`auth-field ${fieldErrors.country ? 'has-error' : ''}`}>
+                <label className="auth-label">所在國家 <span className="auth-required">*</span></label>
+                <select value={country}
+                        onChange={(e) => { setCountry(e.target.value); if (e.target.value !== '台灣') setRegion(''); if (fieldErrors.country) setFieldErrors({ ...fieldErrors, country: null }); }}>
+                  {(config.countries || []).map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+                {fieldErrors.country && <div className="auth-field-err">{fieldErrors.country}</div>}
+              </div>
 
               {country === '台灣' && (
-                <>
+                <div className="auth-field">
                   <label className="auth-label">縣市</label>
                   <select value={region} onChange={(e) => setRegion(e.target.value)}>
                     <option value="">請選擇 ⋯</option>
                     {(config.twRegions || []).map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
-                </>
+                </div>
               )}
 
               <button type="submit" className="auth-btn" disabled={busy}>{busy ? '註冊中⋯' : '註冊'}</button>
@@ -2537,7 +3620,7 @@ function AuthSection({ data, anchorId }) {
               <label className="auth-label">電子信箱</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               <button type="submit" className="auth-btn" disabled={busy}>{busy ? '寄送中⋯' : '寄送重設信'}</button>
-              <button type="button" className="auth-link" onClick={() => { setMode('login'); setMsg(null); }}>← 返回登入</button>
+              <button type="button" className="auth-link" onClick={() => { setMode('login'); setMsg(null); setFieldErrors({}); }}>← 返回登入</button>
             </form>
           )}
 
@@ -2565,7 +3648,7 @@ function AuthSection({ data, anchorId }) {
             {successModal.type === 'register' && successModal.flow !== 'verify' && (
               <>
                 <p className="auth-success-greeting">
-                  {successModal.nickname ? `${successModal.nickname} 道親,` : ''}歡迎加入 淨慈寺文化園區
+                  {successModal.nickname ? `${successModal.nickname}${successModal.job ? ' ' + successModal.job : ''},` : ''}歡迎加入 淨慈寺文化園區
                 </p>
                 <div className="auth-success-mail-card">
                   <div className="auth-success-mail-label">歡迎信已寄至</div>
@@ -2590,7 +3673,7 @@ function AuthSection({ data, anchorId }) {
             {successModal.type === 'register' && successModal.flow === 'verify' && (
               <>
                 <p className="auth-success-greeting">
-                  {successModal.nickname ? `${successModal.nickname} 道親,` : ''}歡迎加入 淨慈寺文化園區
+                  {successModal.nickname ? `${successModal.nickname}${successModal.job ? ' ' + successModal.job : ''},` : ''}歡迎加入 淨慈寺文化園區
                 </p>
                 <div className="auth-success-mail-card">
                   <div className="auth-success-mail-label">驗證信已寄至</div>
@@ -2692,10 +3775,1299 @@ function ResetPasswordModal() {
 }
 
 
+function ForumSection({ data, anchorId }) {
+  const { user } = useContext(UserCtx);
+  const [forumData, setForumData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState({ type: 'list', categoryId: null }); // list | thread
+  const [activeThread, setActiveThread] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [showCompose, setShowCompose] = useState(false);
+  const [composeMode, setComposeMode] = useState({ kind: 'thread' });  // {kind:'thread'} | {kind:'reply', parentId}
+  const [editingThread, setEditingThread] = useState(null);
+  const [editingReplyId, setEditingReplyId] = useState(null);
+  const [msg, setMsg] = useState(null);
+
+  const loadForum = async () => {
+    setLoading(true);
+    try {
+      const r = await gasPost({ action: 'forumGetData' });
+      if (r.ok) setForumData(r.data);
+    } catch (e) {
+      setMsg({ type: 'error', text: '討論區載入失敗' });
+    }
+    setLoading(false);
+  };
+
+  const loadThread = async (threadId) => {
+    setBusy(true);
+    try {
+      const r = await gasPost({ action: 'forumGetThread', threadId });
+      if (r.ok) setActiveThread(r.thread);
+    } catch (e) {}
+    setBusy(false);
+  };
+
+  useEffect(() => { loadForum(); }, []);
+
+  const showToast = (text, type = 'success') => {
+    setMsg({ type, text });
+    setTimeout(() => setMsg(null), 3000);
+  };
+
+  const openThread = async (threadId) => {
+    setView({ type: 'thread', threadId });
+    await loadThread(threadId);
+    window.scrollTo({ top: document.getElementById(anchorId)?.offsetTop || 0, behavior: 'smooth' });
+  };
+
+  const backToList = () => {
+    setView({ type: 'list', categoryId: view.categoryId });
+    setActiveThread(null);
+    setShowCompose(false);
+    setEditingThread(null);
+    setEditingReplyId(null);
+  };
+
+  // === Actions ===
+  const submitNewThread = async ({ categoryId, title, contentHtml }) => {
+    setBusy(true);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumCreateThread', token, categoryId, title, contentHtml });
+      if (r.ok) {
+        showToast('發文成功 🪷');
+        setShowCompose(false);
+        await loadForum();
+        openThread(r.thread.id);
+      } else {
+        showToast(forumErrorMsg(r.error), 'error');
+      }
+    } catch (e) { showToast('連線失敗', 'error'); }
+    setBusy(false);
+  };
+
+  const submitEditThread = async ({ title, contentHtml }) => {
+    if (!editingThread) return;
+    setBusy(true);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumUpdateThread', token, threadId: editingThread.id, patch: { title, contentHtml } });
+      if (r.ok) {
+        showToast('已更新');
+        setEditingThread(null);
+        await loadForum();
+        await loadThread(editingThread.id);
+      } else { showToast(forumErrorMsg(r.error), 'error'); }
+    } catch (e) { showToast('連線失敗', 'error'); }
+    setBusy(false);
+  };
+
+  const submitDeleteThread = async () => {
+    if (!activeThread) return;
+    if (!confirm('確定刪除此文章?所有留言會一起消失,無法復原。')) return;
+    setBusy(true);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumDeleteThread', token, threadId: activeThread.id });
+      if (r.ok) {
+        showToast('已刪除');
+        backToList();
+        await loadForum();
+      } else { showToast(forumErrorMsg(r.error), 'error'); }
+    } catch (e) {}
+    setBusy(false);
+  };
+
+  const submitNewReply = async ({ contentHtml, parentId }) => {
+    if (!activeThread) return;
+    setBusy(true);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumCreateReply', token, threadId: activeThread.id, contentHtml, parentId });
+      if (r.ok) {
+        showToast('已留言');
+        setComposeMode({ kind: 'thread' });
+        await loadThread(activeThread.id);
+        await loadForum();
+      } else { showToast(forumErrorMsg(r.error), 'error'); }
+    } catch (e) { showToast('連線失敗', 'error'); }
+    setBusy(false);
+  };
+
+  const submitEditReply = async (replyId, contentHtml) => {
+    if (!activeThread) return;
+    setBusy(true);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumUpdateReply', token, threadId: activeThread.id, replyId, content: contentHtml });
+      if (r.ok) {
+        showToast('已更新');
+        setEditingReplyId(null);
+        await loadThread(activeThread.id);
+      } else { showToast(forumErrorMsg(r.error), 'error'); }
+    } catch (e) {}
+    setBusy(false);
+  };
+
+  const submitDeleteReply = async (replyId) => {
+    if (!confirm('確定刪除此留言?')) return;
+    setBusy(true);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumDeleteReply', token, threadId: activeThread.id, replyId });
+      if (r.ok) { showToast('已刪除'); await loadThread(activeThread.id); await loadForum(); }
+      else showToast(forumErrorMsg(r.error), 'error');
+    } catch (e) {}
+    setBusy(false);
+  };
+
+  const toggleLike = async (replyId) => {
+    if (!user) { showToast('請先登入', 'error'); return; }
+    if (!activeThread) return;
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({ action: 'forumToggleLike', token, threadId: activeThread.id, replyId: replyId || null });
+      if (r.ok) await loadThread(activeThread.id);
+    } catch (e) {}
+  };
+
+  // Render
+  if (loading) {
+    return (
+      <section id={anchorId} className="forum-section">
+        <div className="max-w-5xl mx-auto px-6 lg:px-12 py-16 text-center" style={{ color: 'var(--ink-mute)' }}>
+          載入討論區⋯
+        </div>
+      </section>
+    );
+  }
+
+  if (!forumData) return null;
+
+  return (
+    <section id={anchorId} className="forum-section">
+      <div className="max-w-5xl mx-auto px-6 lg:px-12 py-16">
+        {/* Header */}
+        {view.type === 'list' && (
+          <div className="text-center mb-10 reveal">
+            {data.eyebrow && <div className="eyebrow mb-4" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml && <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-4" html={data.titleHtml} />}
+            {data.description && <p className="max-w-2xl mx-auto text-base" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+          </div>
+        )}
+
+        {msg && <div className={`forum-msg forum-msg-${msg.type}`}>{msg.text}</div>}
+
+        {/* Category list view */}
+        {view.type === 'list' && (
+          <ForumListView
+            data={forumData}
+            user={user}
+            categoryFilter={view.categoryId}
+            onCategoryChange={(catId) => setView({ type: 'list', categoryId: catId })}
+            onOpenThread={openThread}
+            onNewPost={(catId) => { setComposeMode({ kind: 'thread', categoryId: catId }); setShowCompose(true); }}
+          />
+        )}
+
+        {/* Single thread view */}
+        {view.type === 'thread' && activeThread && (
+          <ForumThreadView
+            thread={activeThread}
+            user={user}
+            categories={forumData.categories}
+            busy={busy}
+            onBack={backToList}
+            onLike={toggleLike}
+            editingThread={editingThread}
+            setEditingThread={setEditingThread}
+            onSaveEdit={submitEditThread}
+            onDeleteThread={submitDeleteThread}
+            composeMode={composeMode}
+            setComposeMode={setComposeMode}
+            onSubmitReply={submitNewReply}
+            editingReplyId={editingReplyId}
+            setEditingReplyId={setEditingReplyId}
+            onSaveReplyEdit={submitEditReply}
+            onDeleteReply={submitDeleteReply}
+          />
+        )}
+
+        {/* Compose modal for new thread */}
+        {showCompose && (
+          <ForumComposeModal
+            categories={forumData.categories}
+            initialCategoryId={composeMode.categoryId}
+            onClose={() => setShowCompose(false)}
+            onSubmit={submitNewThread}
+            busy={busy}
+          />
+        )}
+      </div>
+    </section>
+  );
+}
+
+function forumErrorMsg(err) {
+  const map = {
+    login_required: '請先登入會員',
+    blocked: '您的帳號已被停用',
+    no_permission: '沒有權限執行此操作',
+    thread_not_found: '討論串不存在或已被刪除',
+    reply_not_found: '留言不存在',
+    thread_locked: '此討論串已被鎖定,無法回覆',
+    missing_title: '請填寫標題',
+    missing_content: '請填寫內容',
+    missing_category: '請選擇分類',
+    category_not_found: '分類不存在'
+  };
+  return map[err] || ('操作失敗: ' + err);
+}
+
+function ForumListView({ data, user, categoryFilter, onCategoryChange, onOpenThread, onNewPost }) {
+  const cats = (data.categories || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const visibleCats = cats.filter(c => c.readPolicy === 'public' || user);
+
+  // Build cat helpers
+  const byId = {};
+  cats.forEach(c => { byId[c.id] = c; });
+  const childrenOf = (parentId) => visibleCats.filter(c => (c.parentId || null) === parentId);
+  const getDescendantIds = (catId) => {
+    const out = [catId];
+    cats.filter(c => c.parentId === catId).forEach(child => {
+      out.push(...getDescendantIds(child.id));
+    });
+    return out;
+  };
+  const getBreadcrumb = (catId) => {
+    const trail = [];
+    let cur = byId[catId];
+    while (cur) {
+      trail.unshift(cur);
+      cur = cur.parentId ? byId[cur.parentId] : null;
+    }
+    return trail;
+  };
+
+  // Threads: if filtering, include the cat AND all descendants
+  let threads = data.threads || [];
+  if (categoryFilter) {
+    const ids = new Set(getDescendantIds(categoryFilter));
+    threads = threads.filter(t => ids.has(t.categoryId));
+  } else {
+    const visIds = new Set(visibleCats.map(c => c.id));
+    threads = threads.filter(t => visIds.has(t.categoryId));
+  }
+  threads = threads.slice().sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return new Date(b.lastReplyAt || b.createdAt) - new Date(a.lastReplyAt || a.createdAt);
+  });
+
+  const currentCat = categoryFilter ? byId[categoryFilter] : null;
+  const breadcrumb = currentCat ? getBreadcrumb(categoryFilter) : [];
+  const subCats = currentCat ? childrenOf(categoryFilter) : childrenOf(null);
+  const showSubCats = subCats.length > 0;
+
+  return (
+    <div className="reveal">
+      {/* Top-level category tabs (always shows root level) */}
+      <div className="forum-cats">
+        <button className={`forum-cat-tab ${!categoryFilter ? 'active' : ''}`} onClick={() => onCategoryChange(null)}>
+          全部
+        </button>
+        {childrenOf(null).map(c => {
+          const inTrail = breadcrumb.some(b => b.id === c.id);
+          return (
+            <button key={c.id} className={`forum-cat-tab ${inTrail ? 'active' : ''}`} onClick={() => onCategoryChange(c.id)}>
+              <span style={{ marginRight: 6 }}>{c.icon}</span>{c.name}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Breadcrumb */}
+      {breadcrumb.length > 0 && (
+        <div className="forum-breadcrumb">
+          <button className="forum-crumb" onClick={() => onCategoryChange(null)}>討論區</button>
+          {breadcrumb.map((c, i) => (
+            <React.Fragment key={c.id}>
+              <span className="forum-crumb-sep">›</span>
+              {i === breadcrumb.length - 1 ? (
+                <span className="forum-crumb current">{c.icon} {c.name}</span>
+              ) : (
+                <button className="forum-crumb" onClick={() => onCategoryChange(c.id)}>{c.icon} {c.name}</button>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+
+      {/* Sub-categories */}
+      {showSubCats && (
+        <div className="forum-subcats">
+          {subCats.map(sc => {
+            const subIds = new Set(getDescendantIds(sc.id));
+            const count = (data.threads || []).filter(t => subIds.has(t.categoryId)).length;
+            return (
+              <button key={sc.id} className="forum-subcat-card" onClick={() => onCategoryChange(sc.id)}>
+                <div className="forum-subcat-icon">{sc.icon}</div>
+                <div className="forum-subcat-info">
+                  <div className="forum-subcat-name">{sc.name}</div>
+                  {sc.description && <div className="forum-subcat-desc">{sc.description}</div>}
+                </div>
+                <div className="forum-subcat-count">{count}</div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Category description (when filtering) */}
+      {currentCat && currentCat.description && (
+        <div className="forum-cat-desc">{currentCat.description}</div>
+      )}
+
+      {/* New post button */}
+      <div className="flex justify-end mb-4">
+        {user ? (
+          <button className="forum-btn-primary" onClick={() => onNewPost(currentCat?.id)}>
+            ✎ 新發表
+          </button>
+        ) : (
+          <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>登入後即可發表</div>
+        )}
+      </div>
+
+      {/* Thread list */}
+      {threads.length === 0 ? (
+        <div className="forum-empty">
+          {currentCat ? `「${currentCat.name}」目前沒有討論串` : '尚無任何討論串'}
+        </div>
+      ) : (
+        <div className="forum-thread-list">
+          {threads.map(t => {
+            const cat = cats.find(c => c.id === t.categoryId);
+            return (
+              <button key={t.id} className="forum-thread-row" onClick={() => onOpenThread(t.id)}>
+                <div className="forum-thread-icon">
+                  {t.pinned && <span title="置頂">📌</span>}
+                  {t.locked && <span title="已鎖定">🔒</span>}
+                  {!t.pinned && !t.locked && <span style={{ opacity: 0.3 }}>{cat?.icon || '💬'}</span>}
+                </div>
+                <div className="forum-thread-main">
+                  <div className="forum-thread-title">{t.title}</div>
+                  {t.excerpt && <div className="forum-thread-excerpt">{t.excerpt}</div>}
+                  <div className="forum-thread-meta">
+                    {cat && <span className="forum-meta-chip">{cat.icon} {cat.name}</span>}
+                    <span>{t.author?.nickname}{t.author?.job ? ` ${t.author.job}` : ''}</span>
+                    <span>·</span>
+                    <span>{forumRelativeTime(t.lastReplyAt || t.createdAt)}</span>
+                  </div>
+                </div>
+                <div className="forum-thread-stats">
+                  <div><span className="forum-stat-num">{t.replyCount}</span><div className="forum-stat-label">留言</div></div>
+                  <div><span className="forum-stat-num">{t.likeCount}</span><div className="forum-stat-label">讚</div></div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ForumThreadView({ thread, user, categories, busy, onBack, onLike,
+                          editingThread, setEditingThread, onSaveEdit, onDeleteThread,
+                          composeMode, setComposeMode, onSubmitReply,
+                          editingReplyId, setEditingReplyId, onSaveReplyEdit, onDeleteReply }) {
+  const cat = categories.find(c => c.id === thread.categoryId);
+  const isMyThread = user && thread.author && thread.author.id === user.id;
+  const liked = user && (thread.likes || []).includes(user.id);
+
+  // Build a tree from replies (parentId null = top-level, else nested)
+  const repliesTree = useMemo(() => {
+    const all = thread.replies || [];
+    const byParent = {};
+    all.forEach(r => {
+      const pid = r.parentId || '_root';
+      if (!byParent[pid]) byParent[pid] = [];
+      byParent[pid].push(r);
+    });
+    Object.keys(byParent).forEach(k => byParent[k].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)));
+    return byParent;
+  }, [thread.replies]);
+
+  return (
+    <div className="reveal">
+      <button className="forum-back" onClick={onBack}>← 返回討論區</button>
+
+      <article className="forum-thread-detail">
+        {editingThread && editingThread.id === thread.id ? (
+          <ForumThreadEditForm thread={thread} busy={busy}
+            onCancel={() => setEditingThread(null)}
+            onSave={onSaveEdit} />
+        ) : (
+          <>
+            <div className="forum-thread-header">
+              <div className="forum-thread-flags">
+                {thread.pinned && <span className="forum-flag pinned">📌 置頂</span>}
+                {thread.locked && <span className="forum-flag locked">🔒 已鎖定</span>}
+                {cat && <span className="forum-meta-chip">{cat.icon} {cat.name}</span>}
+              </div>
+              <h1 className="forum-thread-title-big">{thread.title}</h1>
+              <div className="forum-author-row">
+                <span className="forum-author-name">{thread.author?.nickname}</span>
+                {thread.author?.job && <span className="forum-author-job">{thread.author.job}</span>}
+                <span className="forum-author-time">{forumFullTime(thread.createdAt)}</span>
+                {thread.updatedAt && thread.updatedAt !== thread.createdAt &&
+                  <span className="forum-author-time">(已編輯)</span>}
+              </div>
+            </div>
+
+            <div className="forum-thread-body" dangerouslySetInnerHTML={{ __html: thread.contentHtml }} />
+
+            <div className="forum-thread-actions">
+              <button className={`forum-like-btn ${liked ? 'active' : ''}`} onClick={() => onLike(null)} disabled={!user}>
+                {liked ? '❤️' : '🤍'} <span>{(thread.likes || []).length}</span>
+              </button>
+              {user && !thread.locked && (
+                <button className="forum-btn-ghost" onClick={() => { setComposeMode({ kind: 'reply', parentId: null }); setTimeout(() => document.getElementById('forum-compose-anchor')?.scrollIntoView({ behavior: 'smooth' }), 50); }}>
+                  ✎ 發表留言
+                </button>
+              )}
+              {isMyThread && !thread.locked && (
+                <>
+                  <button className="forum-btn-ghost" onClick={() => setEditingThread(thread)}>編輯</button>
+                  <button className="forum-btn-ghost" style={{ color: 'var(--temple-red)' }} onClick={onDeleteThread}>刪除</button>
+                </>
+              )}
+            </div>
+          </>
+        )}
+      </article>
+
+      {/* Replies */}
+      <div className="forum-replies-section">
+        <div className="forum-replies-title">
+          留言 <span className="forum-count">{(thread.replies || []).length}</span>
+        </div>
+
+        {(thread.replies || []).length === 0 ? (
+          <div className="forum-empty" style={{ padding: 24 }}>還沒有留言</div>
+        ) : (
+          <ReplyTree
+            repliesTree={repliesTree}
+            parentId="_root"
+            depth={0}
+            user={user}
+            thread={thread}
+            onLike={onLike}
+            editingReplyId={editingReplyId}
+            setEditingReplyId={setEditingReplyId}
+            onSaveEdit={onSaveReplyEdit}
+            onDelete={onDeleteReply}
+            onReply={(parentId) => { setComposeMode({ kind: 'reply', parentId }); setTimeout(() => document.getElementById('forum-compose-anchor')?.scrollIntoView({ behavior: 'smooth' }), 50); }}
+            busy={busy}
+          />
+        )}
+
+        {/* Compose reply */}
+        <div id="forum-compose-anchor"></div>
+        {user && !thread.locked && composeMode.kind === 'reply' && (
+          <ForumReplyForm
+            parentId={composeMode.parentId}
+            replies={thread.replies}
+            busy={busy}
+            onCancel={() => setComposeMode({ kind: 'thread' })}
+            onSubmit={onSubmitReply}
+          />
+        )}
+        {user && !thread.locked && composeMode.kind !== 'reply' && (
+          <div className="text-center mt-6">
+            <button className="forum-btn-primary" onClick={() => setComposeMode({ kind: 'reply', parentId: null })}>✎ 發表留言</button>
+          </div>
+        )}
+        {!user && (
+          <div className="forum-empty" style={{ padding: 24 }}>登入會員後即可留言</div>
+        )}
+        {thread.locked && (
+          <div className="forum-empty" style={{ padding: 24 }}>🔒 此討論串已鎖定,目前不能新增留言</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ReplyTree({ repliesTree, parentId, depth, user, thread, onLike, editingReplyId, setEditingReplyId, onSaveEdit, onDelete, onReply, busy }) {
+  const list = repliesTree[parentId] || [];
+  if (list.length === 0) return null;
+  return (
+    <div className={depth > 0 ? 'forum-reply-children' : ''}>
+      {list.map(r => {
+        const isMine = user && r.author && r.author.id === user.id;
+        const liked = user && (r.likes || []).includes(user.id);
+        const isEditing = editingReplyId === r.id;
+        return (
+          <div key={r.id} className="forum-reply">
+            <div className="forum-reply-header">
+              <span className="forum-author-name">{r.author?.nickname}</span>
+              {r.author?.job && <span className="forum-author-job">{r.author.job}</span>}
+              <span className="forum-author-time">{forumRelativeTime(r.createdAt)}</span>
+              {r.updatedAt && r.updatedAt !== r.createdAt && <span className="forum-author-time">(已編輯)</span>}
+            </div>
+            {isEditing ? (
+              <ForumInlineEdit
+                initialContent={r.contentHtml}
+                onCancel={() => setEditingReplyId(null)}
+                onSave={(html) => onSaveEdit(r.id, html)}
+                busy={busy}
+              />
+            ) : (
+              <div className="forum-reply-body" dangerouslySetInnerHTML={{ __html: r.contentHtml }} />
+            )}
+            {!isEditing && (
+              <div className="forum-reply-actions">
+                <button className={`forum-like-mini ${liked ? 'active' : ''}`} onClick={() => onLike(r.id)} disabled={!user}>
+                  {liked ? '❤️' : '🤍'} {(r.likes || []).length || ''}
+                </button>
+                {user && !thread.locked && depth < 3 && (
+                  <button className="forum-link" onClick={() => onReply(r.id)}>回覆</button>
+                )}
+                {isMine && !thread.locked && (
+                  <>
+                    <button className="forum-link" onClick={() => setEditingReplyId(r.id)}>編輯</button>
+                    <button className="forum-link" style={{ color: 'var(--temple-red)' }} onClick={() => onDelete(r.id)}>刪除</button>
+                  </>
+                )}
+              </div>
+            )}
+            {/* Children */}
+            <ReplyTree repliesTree={repliesTree} parentId={r.id} depth={depth + 1}
+                       user={user} thread={thread} onLike={onLike}
+                       editingReplyId={editingReplyId} setEditingReplyId={setEditingReplyId}
+                       onSaveEdit={onSaveEdit} onDelete={onDelete} onReply={onReply} busy={busy} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ForumComposeModal({ categories, initialCategoryId, onClose, onSubmit, busy }) {
+  const [categoryId, setCategoryId] = useState(initialCategoryId || (categories[0]?.id || ''));
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const editorRef = useRef(null);
+  const submit = (e) => {
+    e?.preventDefault?.();
+    const html = editorRef.current?.innerHTML || content;
+    if (!title.trim()) { alert('請填寫標題'); return; }
+    if (!html.trim() || html.trim() === '<br>') { alert('請填寫內容'); return; }
+    onSubmit({ categoryId, title: title.trim(), contentHtml: html });
+  };
+  return (
+    <div className="forum-modal-overlay" onClick={onClose}>
+      <div className="forum-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="forum-modal-close" onClick={onClose} aria-label="關閉">✕</button>
+        <h2 className="forum-modal-title">發表新文章</h2>
+        <form onSubmit={submit}>
+          <label className="auth-label">分類</label>
+          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
+            {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+          </select>
+          <label className="auth-label mt-3">標題</label>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} required />
+          <label className="auth-label mt-3">內容</label>
+          <ForumRichEditor editorRef={editorRef} onChange={setContent} />
+          <div className="flex gap-2 mt-4 justify-end">
+            <button type="button" className="forum-btn-ghost" onClick={onClose}>取消</button>
+            <button type="submit" className="forum-btn-primary" disabled={busy}>{busy ? '送出中⋯' : '發表'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function ForumThreadEditForm({ thread, busy, onCancel, onSave }) {
+  const [title, setTitle] = useState(thread.title);
+  const editorRef = useRef(null);
+  const submit = (e) => {
+    e?.preventDefault?.();
+    const html = editorRef.current?.innerHTML || '';
+    if (!title.trim()) { alert('請填寫標題'); return; }
+    if (!html.trim() || html === '<br>') { alert('請填寫內容'); return; }
+    onSave({ title: title.trim(), contentHtml: html });
+  };
+  return (
+    <form onSubmit={submit}>
+      <label className="auth-label">標題</label>
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+      <label className="auth-label mt-3">內容</label>
+      <ForumRichEditor editorRef={editorRef} initialContent={thread.contentHtml} />
+      <div className="flex gap-2 mt-4 justify-end">
+        <button type="button" className="forum-btn-ghost" onClick={onCancel}>取消</button>
+        <button type="submit" className="forum-btn-primary" disabled={busy}>{busy ? '儲存中⋯' : '儲存變更'}</button>
+      </div>
+    </form>
+  );
+}
+
+function ForumReplyForm({ parentId, replies, busy, onCancel, onSubmit }) {
+  const editorRef = useRef(null);
+  const parent = parentId ? (replies || []).find(r => r.id === parentId) : null;
+  const submit = (e) => {
+    e?.preventDefault?.();
+    const html = editorRef.current?.innerHTML || '';
+    if (!html.trim() || html === '<br>') { alert('請填寫留言內容'); return; }
+    onSubmit({ contentHtml: html, parentId });
+  };
+  return (
+    <form className="forum-reply-form" onSubmit={submit}>
+      {parent && (
+        <div className="forum-reply-parent-hint">
+          回覆 <strong>{parent.author?.nickname}</strong>:{stripHtml(parent.contentHtml).slice(0, 60)}⋯
+        </div>
+      )}
+      <ForumRichEditor editorRef={editorRef} placeholder="請理性發言、清淨慈悲" />
+      <div className="flex gap-2 mt-2 justify-end">
+        <button type="button" className="forum-btn-ghost" onClick={onCancel}>取消</button>
+        <button type="submit" className="forum-btn-primary" disabled={busy}>{busy ? '送出中⋯' : '送出留言'}</button>
+      </div>
+    </form>
+  );
+}
+
+function ForumInlineEdit({ initialContent, onCancel, onSave, busy }) {
+  const editorRef = useRef(null);
+  const submit = (e) => {
+    e?.preventDefault?.();
+    const html = editorRef.current?.innerHTML || '';
+    if (!html.trim() || html === '<br>') { alert('內容不可空白'); return; }
+    onSave(html);
+  };
+  return (
+    <form className="forum-inline-edit" onSubmit={submit}>
+      <ForumRichEditor editorRef={editorRef} initialContent={initialContent} compact />
+      <div className="flex gap-2 mt-2 justify-end">
+        <button type="button" className="forum-btn-ghost" onClick={onCancel}>取消</button>
+        <button type="submit" className="forum-btn-primary" disabled={busy}>{busy ? '儲存⋯' : '儲存'}</button>
+      </div>
+    </form>
+  );
+}
+
+// Lightweight contentEditable rich-text editor with image upload
+function ForumRichEditor({ editorRef, initialContent, placeholder, compact }) {
+  const fileRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    if (editorRef.current && initialContent !== undefined) {
+      editorRef.current.innerHTML = initialContent || '';
+    }
+  }, []);
+
+  const exec = (cmd, val) => {
+    document.execCommand(cmd, false, val);
+    editorRef.current?.focus();
+  };
+
+  const handleImage = async (file) => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target.result.split(',')[1];
+        const token = localStorage.getItem('jc_user_token');
+        const r = await gasPost({ action: 'forumUploadImage', token, base64, filename: file.name, mimeType: file.type });
+        if (r.ok) {
+          const img = `<p><img src="${r.url}" alt="${r.filename || ''}" style="max-width: 100%; height: auto; border-radius: 4px;" /></p>`;
+          document.execCommand('insertHTML', false, img);
+        } else {
+          alert('圖片上傳失敗: ' + (r.error || ''));
+        }
+        setUploading(false);
+        if (fileRef.current) fileRef.current.value = '';
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setUploading(false);
+      alert('上傳失敗');
+    }
+  };
+
+  return (
+    <div className="forum-editor">
+      <div className="forum-editor-toolbar">
+        <button type="button" onClick={() => exec('bold')} title="粗體"><strong>B</strong></button>
+        <button type="button" onClick={() => exec('italic')} title="斜體"><em>I</em></button>
+        <button type="button" onClick={() => exec('underline')} title="底線" style={{ textDecoration: 'underline' }}>U</button>
+        <span className="forum-editor-divider"></span>
+        <button type="button" onClick={() => exec('insertUnorderedList')} title="項目符號">• 列表</button>
+        <button type="button" onClick={() => {
+          const url = prompt('輸入連結網址 (https://...)');
+          if (url) exec('createLink', url);
+        }} title="連結">🔗</button>
+        <span className="forum-editor-divider"></span>
+        <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}>
+          {uploading ? '上傳中⋯' : '🖼 圖片'}
+        </button>
+        <input type="file" ref={fileRef} accept="image/*" style={{ display: 'none' }}
+               onChange={(e) => handleImage(e.target.files[0])} />
+      </div>
+      <div
+        ref={editorRef}
+        className={`forum-editor-area ${compact ? 'compact' : ''}`}
+        contentEditable
+        suppressContentEditableWarning
+        data-placeholder={placeholder || '請輸入內容...'}
+      />
+    </div>
+  );
+}
+
+function forumRelativeTime(iso) {
+  if (!iso) return '';
+  const t = new Date(iso); const now = new Date();
+  const diff = (now - t) / 1000;
+  if (diff < 60) return '剛剛';
+  if (diff < 3600) return Math.floor(diff / 60) + ' 分鐘前';
+  if (diff < 86400) return Math.floor(diff / 3600) + ' 小時前';
+  if (diff < 86400 * 7) return Math.floor(diff / 86400) + ' 天前';
+  return t.toLocaleDateString('zh-TW');
+}
+
+function forumFullTime(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString('zh-TW', { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+function stripHtml(s) { return String(s || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(); }
+
+
+// ============================================================
+// CALENDAR — mini (homepage) + full (page) widgets
+// ============================================================
+
+function useCalendarData() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    gasPost({ action: 'calendarGetData' }).then(r => {
+      if (r.ok) setData(r.data);
+    }).catch(() => {});
+  }, []);
+  return data;
+}
+
+function calCategoryById(cats, id) {
+  return (cats || []).find(c => c.id === id) || { id: 'other', name: '其他', icon: '·', color: '#6b6359' };
+}
+
+function calFormatDateRange(start, end, lang) {
+  if (!start) return '';
+  if (!end || end === start) return start;
+  return `${start} ~ ${end}`;
+}
+
+function calIsActive(ev, dateStr) {
+  // Returns true if `dateStr` is between startDate and endDate (inclusive)
+  if (!ev.startDate) return false;
+  const end = ev.endDate || ev.startDate;
+  return dateStr >= ev.startDate && dateStr <= end;
+}
+
+function calMonthDays(year, month) {
+  // month is 0-indexed
+  const days = [];
+  const first = new Date(year, month, 1);
+  const startWeekday = first.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  // Add leading blanks
+  for (let i = 0; i < startWeekday; i++) days.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    days.push({ day: d, dateStr: dStr });
+  }
+  // Pad to multiple of 7
+  while (days.length % 7) days.push(null);
+  return days;
+}
+
+function CalendarMiniSection({ data, anchorId }) {
+  const calData = useCalendarData();
+  if (!calData) {
+    return (
+      <section id={anchorId} className="cal-mini-section">
+        <div className="max-w-5xl mx-auto px-6 py-12 text-center" style={{ color: 'var(--ink-mute)' }}>
+          載入中⋯
+        </div>
+      </section>
+    );
+  }
+
+  const today = new Date();
+  const todayStr = formatYmdLocal(today);
+  const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+
+  // Filter: this month, future-only (today included), max 5
+  const upcoming = (calData.events || [])
+    .filter(e => (e.startDate || '').startsWith(yearMonth) && (e.endDate || e.startDate) >= todayStr)
+    .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')))
+    .slice(0, 5);
+
+  const linkBase = data.fullCalendarUrl || '';
+
+  return (
+    <section id={anchorId} className="cal-mini-section">
+      <div className="max-w-5xl mx-auto px-6 lg:px-12 py-16">
+        <div className="cal-mini-header reveal">
+          <div>
+            {data.eyebrow && <div className="eyebrow mb-2" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml
+              ? <HtmlContent className="font-serif-tc text-3xl font-light" html={data.titleHtml} />
+              : <h2 className="font-serif-tc text-3xl font-light">本月活動</h2>}
+            <div className="cal-mini-subtitle">{today.getFullYear()} 年 {today.getMonth() + 1} 月 · 共 {upcoming.length} 場</div>
+          </div>
+          {linkBase && <a href={linkBase} className="cal-mini-more">查看完整行事曆 →</a>}
+        </div>
+
+        {upcoming.length === 0 ? (
+          <div className="cal-mini-empty reveal">本月暫無活動安排</div>
+        ) : (
+          <div className="cal-mini-list reveal">
+            {upcoming.map(ev => {
+              const cat = calCategoryById(calData.categories, ev.categoryId);
+              const startDate = new Date(ev.startDate + 'T00:00:00');
+              const endDate = new Date((ev.endDate || ev.startDate) + 'T00:00:00');
+              const isMultiDay = ev.endDate && ev.endDate !== ev.startDate;
+              const inner = (
+                <>
+                  <div className="cal-mini-date" style={{ borderColor: cat.color }}>
+                    <div className="cal-mini-day">{startDate.getDate()}</div>
+                    <div className="cal-mini-month">{startDate.getMonth() + 1} 月</div>
+                    {isMultiDay && (
+                      <div className="cal-mini-multi">~{endDate.getMonth() + 1}/{endDate.getDate()}</div>
+                    )}
+                  </div>
+                  <div className="cal-mini-info">
+                    <div className="cal-mini-cat-tag" style={{ background: cat.color + '20', color: cat.color }}>
+                      {cat.icon} {cat.name}
+                    </div>
+                    <div className="cal-mini-title">{ev.title}</div>
+                    <div className="cal-mini-meta">
+                      {ev.startTime && <span>🕐 {ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</span>}
+                      {ev.location && <span>📍 {ev.location}</span>}
+                    </div>
+                  </div>
+                </>
+              );
+              if (linkBase) {
+                return (
+                  <a key={ev.id} href={`${linkBase}?eventId=${ev.id}`} className="cal-mini-card cal-mini-clickable">
+                    {inner}
+                  </a>
+                );
+              }
+              return <div key={ev.id} className="cal-mini-card">{inner}</div>;
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function CalendarFullSection({ data, anchorId }) {
+  const calData = useCalendarData();
+  const today = new Date();
+  const [viewMode, setViewMode] = useState('month'); // month | week | list
+  const [cursor, setCursor] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [selectedDate, setSelectedDate] = useState(formatYmdLocal(today));
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [filterCat, setFilterCat] = useState('');
+
+  // Open from query string ?eventId=
+  useEffect(() => {
+    if (!calData) return;
+    const params = new URLSearchParams(window.location.search);
+    const eid = params.get('eventId');
+    if (eid) {
+      const ev = (calData.events || []).find(e => e.id === eid);
+      if (ev) {
+        setSelectedEvent(ev);
+        const d = new Date(ev.startDate + 'T00:00:00');
+        setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
+        setSelectedDate(ev.startDate);
+      }
+    }
+  }, [calData]);
+
+  if (!calData) {
+    return (
+      <section id={anchorId} className="cal-full-section">
+        <div className="max-w-6xl mx-auto px-6 py-16 text-center" style={{ color: 'var(--ink-mute)' }}>
+          載入中⋯
+        </div>
+      </section>
+    );
+  }
+
+  const events = (calData.events || []).filter(e => !filterCat || e.categoryId === filterCat);
+  const eventsByDate = useMemo(() => {
+    const map = {};
+    events.forEach(ev => {
+      const start = ev.startDate;
+      const end = ev.endDate || start;
+      // Add to every date in range
+      let d = start;
+      while (d <= end) {
+        if (!map[d]) map[d] = [];
+        map[d].push(ev);
+        d = addDaysStr(d, 1);
+      }
+    });
+    return map;
+  }, [events]);
+
+  const goPrev = () => {
+    if (viewMode === 'week') {
+      const d = new Date(cursor);
+      d.setDate(d.getDate() - 7);
+      setCursor(d);
+    } else {
+      setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1));
+    }
+  };
+  const goNext = () => {
+    if (viewMode === 'week') {
+      const d = new Date(cursor);
+      d.setDate(d.getDate() + 7);
+      setCursor(d);
+    } else {
+      setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1));
+    }
+  };
+  const goToday = () => {
+    setCursor(new Date(today.getFullYear(), today.getMonth(), 1));
+    setSelectedDate(formatYmdLocal(today));
+  };
+
+  const titleStr = (() => {
+    if (viewMode === 'week') {
+      const start = new Date(cursor);
+      start.setDate(start.getDate() - start.getDay());
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      return `${start.getFullYear()}/${start.getMonth() + 1}/${start.getDate()} – ${end.getMonth() + 1}/${end.getDate()}`;
+    }
+    return `${cursor.getFullYear()} 年 ${cursor.getMonth() + 1} 月`;
+  })();
+
+  return (
+    <section id={anchorId} className="cal-full-section">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-16">
+        {/* Header */}
+        <div className="text-center mb-10 reveal">
+          {data.eyebrow && <div className="eyebrow mb-3" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+          {data.titleHtml
+            ? <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light mb-3" html={data.titleHtml} />
+            : <h2 className="font-serif-tc text-4xl lg:text-5xl font-light mb-3">行事曆</h2>}
+          {data.description && <p className="max-w-2xl mx-auto" style={{ color: 'var(--ink-light)' }}>{data.description}</p>}
+        </div>
+
+        {/* Toolbar */}
+        <div className="cal-toolbar reveal">
+          <div className="cal-nav">
+            <button onClick={goPrev} className="cal-nav-btn" aria-label="上個月">‹</button>
+            <button onClick={goToday} className="cal-today-btn">今天</button>
+            <button onClick={goNext} className="cal-nav-btn" aria-label="下個月">›</button>
+            <div className="cal-title">{titleStr}</div>
+          </div>
+          <div className="cal-mode">
+            <button className={viewMode === 'month' ? 'active' : ''} onClick={() => setViewMode('month')}>月</button>
+            <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>週</button>
+            <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>列表</button>
+          </div>
+        </div>
+
+        {/* Category filter */}
+        <div className="cal-cat-filter reveal">
+          <button className={!filterCat ? 'active' : ''} onClick={() => setFilterCat('')}>全部分類</button>
+          {(calData.categories || []).map(c => (
+            <button key={c.id} className={filterCat === c.id ? 'active' : ''} onClick={() => setFilterCat(c.id)}
+                    style={filterCat === c.id ? { background: c.color, borderColor: c.color, color: '#fff' } : {}}>
+              {c.icon} {c.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Calendar body */}
+        {viewMode === 'month' && (
+          <CalendarMonthGrid
+            cursor={cursor}
+            eventsByDate={eventsByDate}
+            categories={calData.categories}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            onSelectEvent={setSelectedEvent}
+          />
+        )}
+        {viewMode === 'week' && (
+          <CalendarWeekView
+            cursor={cursor}
+            eventsByDate={eventsByDate}
+            categories={calData.categories}
+            onSelectEvent={setSelectedEvent}
+          />
+        )}
+        {viewMode === 'list' && (
+          <CalendarListView
+            cursor={cursor}
+            events={events}
+            categories={calData.categories}
+            onSelectEvent={setSelectedEvent}
+          />
+        )}
+
+        {/* Selected day detail (under month view) */}
+        {viewMode === 'month' && selectedDate && (
+          <CalendarDayDetail
+            date={selectedDate}
+            events={eventsByDate[selectedDate] || []}
+            categories={calData.categories}
+            onSelectEvent={setSelectedEvent}
+          />
+        )}
+
+        {/* Event modal */}
+        {selectedEvent && (
+          <CalendarEventModal
+            event={selectedEvent}
+            categories={calData.categories}
+            onClose={() => setSelectedEvent(null)}
+          />
+        )}
+      </div>
+    </section>
+  );
+}
+
+function CalendarMonthGrid({ cursor, eventsByDate, categories, selectedDate, onSelectDate, onSelectEvent }) {
+  const days = calMonthDays(cursor.getFullYear(), cursor.getMonth());
+  const todayStr = formatYmdLocal(new Date());
+  return (
+    <div className="cal-grid reveal">
+      <div className="cal-weekdays">
+        {['日','一','二','三','四','五','六'].map(d => <div key={d}>{d}</div>)}
+      </div>
+      <div className="cal-grid-body">
+        {days.map((d, i) => {
+          if (!d) return <div key={i} className="cal-cell empty"></div>;
+          const evs = eventsByDate[d.dateStr] || [];
+          const isToday = d.dateStr === todayStr;
+          const isSelected = d.dateStr === selectedDate;
+          return (
+            <div key={i} className={`cal-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
+                 onClick={() => onSelectDate(d.dateStr)}>
+              <div className="cal-cell-day">{d.day}</div>
+              <div className="cal-cell-events">
+                {evs.slice(0, 3).map(ev => {
+                  const cat = calCategoryById(categories, ev.categoryId);
+                  return (
+                    <div key={ev.id} className="cal-cell-event" style={{ background: cat.color }}
+                         onClick={(e) => { e.stopPropagation(); onSelectEvent(ev); }}
+                         title={ev.title}>
+                      {ev.title}
+                    </div>
+                  );
+                })}
+                {evs.length > 3 && <div className="cal-cell-more">+{evs.length - 3} 場</div>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CalendarDayDetail({ date, events, categories, onSelectEvent }) {
+  if (events.length === 0) {
+    return (
+      <div className="cal-day-detail reveal">
+        <div className="cal-day-detail-title">{date}</div>
+        <div className="cal-day-empty">此日無活動</div>
+      </div>
+    );
+  }
+  return (
+    <div className="cal-day-detail reveal">
+      <div className="cal-day-detail-title">{date} · {events.length} 場活動</div>
+      <div className="cal-day-list">
+        {events.map(ev => {
+          const cat = calCategoryById(categories, ev.categoryId);
+          return (
+            <button key={ev.id} className="cal-day-item" onClick={() => onSelectEvent(ev)}>
+              <span className="cal-day-cat" style={{ background: cat.color }}>{cat.icon}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="cal-day-title">{ev.title}</div>
+                <div className="cal-day-meta">
+                  {ev.startTime && <span>🕐 {ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</span>}
+                  {ev.location && <span>📍 {ev.location}</span>}
+                </div>
+              </div>
+              <span className="cal-day-arrow">→</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CalendarWeekView({ cursor, eventsByDate, categories, onSelectEvent }) {
+  const start = new Date(cursor);
+  start.setDate(start.getDate() - start.getDay());
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    days.push({ date: d, dateStr: formatYmdLocal(d) });
+  }
+  const todayStr = formatYmdLocal(new Date());
+  return (
+    <div className="cal-week reveal">
+      {days.map(({ date, dateStr }, i) => {
+        const evs = eventsByDate[dateStr] || [];
+        const isToday = dateStr === todayStr;
+        return (
+          <div key={i} className={`cal-week-day ${isToday ? 'today' : ''}`}>
+            <div className="cal-week-header">
+              <div className="cal-week-weekday">{['日','一','二','三','四','五','六'][date.getDay()]}</div>
+              <div className="cal-week-date">{date.getMonth() + 1}/{date.getDate()}</div>
+            </div>
+            <div className="cal-week-events">
+              {evs.length === 0 ? (
+                <div className="cal-week-empty">—</div>
+              ) : evs.map(ev => {
+                const cat = calCategoryById(categories, ev.categoryId);
+                return (
+                  <button key={ev.id} className="cal-week-event" style={{ borderLeftColor: cat.color }}
+                          onClick={() => onSelectEvent(ev)}>
+                    <div className="cal-week-event-title">{ev.title}</div>
+                    {ev.startTime && <div className="cal-week-event-time">{ev.startTime}</div>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CalendarListView({ cursor, events, categories, onSelectEvent }) {
+  // Show events for the cursor's month
+  const ym = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
+  const filtered = events
+    .filter(e => (e.startDate || '').startsWith(ym))
+    .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')));
+  if (filtered.length === 0) {
+    return <div className="cal-empty reveal">此月沒有活動</div>;
+  }
+  return (
+    <div className="cal-list reveal">
+      {filtered.map(ev => {
+        const cat = calCategoryById(categories, ev.categoryId);
+        const sd = new Date(ev.startDate + 'T00:00:00');
+        return (
+          <button key={ev.id} className="cal-list-row" onClick={() => onSelectEvent(ev)}>
+            <div className="cal-list-date">
+              <div className="cal-list-day">{sd.getDate()}</div>
+              <div className="cal-list-weekday">{['日','一','二','三','四','五','六'][sd.getDay()]}</div>
+            </div>
+            <div className="cal-list-tag" style={{ background: cat.color }}></div>
+            <div className="cal-list-info">
+              <div className="cal-list-title">{ev.title}</div>
+              <div className="cal-list-meta">
+                <span style={{ color: cat.color }}>{cat.icon} {cat.name}</span>
+                {ev.startTime && <span>🕐 {ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</span>}
+                {ev.location && <span>📍 {ev.location}</span>}
+              </div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function CalendarEventModal({ event, categories, onClose }) {
+  const cat = calCategoryById(categories, event.categoryId);
+  const isMulti = event.endDate && event.endDate !== event.startDate;
+  return (
+    <div className="cal-modal-overlay" onClick={onClose}>
+      <div className="cal-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="cal-modal-close" onClick={onClose} aria-label="關閉">✕</button>
+        {event.image && (
+          <div className="cal-modal-image" style={{ backgroundImage: `url('${event.image}')` }}></div>
+        )}
+        <div className="cal-modal-body">
+          <div className="cal-modal-tag" style={{ background: cat.color }}>
+            {cat.icon} {cat.name}
+          </div>
+          <h3 className="cal-modal-title">{event.title}</h3>
+          <div className="cal-modal-info">
+            <div className="cal-modal-row">
+              <span className="cal-modal-icon">📅</span>
+              <span>
+                {event.startDate}{isMulti ? ` ~ ${event.endDate}` : ''}
+                {event.startTime && <span style={{ marginLeft: 8, color: 'var(--gold)' }}>{event.startTime}{event.endTime ? `–${event.endTime}` : ''}</span>}
+              </span>
+            </div>
+            {event.location && (
+              <div className="cal-modal-row">
+                <span className="cal-modal-icon">📍</span>
+                <span>{event.location}{event.address ? ` · ${event.address}` : ''}</span>
+              </div>
+            )}
+          </div>
+          {event.description && (
+            <div className="cal-modal-desc">{event.description}</div>
+          )}
+          {event.url && (
+            <a href={event.url} target={event.url.startsWith('http') ? '_blank' : '_self'} rel="noreferrer" className="cal-modal-link">
+              詳情 / 報名 →
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function formatYmdLocal(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function addDaysStr(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return formatYmdLocal(d);
+}
+
+
 const SECTION_RENDERERS = {
   hero: HeroSection,
   marquee: MarqueeSection,
   auth: AuthSection,
+  forum: ForumSection,
+  'calendar-mini': CalendarMiniSection,
+  'calendar-full': CalendarFullSection,
   albums: AlbumsSection,
   'cards-corner': CardsCornerSection,
   timeline: TimelineSection,
@@ -2775,7 +5147,7 @@ function Nav({ site, navigation, ctaButton, onMobileToggle }) {
           {user && (
             <a href={authAnchor} className="nav-user-pill desktop-only" style={{ display: 'inline-flex' }}>
               <span className="dot"></span>
-              <span>{user.nickname}</span>
+              <span>{user.nickname}{user.job ? ` ${user.job}` : ''}</span>
             </a>
           )}
           {ctaButton && ctaButton.label && (

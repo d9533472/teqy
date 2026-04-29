@@ -603,6 +603,140 @@
   .badge.warn { background: rgba(184,134,11,0.15); color: var(--gold); }
   .badge.danger { background: rgba(168,56,56,0.12); color: var(--danger); }
 
+  /* Forum admin: link styled as button */
+  .link-as-btn {
+    background: transparent; border: none; padding: 0;
+    color: inherit; cursor: pointer; text-align: left;
+    font-family: inherit; font-size: inherit;
+  }
+  .link-as-btn:hover strong { color: var(--temple-red); text-decoration: underline; }
+
+  /* Forum admin: bulk action bar */
+  .bulk-action-bar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 14px;
+    background: rgba(184,134,11,0.08);
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .bulk-action-bar select {
+    min-width: 180px;
+  }
+
+  /* Forum admin: category tree */
+  .cat-tree {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+  }
+  .cat-tree-children {
+    margin-left: 24px;
+    border-left: 2px dashed rgba(184,134,11,0.25);
+    padding-left: 12px;
+    margin-top: 4px;
+  }
+  .cat-tree-node { margin: 4px 0; }
+  .cat-tree-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+  .cat-tree-row:hover { border-color: var(--gold); }
+  .cat-tree-handle {
+    flex-shrink: 0; color: var(--ink-mute); font-size: 12px;
+  }
+  .cat-tree-icon { flex-shrink: 0; font-size: 16px; }
+  .cat-tree-name {
+    flex: 1; min-width: 0;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; color: var(--ink);
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap;
+  }
+  .cat-tree-badge {
+    font-size: 11px;
+    background: rgba(184,134,11,0.12);
+    color: var(--gold);
+    padding: 1px 7px;
+    border-radius: 999px;
+  }
+  .cat-tree-controls { display: flex; gap: 2px; flex-shrink: 0; }
+  .cat-tree-edit {
+    margin-top: 6px;
+    margin-left: 36px;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+  }
+
+  /* Thread admin view */
+  .thread-admin-body {
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 4px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .thread-admin-body p { margin-bottom: 0.8em; }
+  .thread-admin-body img { max-width: 100%; height: auto; border-radius: 4px; }
+  .thread-admin-body a { color: var(--temple-red); text-decoration: underline; }
+  .thread-admin-body ul, .thread-admin-body ol { margin: 0 0 1em 1.5em; }
+
+  .admin-replies-list {
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .admin-reply-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-reply-item:last-child { border-bottom: none; }
+  .admin-reply-body {
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .admin-reply-body p { margin-bottom: 0.6em; }
+  .admin-reply-body p:last-child { margin-bottom: 0; }
+  .admin-reply-body img { max-width: 100%; height: auto; border-radius: 4px; }
+
+  /* Forum editor (admin) — shares forum-editor styles from index, redefine here */
+  .forum-editor {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .forum-editor:focus-within { border-color: var(--temple-red); }
+  .forum-editor-toolbar {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    padding: 6px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .forum-editor-toolbar button {
+    padding: 4px 10px; background: transparent; border: 1px solid transparent;
+    border-radius: 4px; font-family: inherit; font-size: 14px;
+    color: var(--ink); cursor: pointer; transition: all 0.15s;
+  }
+  .forum-editor-toolbar button:hover:not(:disabled) {
+    background: var(--bg-card); border-color: var(--border-strong);
+  }
+  .forum-editor-divider { width: 1px; background: var(--border-strong); margin: 4px 4px; }
+  .forum-editor-area {
+    min-height: 180px; padding: 12px 14px;
+    font-size: 14px; line-height: 1.7;
+    color: var(--ink); outline: none;
+  }
+  .forum-editor-area.compact { min-height: 80px; }
+
   .cover-pick {
     width: 40px; height: 40px;
     border-radius: 4px;
@@ -1106,6 +1240,36 @@ const SECTION_SCHEMAS = {
       { key: 'eyebrow', label: '小標', type: 'text', placeholder: '會員專區' },
       { key: 'titleHtml', label: '標題 (留空用預設「會員登入/註冊」)', type: 'html' },
       { key: 'description', label: '說明文字 (顯示在登入分頁)', type: 'textarea' }
+    ]
+  },
+  forum: {
+    label: '討論區',
+    icon: '💬',
+    summary: (d) => d.eyebrow || '討論區',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'Community' },
+      { key: 'titleHtml', label: '標題', type: 'html', placeholder: '法務交流' },
+      { key: 'description', label: '說明文字', type: 'textarea', placeholder: '清淨慈悲、廣結善緣;歡迎在此分享修行心得、提問交流。' }
+    ]
+  },
+  'calendar-mini': {
+    label: '行事曆 - 小工具(本月活動)',
+    icon: '📅',
+    summary: (d) => d.eyebrow || '本月活動',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'This Month' },
+      { key: 'titleHtml', label: '標題', type: 'html', placeholder: '本月活動' },
+      { key: 'fullCalendarUrl', label: '完整行事曆頁面連結 (選填)', type: 'link', help: '設定後右上角會出現「查看完整行事曆 →」按鈕,且每張卡片可點進去看詳情' }
+    ]
+  },
+  'calendar-full': {
+    label: '行事曆 - 大工具(完整月曆)',
+    icon: '🗓',
+    summary: (d) => d.eyebrow || '完整行事曆',
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'Calendar' },
+      { key: 'titleHtml', label: '標題', type: 'html', placeholder: '行事曆' },
+      { key: 'description', label: '說明文字', type: 'textarea' }
     ]
   },
   albums: {
@@ -2721,56 +2885,1458 @@ function UserEditModal({ user, onClose, onSave, onDelete }) {
 
 function UserConfigEditor({ config, onSave }) {
   const [draft, setDraft] = useState(config);
+  const [tab, setTab] = useState('flow'); // flow | lists | email
   const dirty = JSON.stringify(draft) !== JSON.stringify(config);
 
   const updateList = (key, text) => {
     const items = text.split('\n').map(s => s.trim()).filter(Boolean);
     setDraft({ ...draft, [key]: items });
   };
+  const updateEmail = (key, val) => {
+    setDraft({ ...draft, welcomeEmail: { ...(draft.welcomeEmail || {}), [key]: val } });
+  };
+
+  const flow = draft.registrationFlow || 'welcome';
 
   return (
     <div>
-      <div className="text-sm mb-4" style={{ color: 'var(--ink-light)' }}>
-        編輯註冊表單上的下拉選項。每行一個項目。
+      <div className="link-field-tabs" style={{ marginBottom: 16 }}>
+        <button type="button" className={`link-tab ${tab === 'flow' ? 'active' : ''}`} onClick={() => setTab('flow')}>註冊流程</button>
+        <button type="button" className={`link-tab ${tab === 'lists' ? 'active' : ''}`} onClick={() => setTab('lists')}>下拉選項</button>
+        <button type="button" className={`link-tab ${tab === 'email' ? 'active' : ''}`} onClick={() => setTab('email')}>歡迎信內容</button>
       </div>
 
-      <label className="field-label">是否強制信箱驗證才能登入</label>
-      <select value={draft.requireVerification ? '1' : ''} onChange={(e) => setDraft({ ...draft, requireVerification: e.target.value === '1' })}>
-        <option value="1">是 — 必須驗證信箱才能登入</option>
-        <option value="">否 — 註冊後即可登入(驗證信仍會寄)</option>
-      </select>
-
-      <div className="grid-2 mt-4">
+      {tab === 'flow' && (
         <div>
-          <label className="field-label">國家清單(每行一個)</label>
+          <label className="field-label">註冊後流程</label>
+          <select value={flow} onChange={(e) => setDraft({ ...draft, registrationFlow: e.target.value, requireVerification: e.target.value === 'verify' })}>
+            <option value="welcome">寄歡迎信(免驗證,推薦) — 註冊後直接成為會員,系統寄出歡迎信</option>
+            <option value="verify">寄驗證信(必須點連結) — 註冊後須點信中連結才能登入</option>
+          </select>
+          <div className="field-help" style={{ marginTop: 8 }}>
+            ⚠️ 注意:Gmail 會自動「點開」收件人信箱中的所有連結來掃描安全性,若採用驗證流程,使用者收到信時驗證連結可能已被 Gmail 預先點過,顯示「已驗證」。<strong>強烈建議使用「寄歡迎信」模式</strong>,除非你的會員多用其他信箱(Outlook、Yahoo 等)。
+          </div>
+
+          <div className="mt-4 p-3" style={{ background: 'var(--bg)', borderRadius: 6 }}>
+            <div className="text-sm font-medium mb-1" style={{ color: 'var(--ink)' }}>
+              {flow === 'welcome' ? '✓ 目前:寄歡迎信' : '⚠ 目前:寄驗證信'}
+            </div>
+            <div className="text-xs" style={{ color: 'var(--ink-mute)' }}>
+              {flow === 'welcome'
+                ? '註冊完成 → 自動成為會員 → 系統寄出歡迎信(內容可在「歡迎信內容」分頁編輯)'
+                : '註冊完成 → 帳號未啟用 → 寄出驗證信 → 使用者點連結啟用 → 才能登入'}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab === 'lists' && (
+        <div>
+          <div className="text-sm mb-4" style={{ color: 'var(--ink-light)' }}>
+            編輯註冊表單上的下拉選項。每行一個項目。
+          </div>
+          <div className="grid-2">
+            <div>
+              <label className="field-label">國家清單(每行一個)</label>
+              <textarea
+                value={(draft.countries || []).join('\n')}
+                onChange={(e) => updateList('countries', e.target.value)}
+                style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
+              />
+            </div>
+            <div>
+              <label className="field-label">天職選項(每行一個)</label>
+              <textarea
+                value={(draft.jobs || []).join('\n')}
+                onChange={(e) => updateList('jobs', e.target.value)}
+                style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
+              />
+            </div>
+          </div>
+          <label className="field-label mt-4">台灣縣市清單(每行一個)</label>
           <textarea
-            value={(draft.countries || []).join('\n')}
-            onChange={(e) => updateList('countries', e.target.value)}
+            value={(draft.twRegions || []).join('\n')}
+            onChange={(e) => updateList('twRegions', e.target.value)}
             style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
           />
         </div>
+      )}
+
+      {tab === 'email' && (
         <div>
-          <label className="field-label">天職選項(每行一個)</label>
+          <div className="text-sm mb-4" style={{ color: 'var(--ink-light)' }}>
+            編輯歡迎信的內容。可使用以下變數,系統會自動替換:
+          </div>
+          <div className="mb-4 p-3" style={{ background: 'var(--bg)', borderRadius: 6, fontSize: 12, color: 'var(--ink-soft)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 8 }}>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{nickname}'}</code> 使用者稱呼</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{email}'}</code> 註冊信箱</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{gender}'}</code> 道號(乾道/坤道)</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{job}'}</code> 天職</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{country}'}</code> 國家</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{region}'}</code> 縣市</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{siteName}'}</code> 網站名稱</div>
+            </div>
+          </div>
+
+          <label className="field-label">郵件主旨</label>
+          <input type="text" value={(draft.welcomeEmail || {}).subject || ''} onChange={(e) => updateEmail('subject', e.target.value)} placeholder="【{siteName}】感謝您的註冊" />
+
+          <label className="field-label mt-3">問候語</label>
+          <input type="text" value={(draft.welcomeEmail || {}).greeting || ''} onChange={(e) => updateEmail('greeting', e.target.value)} placeholder="{nickname} 道親,您好" />
+
+          <label className="field-label mt-3">內文(支援 HTML 標籤)</label>
           <textarea
-            value={(draft.jobs || []).join('\n')}
-            onChange={(e) => updateList('jobs', e.target.value)}
+            value={(draft.welcomeEmail || {}).bodyHtml || ''}
+            onChange={(e) => updateEmail('bodyHtml', e.target.value)}
             style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
+            placeholder='<p>歡迎您加入...</p>'
           />
+          <div className="field-help">
+            可用 HTML 標籤:<code>&lt;p&gt;</code> <code>&lt;strong&gt;</code> <code>&lt;ul&gt;&lt;li&gt;</code> <code>&lt;a href=""&gt;</code> <code>&lt;br&gt;</code> 等。每段請用 <code>&lt;p&gt;</code> 包起來。
+          </div>
+
+          <label className="field-label mt-3">署名</label>
+          <input type="text" value={(draft.welcomeEmail || {}).signature || ''} onChange={(e) => updateEmail('signature', e.target.value)} placeholder="淨慈寺文化園區 敬上" />
+
+          <div className="mt-6 p-4" style={{ background: 'var(--paper, #f5efe4)', border: '1px solid rgba(184,134,11,0.25)', borderRadius: 4 }}>
+            <div className="text-xs mb-2" style={{ color: 'var(--gold)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>預覽(以測試資料替換變數)</div>
+            <WelcomeEmailPreview tpl={draft.welcomeEmail || {}} />
+          </div>
         </div>
-      </div>
+      )}
 
-      <label className="field-label mt-4">台灣縣市清單(每行一個,使用者選擇國家為「台灣」時才會顯示)</label>
-      <textarea
-        value={(draft.twRegions || []).join('\n')}
-        onChange={(e) => updateList('twRegions', e.target.value)}
-        style={{ minHeight: 200, fontFamily: 'monospace', fontSize: 13 }}
-      />
-
-      <div className="mt-6">
+      <div className="mt-6 sticky bottom-0 py-4" style={{ background: 'var(--bg-card)', borderTop: dirty ? '1px solid var(--border)' : 'none' }}>
         <button className="btn btn-primary" onClick={() => onSave(draft)} disabled={!dirty}>
           {dirty ? '儲存設定' : '尚無變更'}
         </button>
       </div>
+    </div>
+  );
+}
+
+function WelcomeEmailPreview({ tpl }) {
+  const sample = {
+    siteName: '淨慈寺文化園區',
+    nickname: '王小明',
+    email: 'sample@example.com',
+    gender: '乾道',
+    job: '道親',
+    country: '台灣',
+    region: '台北市'
+  };
+  const fill = (s) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => sample[k] !== undefined ? sample[k] : m);
+  const subject = fill(tpl.subject);
+  const greeting = fill(tpl.greeting);
+  const body = fill(tpl.bodyHtml);
+  const signature = fill(tpl.signature);
+
+  return (
+    <div style={{ fontFamily: 'Noto Serif TC, serif', background: '#faf5eb', padding: 16, borderRadius: 4, border: '1px solid #d4cab7' }}>
+      <div style={{ fontSize: 13, color: '#8a7a6a', marginBottom: 8 }}>
+        主旨: <span style={{ color: '#1a1410', fontWeight: 500 }}>{subject || '(空)'}</span>
+      </div>
+      <hr style={{ border: 'none', borderTop: '1px solid #d4cab7', margin: '12px 0' }} />
+      {greeting && <p style={{ fontWeight: 500, color: '#1a1410', margin: '0 0 12px' }}>{greeting}</p>}
+      <div style={{ color: '#2d2520', lineHeight: 1.7, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: body }} />
+      {signature && <p style={{ marginTop: 16, fontStyle: 'italic', color: '#57463a', textAlign: 'right', fontSize: 13 }}>{signature}</p>}
+    </div>
+  );
+}
+
+
+// ============================================================
+// Forum Manager — categories + threads/replies moderation
+// ============================================================
+function ForumManagerView({ password, showToast }) {
+  const [data, setData] = useState(null);
+  const [tab, setTab] = useState('categories'); // categories | threads
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [filterCatId, setFilterCatId] = useState(''); // category filter
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [openThread, setOpenThread] = useState(null); // thread object when reading/editing
+  const [showCompose, setShowCompose] = useState(false);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const r = await gasPost({ action: 'adminForumGetAll', password });
+      if (r.ok) {
+        setData(r.data);
+        // Refresh openThread if open
+        if (openThread) {
+          const updated = (r.data.threads || []).find(t => t.id === openThread.id);
+          if (updated) setOpenThread(updated);
+        }
+      }
+    } catch (e) {
+      showToast('載入失敗', 'error');
+    }
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  const saveCategories = async (cats) => {
+    const r = await gasPost({ action: 'adminForumSaveCategories', password, categories: cats });
+    if (r.ok) { showToast('分類已儲存', 'success'); load(); }
+    else showToast('儲存失敗', 'error');
+  };
+
+  const togglePin = async (thread) => {
+    const r = await gasPost({ action: 'adminForumPinThread', password, threadId: thread.id, pinned: !thread.pinned });
+    if (r.ok) { showToast(thread.pinned ? '已取消置頂' : '已置頂', 'success'); load(); }
+  };
+  const toggleLock = async (thread) => {
+    const r = await gasPost({ action: 'adminForumLockThread', password, threadId: thread.id, locked: !thread.locked });
+    if (r.ok) { showToast(thread.locked ? '已解鎖' : '已鎖定', 'success'); load(); }
+  };
+  const delThread = async (thread) => {
+    if (!confirm(`確定刪除討論串「${thread.title}」?\n所有留言也會一起刪除,無法復原。`)) return;
+    const r = await gasPost({ action: 'adminForumDeleteThread', password, threadId: thread.id });
+    if (r.ok) { showToast('已刪除', 'success'); setOpenThread(null); load(); }
+  };
+  const moveThread = async (thread, newCatId) => {
+    if (newCatId === thread.categoryId) return;
+    const r = await gasPost({ action: 'adminForumMoveThread', password, threadId: thread.id, categoryId: newCatId });
+    if (r.ok) { showToast('已移動分類', 'success'); load(); }
+    else showToast('移動失敗', 'error');
+  };
+  const updateThread = async (threadId, patch) => {
+    const r = await gasPost({ action: 'adminForumUpdateThread', password, threadId, patch });
+    if (r.ok) { showToast('已更新文章', 'success'); load(); return true; }
+    showToast('更新失敗', 'error'); return false;
+  };
+  const updateReply = async (threadId, replyId, contentHtml) => {
+    const r = await gasPost({ action: 'adminForumUpdateReply', password, threadId, replyId, contentHtml });
+    if (r.ok) { showToast('已更新留言', 'success'); load(); return true; }
+    showToast('更新失敗', 'error'); return false;
+  };
+  const deleteReply = async (threadId, replyId) => {
+    if (!confirm('確定刪除此留言?')) return;
+    const r = await gasPost({ action: 'adminForumDeleteReply', password, threadId, replyId });
+    if (r.ok) { showToast('已刪除留言', 'success'); load(); }
+  };
+  const createAdminThread = async (payload) => {
+    const r = await gasPost({ action: 'adminForumCreateThread', password, ...payload });
+    if (r.ok) { showToast('已發布', 'success'); setShowCompose(false); load(); }
+    else showToast('發布失敗: ' + (r.error || ''), 'error');
+  };
+
+  // Bulk actions
+  const bulkMove = async (categoryId) => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0 || !categoryId) return;
+    const r = await gasPost({ action: 'adminForumBulkMove', password, threadIds: ids, categoryId });
+    if (r.ok) { showToast(`已移動 ${r.moved} 篇`, 'success'); setSelectedIds(new Set()); load(); }
+  };
+  const bulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (!confirm(`確定刪除已選的 ${ids.length} 篇文章及其所有留言?無法復原。`)) return;
+    const r = await gasPost({ action: 'adminForumBulkDelete', password, threadIds: ids });
+    if (r.ok) { showToast(`已刪除 ${r.deleted} 篇`, 'success'); setSelectedIds(new Set()); load(); }
+  };
+
+  if (loading || !data) {
+    return <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mute)' }}>載入中⋯</div>;
+  }
+
+  // Helper: get all descendant ids (for filtering by parent category)
+  const getDescendantIds = (catId) => {
+    const out = [catId];
+    (data.categories || []).filter(c => c.parentId === catId).forEach(child => {
+      out.push(...getDescendantIds(child.id));
+    });
+    return out;
+  };
+
+  const allThreads = (data.threads || []).slice().sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return new Date(b.lastReplyAt || b.createdAt) - new Date(a.lastReplyAt || a.createdAt);
+  });
+
+  let filteredThreads = allThreads;
+  if (filterCatId) {
+    const ids = new Set(getDescendantIds(filterCatId));
+    filteredThreads = filteredThreads.filter(t => ids.has(t.categoryId));
+  }
+  if (search) {
+    const s = search.toLowerCase();
+    filteredThreads = filteredThreads.filter(t =>
+      t.title.toLowerCase().includes(s) ||
+      (t.author?.nickname || '').toLowerCase().includes(s) ||
+      stripHtmlAdmin(t.contentHtml || '').toLowerCase().includes(s)
+    );
+  }
+
+  const categoryById = (id) => (data.categories || []).find(c => c.id === id);
+  const allCats = (data.categories || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const catOptions = renderCatOptions(allCats);
+
+  // Selection helpers
+  const allSelected = filteredThreads.length > 0 && filteredThreads.every(t => selectedIds.has(t.id));
+  const toggleAll = () => {
+    if (allSelected) setSelectedIds(new Set());
+    else setSelectedIds(new Set(filteredThreads.map(t => t.id)));
+  };
+  const toggleOne = (id) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelectedIds(next);
+  };
+
+  // If a thread is open in reader/editor, show that view
+  if (openThread) {
+    return (
+      <ForumThreadAdminView
+        thread={openThread}
+        categories={data.categories || []}
+        onBack={() => setOpenThread(null)}
+        onPin={() => togglePin(openThread)}
+        onLock={() => toggleLock(openThread)}
+        onDelete={() => delThread(openThread)}
+        onMove={(catId) => moveThread(openThread, catId)}
+        onUpdate={async (patch) => {
+          const ok = await updateThread(openThread.id, patch);
+          return ok;
+        }}
+        onUpdateReply={(replyId, html) => updateReply(openThread.id, replyId, html)}
+        onDeleteReply={(replyId) => deleteReply(openThread.id, replyId)}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <div>
+            <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>💬 討論區管理</h2>
+            <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>分類結構、文章 & 留言內容、置頂/鎖定/刪除/移動</div>
+          </div>
+          <div className="flex gap-2">
+            <button className="btn btn-primary btn-sm" onClick={() => setShowCompose(true)}>+ 管理員發文</button>
+            <button className="btn btn-secondary btn-sm" onClick={load}>重新整理</button>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
+          <div className="user-stat-card"><div className="user-stat-num">{(data.categories || []).length}</div><div className="user-stat-label">分類</div></div>
+          <div className="user-stat-card"><div className="user-stat-num">{allThreads.length}</div><div className="user-stat-label">討論串</div></div>
+          <div className="user-stat-card"><div className="user-stat-num">{allThreads.reduce((s, t) => s + (t.replies || []).length, 0)}</div><div className="user-stat-label">留言</div></div>
+          <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--gold)' }}>{allThreads.filter(t => t.pinned).length}</div><div className="user-stat-label">置頂</div></div>
+        </div>
+      </div>
+
+      <div className="card p-6">
+        <div className="link-field-tabs" style={{ marginBottom: 16 }}>
+          <button type="button" className={`link-tab ${tab === 'categories' ? 'active' : ''}`} onClick={() => setTab('categories')}>分類管理</button>
+          <button type="button" className={`link-tab ${tab === 'threads' ? 'active' : ''}`} onClick={() => setTab('threads')}>文章列表</button>
+        </div>
+
+        {tab === 'categories' && (
+          <ForumCategoriesEditor
+            categories={data.categories || []}
+            threads={data.threads || []}
+            onSave={saveCategories}
+          />
+        )}
+
+        {tab === 'threads' && (
+          <div>
+            {/* Filter & search */}
+            <div className="flex flex-wrap gap-2 items-center mb-3">
+              <input type="text" placeholder="🔍 搜尋標題/作者/內容" value={search} onChange={(e) => setSearch(e.target.value)} style={{ flex: 1, minWidth: 200 }} />
+              <select value={filterCatId} onChange={(e) => setFilterCatId(e.target.value)} style={{ minWidth: 180 }}>
+                <option value="">全部分類</option>
+                {catOptions}
+              </select>
+            </div>
+
+            {/* Bulk action bar (when selection > 0) */}
+            {selectedIds.size > 0 && (
+              <div className="bulk-action-bar">
+                <span className="text-sm font-medium" style={{ color: 'var(--temple-red)' }}>已選 {selectedIds.size} 篇</span>
+                <select onChange={(e) => { if (e.target.value) { bulkMove(e.target.value); e.target.value = ''; } }} defaultValue="">
+                  <option value="">移動到分類⋯</option>
+                  {catOptions}
+                </select>
+                <button className="btn btn-danger btn-sm" onClick={bulkDelete}>刪除選取</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setSelectedIds(new Set())}>取消選取</button>
+              </div>
+            )}
+
+            {filteredThreads.length === 0 ? (
+              <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mute)' }}>
+                {allThreads.length === 0 ? '尚無任何討論串' : '沒有符合的結果'}
+              </div>
+            ) : (
+              <div className="users-table-wrap">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: 28 }}>
+                        <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+                      </th>
+                      <th style={{ width: 60 }}>狀態</th>
+                      <th>標題</th>
+                      <th>分類</th>
+                      <th>作者</th>
+                      <th style={{ textAlign: 'center' }}>留言</th>
+                      <th style={{ textAlign: 'center' }}>讚</th>
+                      <th>最後活動</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredThreads.map(t => {
+                      const cat = categoryById(t.categoryId);
+                      const sel = selectedIds.has(t.id);
+                      return (
+                        <tr key={t.id} style={sel ? { background: 'rgba(139,36,33,0.05)' } : {}}>
+                          <td>
+                            <input type="checkbox" checked={sel} onChange={() => toggleOne(t.id)} />
+                          </td>
+                          <td style={{ whiteSpace: 'nowrap' }}>
+                            {t.pinned && <span className="badge warn" style={{ marginRight: 2 }}>📌</span>}
+                            {t.locked && <span className="badge danger" style={{ marginRight: 2 }}>🔒</span>}
+                            {t.isAdminPost && <span className="badge success" title="管理員發文">★</span>}
+                          </td>
+                          <td>
+                            <button className="link-as-btn" onClick={() => setOpenThread(t)}><strong>{t.title}</strong></button>
+                          </td>
+                          <td style={{ fontSize: 12 }}>{cat ? `${cat.icon} ${cat.name}` : <span style={{ color: 'var(--danger)' }}>(無分類)</span>}</td>
+                          <td style={{ fontSize: 12 }}>{t.author?.nickname}{t.author?.job ? ` ${t.author.job}` : ''}</td>
+                          <td style={{ textAlign: 'center' }}>{(t.replies || []).length}</td>
+                          <td style={{ textAlign: 'center' }}>{(t.likes || []).length}</td>
+                          <td style={{ fontSize: 11, color: 'var(--ink-mute)' }}>
+                            {t.lastReplyAt ? new Date(t.lastReplyAt).toLocaleDateString('zh-TW') : '—'}
+                          </td>
+                          <td style={{ whiteSpace: 'nowrap' }}>
+                            <button className="btn btn-ghost btn-sm" onClick={() => setOpenThread(t)}>檢視</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Admin compose modal */}
+      {showCompose && (
+        <ForumAdminComposeModal
+          categories={data.categories || []}
+          onClose={() => setShowCompose(false)}
+          onSubmit={createAdminThread}
+        />
+      )}
+    </div>
+  );
+}
+
+// Build hierarchical <option> elements with indentation
+function renderCatOptions(cats, parentId, depth) {
+  parentId = parentId || null;
+  depth = depth || 0;
+  const out = [];
+  cats.filter(c => (c.parentId || null) === parentId).forEach(c => {
+    out.push(<option key={c.id} value={c.id}>{'\u00a0\u00a0'.repeat(depth)}{c.icon} {c.name}</option>);
+    out.push(...renderCatOptions(cats, c.id, depth + 1));
+  });
+  return out;
+}
+
+function stripHtmlAdmin(s) { return String(s || '').replace(/<[^>]+>/g, ' '); }
+
+// ============================================================
+// Forum thread admin view — read full thread, edit thread + replies, move, etc.
+// ============================================================
+function ForumThreadAdminView({ thread, categories, onBack, onPin, onLock, onDelete, onMove, onUpdate, onUpdateReply, onDeleteReply }) {
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(thread.title);
+  const editorRef = useRef(null);
+  const [editingReplyId, setEditingReplyId] = useState(null);
+  const replyEditorRefs = useRef({});
+
+  useEffect(() => {
+    if (editing && editorRef.current) {
+      editorRef.current.innerHTML = thread.contentHtml || '';
+    }
+  }, [editing, thread.id]);
+
+  const cat = categories.find(c => c.id === thread.categoryId);
+
+  const saveEdit = async () => {
+    const html = editorRef.current?.innerHTML || '';
+    if (!editTitle.trim()) { alert('標題不可空白'); return; }
+    if (!html.trim() || html === '<br>') { alert('內容不可空白'); return; }
+    const ok = await onUpdate({ title: editTitle.trim(), contentHtml: html });
+    if (ok) setEditing(false);
+  };
+
+  const saveReply = async (reply) => {
+    const ref = replyEditorRefs.current[reply.id];
+    if (!ref) return;
+    const html = ref.innerHTML;
+    if (!html.trim() || html === '<br>') { alert('內容不可空白'); return; }
+    const ok = await onUpdateReply(reply.id, html);
+    if (ok) setEditingReplyId(null);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-4">
+        <button className="btn btn-secondary btn-sm" onClick={onBack}>← 返回列表</button>
+        <span className="text-sm" style={{ color: 'var(--ink-mute)' }}>·</span>
+        <span className="text-sm" style={{ color: 'var(--ink-light)' }}>{cat ? `${cat.icon} ${cat.name}` : '(無分類)'}</span>
+      </div>
+
+      <div className="card p-6">
+        {/* Thread head */}
+        <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {thread.pinned && <span className="badge warn">📌 置頂</span>}
+              {thread.locked && <span className="badge danger">🔒 已鎖定</span>}
+              {thread.isAdminPost && <span className="badge success">★ 管理員發文</span>}
+            </div>
+            {editing ? (
+              <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} style={{ fontSize: 18, fontWeight: 500 }} />
+            ) : (
+              <h2 className="font-serif text-2xl font-medium" style={{ margin: 0 }}>{thread.title}</h2>
+            )}
+            <div className="text-xs mt-2" style={{ color: 'var(--ink-mute)' }}>
+              {thread.author?.nickname}{thread.author?.job ? ` · ${thread.author.job}` : ''} · {new Date(thread.createdAt).toLocaleString('zh-TW')}
+              {thread.editedByAdmin && <span style={{ color: 'var(--temple-red)', marginLeft: 8 }}>(管理員已編輯)</span>}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1" style={{ alignItems: 'flex-start' }}>
+            {!editing && (
+              <>
+                <select value={thread.categoryId} onChange={(e) => onMove(e.target.value)} className="btn btn-ghost btn-sm" style={{ paddingTop: 6, paddingBottom: 6 }}>
+                  {renderCatOptions(categories.slice().sort((a, b) => (a.order || 0) - (b.order || 0)))}
+                </select>
+                <button className="btn btn-ghost btn-sm" onClick={onPin}>{thread.pinned ? '取消置頂' : '📌 置頂'}</button>
+                <button className="btn btn-ghost btn-sm" onClick={onLock}>{thread.locked ? '🔓 解鎖' : '🔒 鎖定'}</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setEditing(true)}>✎ 編輯</button>
+                <button className="btn btn-ghost btn-sm" onClick={onDelete} style={{ color: 'var(--danger)' }}>✕ 刪除</button>
+              </>
+            )}
+            {editing && (
+              <>
+                <button className="btn btn-secondary btn-sm" onClick={() => setEditing(false)}>取消</button>
+                <button className="btn btn-primary btn-sm" onClick={saveEdit}>儲存變更</button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Thread body */}
+        <div className="thread-admin-body">
+          {editing ? (
+            <AdminContentEditor editorRef={editorRef} initialContent={thread.contentHtml} />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: thread.contentHtml }} />
+          )}
+        </div>
+
+        <div className="text-xs mt-3" style={{ color: 'var(--ink-mute)' }}>
+          {(thread.replies || []).length} 則留言 · {(thread.likes || []).length} 個讚
+        </div>
+      </div>
+
+      {/* Replies */}
+      <div className="card p-6 mt-4">
+        <h3 className="font-serif text-lg font-medium mb-3">留言 ({(thread.replies || []).length})</h3>
+        {(thread.replies || []).length === 0 ? (
+          <div style={{ padding: 16, textAlign: 'center', color: 'var(--ink-mute)' }}>尚無留言</div>
+        ) : (
+          <div className="admin-replies-list">
+            {(thread.replies || []).map(r => {
+              const isReplyEditing = editingReplyId === r.id;
+              const parent = r.parentId ? (thread.replies || []).find(x => x.id === r.parentId) : null;
+              return (
+                <div key={r.id} className="admin-reply-item">
+                  <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+                    <div className="text-sm">
+                      <strong>{r.author?.nickname}</strong>
+                      {r.author?.job && <span className="text-xs" style={{ color: 'var(--gold)', marginLeft: 6 }}>{r.author.job}</span>}
+                      <span className="text-xs ml-2" style={{ color: 'var(--ink-mute)' }}>{new Date(r.createdAt).toLocaleString('zh-TW')}</span>
+                      {r.editedByAdmin && <span className="text-xs ml-2" style={{ color: 'var(--temple-red)' }}>(管理員已編輯)</span>}
+                      {parent && <span className="text-xs ml-2" style={{ color: 'var(--ink-mute)' }}>↩ 回覆 {parent.author?.nickname}</span>}
+                    </div>
+                    <div className="flex gap-1">
+                      {isReplyEditing ? (
+                        <>
+                          <button className="btn btn-ghost btn-sm" onClick={() => setEditingReplyId(null)}>取消</button>
+                          <button className="btn btn-primary btn-sm" onClick={() => saveReply(r)}>儲存</button>
+                        </>
+                      ) : (
+                        <>
+                          <button className="btn btn-ghost btn-sm" onClick={() => setEditingReplyId(r.id)}>編輯</button>
+                          <button className="btn btn-ghost btn-sm" onClick={() => onDeleteReply(r.id)} style={{ color: 'var(--danger)' }}>刪除</button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="admin-reply-body">
+                    {isReplyEditing ? (
+                      <AdminContentEditor
+                        editorRef={(el) => { replyEditorRefs.current[r.id] = el; }}
+                        initialContent={r.contentHtml}
+                        compact
+                      />
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: r.contentHtml }} />
+                    )}
+                  </div>
+                  <div className="text-xs mt-2" style={{ color: 'var(--ink-mute)' }}>{(r.likes || []).length} 個讚</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Lightweight contentEditable editor for admin — reuses similar pattern as public side
+function AdminContentEditor({ editorRef, initialContent, compact }) {
+  const innerRef = useRef(null);
+  const setRef = (el) => {
+    innerRef.current = el;
+    if (typeof editorRef === 'function') editorRef(el);
+    else if (editorRef) editorRef.current = el;
+  };
+
+  useEffect(() => {
+    if (innerRef.current && initialContent !== undefined) {
+      innerRef.current.innerHTML = initialContent || '';
+    }
+  }, []);
+
+  const exec = (cmd, val) => { document.execCommand(cmd, false, val); innerRef.current?.focus(); };
+
+  return (
+    <div className="forum-editor">
+      <div className="forum-editor-toolbar" style={{ background: 'var(--bg)' }}>
+        <button type="button" onClick={() => exec('bold')}><strong>B</strong></button>
+        <button type="button" onClick={() => exec('italic')}><em>I</em></button>
+        <button type="button" onClick={() => exec('underline')} style={{ textDecoration: 'underline' }}>U</button>
+        <span className="forum-editor-divider"></span>
+        <button type="button" onClick={() => exec('insertUnorderedList')}>• 列表</button>
+        <button type="button" onClick={() => {
+          const url = prompt('輸入連結網址 (https://...)');
+          if (url) exec('createLink', url);
+        }}>🔗</button>
+      </div>
+      <div
+        ref={setRef}
+        className={`forum-editor-area ${compact ? 'compact' : ''}`}
+        contentEditable
+        suppressContentEditableWarning
+        style={{ background: 'var(--bg-card)', color: 'var(--ink)' }}
+      />
+    </div>
+  );
+}
+
+function ForumAdminComposeModal({ categories, onClose, onSubmit }) {
+  const cats = categories.slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const [categoryId, setCategoryId] = useState(cats[0]?.id || '');
+  const [title, setTitle] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [authorJob, setAuthorJob] = useState('管理員');
+  const [pinned, setPinned] = useState(true);
+  const [locked, setLocked] = useState(false);
+  const editorRef = useRef(null);
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    const html = editorRef.current?.innerHTML || '';
+    if (!title.trim()) { alert('請填寫標題'); return; }
+    if (!html.trim() || html === '<br>') { alert('請填寫內容'); return; }
+    if (!categoryId) { alert('請選擇分類'); return; }
+    setBusy(true);
+    await onSubmit({
+      categoryId,
+      title: title.trim(),
+      contentHtml: html,
+      authorName: authorName.trim(),
+      authorJob: authorJob.trim(),
+      pinned, locked
+    });
+    setBusy(false);
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 720 }}>
+        <h3 className="font-serif text-xl font-medium mb-3">★ 管理員發文</h3>
+        <div className="text-sm mb-4" style={{ color: 'var(--ink-mute)' }}>
+          以管理員身份發布的文章會標記 ★。可選擇是否預設置頂或鎖定回覆。
+        </div>
+
+        <form onSubmit={submit}>
+          <div className="grid-2">
+            <div>
+              <label className="field-label">分類</label>
+              <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
+                {renderCatOptions(cats)}
+              </select>
+            </div>
+            <div>
+              <label className="field-label">作者顯示名稱(選填)</label>
+              <input type="text" value={authorName} onChange={(e) => setAuthorName(e.target.value)} placeholder={'(留空為「' + (cats.length ? '網站名稱' : '') + ' 管理員」)'} />
+            </div>
+          </div>
+
+          <div className="grid-2 mt-3">
+            <div>
+              <label className="field-label">作者標籤(選填)</label>
+              <input type="text" value={authorJob} onChange={(e) => setAuthorJob(e.target.value)} placeholder="管理員" />
+            </div>
+            <div>
+              <label className="field-label">選項</label>
+              <div className="flex flex-col gap-1 text-sm" style={{ color: 'var(--ink-soft)' }}>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={pinned} onChange={(e) => setPinned(e.target.checked)} />
+                  發布後置頂
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={locked} onChange={(e) => setLocked(e.target.checked)} />
+                  鎖定回覆(僅閱讀)
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <label className="field-label mt-3">標題</label>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} required />
+
+          <label className="field-label mt-3">內容</label>
+          <AdminContentEditor editorRef={editorRef} />
+
+          <div className="flex gap-2 mt-4 justify-end">
+            <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>取消</button>
+            <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? '發布中⋯' : '發布文章'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Original ForumCategoriesEditor (legacy stub kept for replacement below)
+// (the actual implementation is just below)
+// ============================================================
+
+function ForumCategoriesEditor({ categories, onSave, threads }) {
+  const [draft, setDraft] = useState(categories);
+  const [editingId, setEditingId] = useState(null);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(categories);
+
+  const update = (id, patch) => {
+    setDraft(draft.map(c => c.id === id ? { ...c, ...patch } : c));
+  };
+
+  // Move within siblings (same parentId)
+  const move = (id, dir) => {
+    const cat = draft.find(c => c.id === id);
+    if (!cat) return;
+    const siblings = draft.filter(c => (c.parentId || null) === (cat.parentId || null));
+    siblings.sort((a, b) => (a.order || 0) - (b.order || 0));
+    const idx = siblings.findIndex(s => s.id === id);
+    const swapWith = siblings[idx + dir];
+    if (!swapWith) return;
+    const swap = [...draft];
+    const a = swap.find(c => c.id === id);
+    const b = swap.find(c => c.id === swapWith.id);
+    [a.order, b.order] = [b.order || 0, a.order || 0];
+    setDraft(swap);
+  };
+
+  // Get descendant ids (recursive)
+  const getDescendants = (parentId) => {
+    const out = [];
+    draft.filter(c => c.parentId === parentId).forEach(child => {
+      out.push(child.id, ...getDescendants(child.id));
+    });
+    return out;
+  };
+
+  const remove = (id) => {
+    const cat = draft.find(c => c.id === id);
+    if (!cat) return;
+    const descIds = getDescendants(id);
+    const allIds = [id, ...descIds];
+    const threadCount = (threads || []).filter(t => allIds.indexOf(t.categoryId) >= 0).length;
+    let warning = `確定刪除分類「${cat.name}」?`;
+    if (descIds.length > 0) warning += `\n此分類底下還有 ${descIds.length} 個子分類也會一併刪除。`;
+    if (threadCount > 0) warning += `\n此分類及子分類共有 ${threadCount} 篇文章會變成「無分類」(不會刪文,但要在「文章列表」手動移到別的分類)。`;
+    if (!confirm(warning)) return;
+    setDraft(draft.filter(c => allIds.indexOf(c.id) < 0));
+  };
+
+  const addRoot = () => {
+    const newCat = {
+      id: 'cat-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
+      parentId: null,
+      name: '新分類', description: '', icon: '💬',
+      order: draft.filter(c => !c.parentId).length,
+      readPolicy: 'members', writePolicy: 'members'
+    };
+    setDraft([...draft, newCat]);
+    setEditingId(newCat.id);
+  };
+
+  const addChild = (parentId) => {
+    const siblings = draft.filter(c => c.parentId === parentId);
+    const newCat = {
+      id: 'cat-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
+      parentId,
+      name: '新子分類', description: '', icon: '💬',
+      order: siblings.length,
+      readPolicy: 'members', writePolicy: 'members'
+    };
+    setDraft([...draft, newCat]);
+    setEditingId(newCat.id);
+  };
+
+  // Move to different parent (re-parent)
+  const reparent = (id, newParentId) => {
+    if (id === newParentId) return; // can't be own parent
+    // Check no circular: newParentId can't be a descendant of id
+    if (getDescendants(id).indexOf(newParentId) >= 0) {
+      alert('不能將分類移到自己的子分類底下');
+      return;
+    }
+    update(id, { parentId: newParentId || null });
+  };
+
+  // Render tree recursively
+  const renderTree = (parentId, depth) => {
+    const siblings = draft.filter(c => (c.parentId || null) === parentId).sort((a, b) => (a.order || 0) - (b.order || 0));
+    if (siblings.length === 0) return null;
+    return (
+      <div className={depth > 0 ? 'cat-tree-children' : ''}>
+        {siblings.map((c, idx) => {
+          const isEditing = editingId === c.id;
+          const childCount = draft.filter(cc => cc.parentId === c.id).length;
+          const allDescendant = [c.id, ...getDescendants(c.id)];
+          const threadCount = (threads || []).filter(t => allDescendant.indexOf(t.categoryId) >= 0).length;
+          // Possible parents: any cat that is NOT this cat or its descendants
+          const possibleParents = draft.filter(p => allDescendant.indexOf(p.id) < 0);
+          return (
+            <div key={c.id} className="cat-tree-node">
+              <div className="cat-tree-row">
+                <span className="cat-tree-handle" style={{ width: 28 + depth * 4 }}>
+                  {depth > 0 ? '└' : ''}
+                </span>
+                <span className="cat-tree-icon">{c.icon || '💬'}</span>
+                <div className="cat-tree-name">
+                  {c.name}
+                  {childCount > 0 && <span className="cat-tree-badge">{childCount} 個子分類</span>}
+                  {threadCount > 0 && <span className="cat-tree-badge" style={{ color: 'var(--temple-red)' }}>{threadCount} 篇文</span>}
+                </div>
+                <div className="cat-tree-controls">
+                  <button type="button" className="btn btn-ghost btn-sm" disabled={idx === 0} onClick={() => move(c.id, -1)}>↑</button>
+                  <button type="button" className="btn btn-ghost btn-sm" disabled={idx === siblings.length - 1} onClick={() => move(c.id, 1)}>↓</button>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => addChild(c.id)} title="新增子分類">+ 子</button>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditingId(isEditing ? null : c.id)}>{isEditing ? '收起' : '編輯'}</button>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => remove(c.id)} style={{ color: 'var(--danger)' }}>✕</button>
+                </div>
+              </div>
+              {isEditing && (
+                <div className="cat-tree-edit">
+                  <div className="grid-2">
+                    <div>
+                      <label className="field-label">圖示(emoji)</label>
+                      <input type="text" value={c.icon || ''} onChange={(e) => update(c.id, { icon: e.target.value })} placeholder="💬" maxLength={2} style={{ fontSize: 18 }} />
+                    </div>
+                    <div>
+                      <label className="field-label">分類名稱</label>
+                      <input type="text" value={c.name || ''} onChange={(e) => update(c.id, { name: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <label className="field-label">描述(選填)</label>
+                    <input type="text" value={c.description || ''} onChange={(e) => update(c.id, { description: e.target.value })} placeholder="例:法務交流、修行心得" />
+                  </div>
+                  <div className="mt-3">
+                    <label className="field-label">所屬上層分類</label>
+                    <select value={c.parentId || ''} onChange={(e) => reparent(c.id, e.target.value || null)}>
+                      <option value="">— 頂層分類 —</option>
+                      {possibleParents.map(p => (
+                        <option key={p.id} value={p.id}>{p.icon} {p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid-2 mt-3">
+                    <div>
+                      <label className="field-label">誰可閱讀</label>
+                      <select value={c.readPolicy || 'members'} onChange={(e) => update(c.id, { readPolicy: e.target.value })}>
+                        <option value="public">所有人(訪客也能看)</option>
+                        <option value="members">僅會員</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="field-label">誰可發文</label>
+                      <select value={c.writePolicy || 'members'} onChange={(e) => update(c.id, { writePolicy: e.target.value })}>
+                        <option value="members">僅會員</option>
+                        <option value="public">僅會員(同上)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/* Render children */}
+              {renderTree(c.id, depth + 1)}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div className="text-sm mb-4" style={{ color: 'var(--ink-light)' }}>
+        建立樹狀分類結構。點「+ 子」可新增任意深度的子分類。每個分類可獨立設定權限,子分類預設繼承上層權限可被覆寫。
+      </div>
+
+      <div className="cat-tree">
+        {renderTree(null, 0)}
+      </div>
+
+      <button type="button" className="btn btn-secondary btn-sm mt-3" onClick={addRoot}>+ 新增頂層分類</button>
+
+      <div className="mt-6 sticky bottom-0 py-4" style={{ background: 'var(--bg-card)', borderTop: dirty ? '1px solid var(--border)' : 'none' }}>
+        <button className="btn btn-primary" onClick={() => onSave(draft)} disabled={!dirty}>
+          {dirty ? '儲存分類結構' : '尚無變更'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+// ============================================================
+// Calendar Manager — events, categories, import (CSV/ICS/Google)
+// ============================================================
+function CalendarManagerView({ password, showToast }) {
+  const [data, setData] = useState(null);
+  const [tab, setTab] = useState('events'); // events | categories | import
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [filterCat, setFilterCat] = useState('');
+  const [filterMonth, setFilterMonth] = useState(''); // 'YYYY-MM' or empty
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [editingEvent, setEditingEvent] = useState(null);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const r = await gasPost({ action: 'adminCalendarGetAll', password });
+      if (r.ok) setData(r.data);
+    } catch (e) { showToast('載入失敗', 'error'); }
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  const saveEvent = async (ev) => {
+    const r = await gasPost({ action: 'adminCalendarSaveEvent', password, event: ev });
+    if (r.ok) { showToast('已儲存', 'success'); setEditingEvent(null); load(); }
+    else showToast('儲存失敗: ' + (r.error || ''), 'error');
+  };
+  const delEvent = async (ev) => {
+    if (!confirm(`確定刪除「${ev.title}」?`)) return;
+    const r = await gasPost({ action: 'adminCalendarDeleteEvent', password, eventId: ev.id });
+    if (r.ok) { showToast('已刪除', 'success'); load(); }
+  };
+  const bulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (!confirm(`確定刪除 ${ids.length} 個活動?`)) return;
+    const r = await gasPost({ action: 'adminCalendarBulkDelete', password, eventIds: ids });
+    if (r.ok) { showToast(`已刪除 ${r.deleted}`, 'success'); setSelectedIds(new Set()); load(); }
+  };
+  const bulkMove = async (catId) => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0 || !catId) return;
+    const r = await gasPost({ action: 'adminCalendarBulkMove', password, eventIds: ids, categoryId: catId });
+    if (r.ok) { showToast(`已移動 ${r.moved}`, 'success'); setSelectedIds(new Set()); load(); }
+  };
+  const saveCategories = async (cats) => {
+    const r = await gasPost({ action: 'adminCalendarSaveCategories', password, categories: cats });
+    if (r.ok) { showToast('分類已儲存', 'success'); load(); }
+    else showToast('儲存失敗', 'error');
+  };
+
+  if (loading || !data) {
+    return <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mute)' }}>載入中⋯</div>;
+  }
+
+  const cats = (data.categories || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  let events = (data.events || []).slice().sort((a, b) =>
+    (b.startDate + (b.startTime || '')).localeCompare(a.startDate + (a.startTime || ''))
+  );
+  if (search) {
+    const s = search.toLowerCase();
+    events = events.filter(e =>
+      e.title.toLowerCase().includes(s) ||
+      (e.description || '').toLowerCase().includes(s) ||
+      (e.location || '').toLowerCase().includes(s));
+  }
+  if (filterCat) events = events.filter(e => e.categoryId === filterCat);
+  if (filterMonth) events = events.filter(e => (e.startDate || '').startsWith(filterMonth));
+
+  const catById = (id) => cats.find(c => c.id === id) || { name: '其他', icon: '·', color: '#999' };
+  const allSelected = events.length > 0 && events.every(e => selectedIds.has(e.id));
+  const toggleAll = () => {
+    if (allSelected) setSelectedIds(new Set());
+    else setSelectedIds(new Set(events.map(e => e.id)));
+  };
+  const toggleOne = (id) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelectedIds(next);
+  };
+
+  // Stats
+  const today = new Date();
+  const ym = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const totalEvents = (data.events || []).length;
+  const thisMonthCount = (data.events || []).filter(e => (e.startDate || '').startsWith(ym)).length;
+  const upcomingCount = (data.events || []).filter(e => (e.endDate || e.startDate) >= formatYmdLocalAdmin(today)).length;
+
+  return (
+    <div>
+      <div className="card p-6 mb-6">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <div>
+            <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>📅 行事曆管理</h2>
+            <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>新增活動、設定分類、匯入 CSV/iCalendar/Google Calendar</div>
+          </div>
+          <div className="flex gap-2">
+            <button className="btn btn-primary btn-sm" onClick={() => setEditingEvent({ startDate: formatYmdLocalAdmin(today) })}>+ 新增活動</button>
+            <button className="btn btn-secondary btn-sm" onClick={load}>重新整理</button>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
+          <div className="user-stat-card"><div className="user-stat-num">{totalEvents}</div><div className="user-stat-label">總活動</div></div>
+          <div className="user-stat-card"><div className="user-stat-num">{thisMonthCount}</div><div className="user-stat-label">本月活動</div></div>
+          <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--temple-red)' }}>{upcomingCount}</div><div className="user-stat-label">未來活動</div></div>
+          <div className="user-stat-card"><div className="user-stat-num" style={{ color: 'var(--gold)' }}>{cats.length}</div><div className="user-stat-label">分類</div></div>
+        </div>
+      </div>
+
+      <div className="card p-6">
+        <div className="link-field-tabs" style={{ marginBottom: 16 }}>
+          <button type="button" className={`link-tab ${tab === 'events' ? 'active' : ''}`} onClick={() => setTab('events')}>活動列表</button>
+          <button type="button" className={`link-tab ${tab === 'categories' ? 'active' : ''}`} onClick={() => setTab('categories')}>分類設定</button>
+          <button type="button" className={`link-tab ${tab === 'import' ? 'active' : ''}`} onClick={() => setTab('import')}>匯入</button>
+        </div>
+
+        {tab === 'events' && (
+          <div>
+            {/* Filter */}
+            <div className="flex flex-wrap gap-2 items-center mb-3">
+              <input type="text" placeholder="🔍 搜尋標題/描述/地點" value={search} onChange={(e) => setSearch(e.target.value)} style={{ flex: 1, minWidth: 180 }} />
+              <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)}>
+                <option value="">全部分類</option>
+                {cats.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+              </select>
+              <input type="month" value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} />
+            </div>
+
+            {selectedIds.size > 0 && (
+              <div className="bulk-action-bar">
+                <span className="text-sm font-medium" style={{ color: 'var(--temple-red)' }}>已選 {selectedIds.size}</span>
+                <select onChange={(e) => { if (e.target.value) { bulkMove(e.target.value); e.target.value = ''; } }} defaultValue="">
+                  <option value="">移動到分類⋯</option>
+                  {cats.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+                </select>
+                <button className="btn btn-danger btn-sm" onClick={bulkDelete}>刪除選取</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setSelectedIds(new Set())}>取消</button>
+              </div>
+            )}
+
+            {events.length === 0 ? (
+              <div style={{ padding: 32, textAlign: 'center', color: 'var(--ink-mute)' }}>
+                {(data.events || []).length === 0 ? '尚未有任何活動,點上方「+ 新增活動」開始' : '沒有符合的結果'}
+              </div>
+            ) : (
+              <div className="users-table-wrap">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: 28 }}><input type="checkbox" checked={allSelected} onChange={toggleAll} /></th>
+                      <th>日期</th>
+                      <th>分類</th>
+                      <th>標題</th>
+                      <th>地點</th>
+                      <th>來源</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {events.map(ev => {
+                      const cat = catById(ev.categoryId);
+                      const sel = selectedIds.has(ev.id);
+                      const isMulti = ev.endDate && ev.endDate !== ev.startDate;
+                      return (
+                        <tr key={ev.id} style={sel ? { background: 'rgba(139,36,33,0.05)' } : {}}>
+                          <td><input type="checkbox" checked={sel} onChange={() => toggleOne(ev.id)} /></td>
+                          <td style={{ whiteSpace: 'nowrap', fontSize: 12 }}>
+                            <div style={{ fontWeight: 500 }}>{ev.startDate}</div>
+                            {isMulti && <div style={{ fontSize: 11, color: 'var(--gold)' }}>～ {ev.endDate}</div>}
+                            {ev.startTime && <div style={{ fontSize: 11, color: 'var(--ink-mute)' }}>{ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</div>}
+                          </td>
+                          <td>
+                            <span className="badge" style={{ background: cat.color + '22', color: cat.color }}>{cat.icon} {cat.name}</span>
+                          </td>
+                          <td>
+                            <button className="link-as-btn" onClick={() => setEditingEvent(ev)}><strong>{ev.title}</strong></button>
+                            {ev.description && <div className="text-xs" style={{ color: 'var(--ink-mute)', marginTop: 2 }}>{ev.description.slice(0, 60)}{ev.description.length > 60 ? '⋯' : ''}</div>}
+                          </td>
+                          <td style={{ fontSize: 12 }}>{ev.location || '—'}</td>
+                          <td style={{ fontSize: 11 }}>
+                            {ev.source === 'csv' && <span className="badge warn">CSV</span>}
+                            {ev.source === 'ics' && <span className="badge warn">ICS</span>}
+                            {ev.source === 'google' && <span className="badge success">Google</span>}
+                            {(!ev.source || ev.source === 'manual') && <span className="badge" style={{ color: 'var(--ink-mute)' }}>手動</span>}
+                          </td>
+                          <td>
+                            <button className="btn btn-ghost btn-sm" onClick={() => setEditingEvent(ev)}>編輯</button>
+                            <button className="btn btn-ghost btn-sm" onClick={() => delEvent(ev)} style={{ color: 'var(--danger)' }}>✕</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'categories' && (
+          <CalendarCategoriesEditor categories={cats} onSave={saveCategories} />
+        )}
+
+        {tab === 'import' && (
+          <CalendarImportPanel password={password} showToast={showToast} onImported={load} />
+        )}
+      </div>
+
+      {editingEvent && (
+        <CalendarEventEditModal
+          event={editingEvent}
+          categories={cats}
+          password={password}
+          showToast={showToast}
+          onClose={() => setEditingEvent(null)}
+          onSave={saveEvent}
+        />
+      )}
+    </div>
+  );
+}
+
+function formatYmdLocalAdmin(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function CalendarEventEditModal({ event, categories, password, showToast, onClose, onSave }) {
+  const [draft, setDraft] = useState({
+    id: event.id || '',
+    title: event.title || '',
+    description: event.description || '',
+    categoryId: event.categoryId || (categories[0]?.id || 'other'),
+    startDate: event.startDate || '',
+    endDate: event.endDate || event.startDate || '',
+    startTime: event.startTime || '',
+    endTime: event.endTime || '',
+    allDay: event.allDay !== false && !event.startTime,
+    location: event.location || '',
+    address: event.address || '',
+    image: event.image || '',
+    url: event.url || '',
+    source: event.source || 'manual'
+  });
+  const update = (patch) => setDraft({ ...draft, ...patch });
+  const submit = (e) => {
+    e?.preventDefault?.();
+    if (!draft.title.trim()) { alert('請填寫標題'); return; }
+    if (!draft.startDate) { alert('請選擇開始日期'); return; }
+    const ev = { ...draft };
+    if (!ev.endDate) ev.endDate = ev.startDate;
+    if (ev.allDay) { ev.startTime = ''; ev.endTime = ''; }
+    onSave(ev);
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 640 }}>
+        <h3 className="font-serif text-xl font-medium mb-3">{event.id ? '編輯活動' : '新增活動'}</h3>
+        <form onSubmit={submit}>
+          <label className="field-label">標題 *</label>
+          <input type="text" value={draft.title} onChange={(e) => update({ title: e.target.value })} required />
+
+          <label className="field-label mt-3">分類</label>
+          <select value={draft.categoryId} onChange={(e) => update({ categoryId: e.target.value })}>
+            {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+          </select>
+
+          <div className="grid-2 mt-3">
+            <div>
+              <label className="field-label">開始日期 *</label>
+              <input type="date" value={draft.startDate} onChange={(e) => update({ startDate: e.target.value, endDate: draft.endDate || e.target.value })} required />
+            </div>
+            <div>
+              <label className="field-label">結束日期 (可同開始日期)</label>
+              <input type="date" value={draft.endDate} onChange={(e) => update({ endDate: e.target.value })} />
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 mt-3 text-sm" style={{ color: 'var(--ink-soft)' }}>
+            <input type="checkbox" checked={draft.allDay} onChange={(e) => update({ allDay: e.target.checked })} />
+            全日活動 (不設定具體時間)
+          </label>
+
+          {!draft.allDay && (
+            <div className="grid-2 mt-3">
+              <div>
+                <label className="field-label">開始時間</label>
+                <input type="time" value={draft.startTime} onChange={(e) => update({ startTime: e.target.value })} />
+              </div>
+              <div>
+                <label className="field-label">結束時間</label>
+                <input type="time" value={draft.endTime} onChange={(e) => update({ endTime: e.target.value })} />
+              </div>
+            </div>
+          )}
+
+          <div className="grid-2 mt-3">
+            <div>
+              <label className="field-label">地點</label>
+              <input type="text" value={draft.location} onChange={(e) => update({ location: e.target.value })} placeholder="例: 大雄寶殿" />
+            </div>
+            <div>
+              <label className="field-label">完整地址 (選填)</label>
+              <input type="text" value={draft.address} onChange={(e) => update({ address: e.target.value })} />
+            </div>
+          </div>
+
+          <label className="field-label mt-3">描述</label>
+          <textarea value={draft.description} onChange={(e) => update({ description: e.target.value })} rows={4} />
+
+          <label className="field-label mt-3">圖片 (選填,顯示在活動詳情)</label>
+          <ImageField value={draft.image} onChange={(v) => update({ image: v })} password={password} showToast={showToast} />
+
+          <label className="field-label mt-3">連結 (選填,如報名表)</label>
+          <input type="text" value={draft.url} onChange={(e) => update({ url: e.target.value })} placeholder="https://..." />
+
+          <div className="flex gap-2 mt-4 justify-end">
+            <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>取消</button>
+            <button type="submit" className="btn btn-primary btn-sm">{event.id ? '儲存變更' : '新增活動'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function CalendarCategoriesEditor({ categories, onSave }) {
+  const [draft, setDraft] = useState(categories);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(categories);
+  const update = (i, patch) => setDraft(draft.map((c, idx) => idx === i ? { ...c, ...patch } : c));
+  const move = (i, dir) => {
+    const j = i + dir;
+    if (j < 0 || j >= draft.length) return;
+    const next = [...draft];
+    [next[i], next[j]] = [next[j], next[i]];
+    setDraft(next);
+  };
+  const remove = (i) => {
+    if (!confirm(`刪除分類「${draft[i].name}」?屬於此分類的活動會變成「無分類」`)) return;
+    setDraft(draft.filter((_, idx) => idx !== i));
+  };
+  const add = () => {
+    setDraft([...draft, {
+      id: 'cat-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 5),
+      name: '新分類', icon: '·', color: '#6b6359', order: draft.length
+    }]);
+  };
+  return (
+    <div>
+      <div className="text-sm mb-4" style={{ color: 'var(--ink-light)' }}>
+        編輯活動分類。每個分類有自己的顏色和圖示,在月曆網格上會以對應顏色顯示。
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {draft.map((c, i) => (
+          <div key={c.id} className="cat-tree-row" style={{ padding: 14 }}>
+            <input type="text" value={c.icon || ''} onChange={(e) => update(i, { icon: e.target.value })} maxLength={2} style={{ width: 50, fontSize: 18, textAlign: 'center' }} />
+            <input type="text" value={c.name || ''} onChange={(e) => update(i, { name: e.target.value })} placeholder="分類名稱" style={{ flex: 1 }} />
+            <input type="color" value={c.color || '#6b6359'} onChange={(e) => update(i, { color: e.target.value })} style={{ width: 44, height: 36, padding: 2, border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer' }} />
+            <button type="button" className="btn btn-ghost btn-sm" disabled={i === 0} onClick={() => move(i, -1)}>↑</button>
+            <button type="button" className="btn btn-ghost btn-sm" disabled={i === draft.length - 1} onClick={() => move(i, 1)}>↓</button>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => remove(i)} style={{ color: 'var(--danger)' }}>✕</button>
+          </div>
+        ))}
+      </div>
+      <button type="button" className="btn btn-secondary btn-sm mt-3" onClick={add}>+ 新增分類</button>
+      <div className="mt-6 sticky bottom-0 py-4" style={{ background: 'var(--bg-card)', borderTop: dirty ? '1px solid var(--border)' : 'none' }}>
+        <button className="btn btn-primary" onClick={() => onSave(draft)} disabled={!dirty}>{dirty ? '儲存分類設定' : '尚無變更'}</button>
+      </div>
+    </div>
+  );
+}
+
+function CalendarImportPanel({ password, showToast, onImported }) {
+  const [tab, setTab] = useState('csv'); // csv | ics | google
+  const [csvText, setCsvText] = useState('');
+  const [icsText, setIcsText] = useState('');
+  const [googleId, setGoogleId] = useState('');
+  const [googleReplace, setGoogleReplace] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const csvFileRef = useRef(null);
+  const icsFileRef = useRef(null);
+
+  const onCsvFile = (file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setCsvText(e.target.result);
+    reader.readAsText(file);
+  };
+  const onIcsFile = (file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setIcsText(e.target.result);
+    reader.readAsText(file);
+  };
+
+  const importCsv = async () => {
+    if (!csvText.trim()) { showToast('請先選擇 CSV 檔案或貼上內容', 'error'); return; }
+    setBusy(true);
+    const r = await gasPost({ action: 'adminCalendarImportCsv', password, csv: csvText });
+    setBusy(false);
+    if (r.ok) {
+      showToast(`成功匯入 ${r.imported} 場活動 (跳過 ${r.skipped})`, 'success');
+      setCsvText(''); if (csvFileRef.current) csvFileRef.current.value = '';
+      onImported();
+    } else showToast('匯入失敗: ' + (r.error || ''), 'error');
+  };
+
+  const importIcs = async () => {
+    if (!icsText.trim()) { showToast('請先選擇 .ics 檔案或貼上內容', 'error'); return; }
+    setBusy(true);
+    const r = await gasPost({ action: 'adminCalendarImportIcs', password, icsText });
+    setBusy(false);
+    if (r.ok) {
+      showToast(`成功匯入 ${r.imported} 場活動`, 'success');
+      setIcsText(''); if (icsFileRef.current) icsFileRef.current.value = '';
+      onImported();
+    } else showToast('匯入失敗: ' + (r.error || ''), 'error');
+  };
+
+  const syncGoogle = async () => {
+    if (!googleId.trim()) { showToast('請填寫日曆 ID', 'error'); return; }
+    if (googleReplace && !confirm('使用「取代模式」會先刪除這個日曆過去同步的全部活動,然後重新匯入。確定?')) return;
+    setBusy(true);
+    const r = await gasPost({ action: 'adminCalendarSyncGoogle', password, calendarId: googleId.trim(), replace: googleReplace });
+    setBusy(false);
+    if (r.ok) {
+      showToast(`已從 Google 同步 ${r.imported} 場 (該日曆共 ${r.total} 場)`, 'success');
+      onImported();
+    } else showToast('同步失敗: ' + (r.error || ''), 'error');
+  };
+
+  return (
+    <div>
+      <div className="link-field-tabs" style={{ marginBottom: 16 }}>
+        <button type="button" className={`link-tab ${tab === 'csv' ? 'active' : ''}`} onClick={() => setTab('csv')}>📄 CSV</button>
+        <button type="button" className={`link-tab ${tab === 'ics' ? 'active' : ''}`} onClick={() => setTab('ics')}>📅 iCalendar (.ics)</button>
+        <button type="button" className={`link-tab ${tab === 'google' ? 'active' : ''}`} onClick={() => setTab('google')}>🔄 Google Calendar 同步</button>
+      </div>
+
+      {tab === 'csv' && (
+        <div>
+          <div className="text-sm mb-3" style={{ color: 'var(--ink-light)' }}>
+            從 Excel 編輯後存成 CSV (UTF-8) 檔案匯入。
+          </div>
+          <div className="p-3 mb-4" style={{ background: 'var(--bg)', borderRadius: 6, fontSize: 13 }}>
+            <div style={{ fontWeight: 500, marginBottom: 6 }}>必要欄位 (CSV 第一列要是這些欄名):</div>
+            <div className="font-mono text-xs" style={{ color: 'var(--temple-red)' }}>
+              title, startDate
+            </div>
+            <div style={{ fontWeight: 500, margin: '10px 0 6px' }}>選填欄位:</div>
+            <div className="font-mono text-xs" style={{ color: 'var(--ink-soft)' }}>
+              description, category, endDate, startTime, endTime, location, address, url
+            </div>
+            <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-mute)' }}>
+              · 日期格式:<code>2026-04-30</code>(YYYY-MM-DD)<br/>
+              · 時間格式:<code>09:00</code>(HH:MM)<br/>
+              · category 可填分類名稱(法會/活動/課程/其他),會自動對應;對應不到歸到「其他」
+            </div>
+          </div>
+          <input type="file" accept=".csv,text/csv" ref={csvFileRef} onChange={(e) => onCsvFile(e.target.files[0])} className="mb-3" />
+          <textarea value={csvText} onChange={(e) => setCsvText(e.target.value)} rows={8} placeholder="或直接貼上 CSV 內容..." style={{ fontFamily: 'monospace', fontSize: 12 }} />
+          <button className="btn btn-primary mt-3" onClick={importCsv} disabled={busy || !csvText.trim()}>{busy ? '匯入中⋯' : '匯入 CSV'}</button>
+        </div>
+      )}
+
+      {tab === 'ics' && (
+        <div>
+          <div className="text-sm mb-3" style={{ color: 'var(--ink-light)' }}>
+            從 Google Calendar / Outlook / Apple Calendar 等匯出的 <code>.ics</code> 檔案。
+          </div>
+          <div className="p-3 mb-4" style={{ background: 'var(--bg)', borderRadius: 6, fontSize: 13 }}>
+            <div style={{ fontWeight: 500, marginBottom: 6 }}>取得 .ics 檔案:</div>
+            <div style={{ color: 'var(--ink-soft)' }}>
+              · <strong>Google Calendar:</strong>設定 → 匯入 / 匯出 → 匯出<br/>
+              · <strong>Outlook:</strong>檔案 → 儲存行事曆 → 選擇格式 .ics<br/>
+              · <strong>Apple 行事曆:</strong>檔案 → 匯出
+            </div>
+          </div>
+          <input type="file" accept=".ics,text/calendar" ref={icsFileRef} onChange={(e) => onIcsFile(e.target.files[0])} className="mb-3" />
+          <textarea value={icsText} onChange={(e) => setIcsText(e.target.value)} rows={8} placeholder="或直接貼上 .ics 內容..." style={{ fontFamily: 'monospace', fontSize: 11 }} />
+          <button className="btn btn-primary mt-3" onClick={importIcs} disabled={busy || !icsText.trim()}>{busy ? '匯入中⋯' : '匯入 ICS'}</button>
+        </div>
+      )}
+
+      {tab === 'google' && (
+        <div>
+          <div className="text-sm mb-3" style={{ color: 'var(--ink-light)' }}>
+            直接從 Google Calendar 同步活動(免下載 .ics)。一次同步當下時間前後 1 個月到 1 年的活動。
+          </div>
+          <div className="p-3 mb-4" style={{ background: 'rgba(184,134,11,0.1)', border: '1px solid rgba(184,134,11,0.3)', borderRadius: 6, fontSize: 13 }}>
+            <div style={{ fontWeight: 500, marginBottom: 6, color: 'var(--gold)' }}>⚠️ 第一次使用須額外授權</div>
+            <div style={{ color: 'var(--ink-soft)' }}>
+              第一次點「立即同步」時 GAS 會跳新權限視窗要求「<strong>查看您 Google 日曆</strong>」,請允許。<br/>
+              <br/>
+              <strong>取得日曆 ID:</strong>進入 Google Calendar → 找到要同步的日曆 → 設定 → 「整合日曆」區段 → 複製「日曆 ID」(格式像 <code>abc@group.calendar.google.com</code>)。<br/>
+              <br/>
+              <strong>注意:</strong>該日曆必須是「執行此 GAS 的 Google 帳號」可以存取的(自己的、或被分享的)。
+            </div>
+          </div>
+          <label className="field-label">Google 日曆 ID</label>
+          <input type="text" value={googleId} onChange={(e) => setGoogleId(e.target.value)} placeholder="abc123@group.calendar.google.com" className="font-mono" style={{ fontSize: 12 }} />
+          <label className="flex items-center gap-2 mt-3 text-sm" style={{ color: 'var(--ink-soft)' }}>
+            <input type="checkbox" checked={googleReplace} onChange={(e) => setGoogleReplace(e.target.checked)} />
+            <strong>取代模式:</strong>先刪除這個日曆過去同步的所有活動,再重新匯入(若不勾就是「只新增不刪舊」)
+          </label>
+          <button className="btn btn-primary mt-3" onClick={syncGoogle} disabled={busy || !googleId.trim()}>{busy ? '同步中⋯' : '🔄 立即同步'}</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -3035,10 +4601,16 @@ function App() {
             <span>📸</span> 相簿管理
             {(content.albums || []).length > 0 && <span className="ml-auto text-xs" style={{ color: 'var(--gold)' }}>{(content.albums || []).length}</span>}
           </div>
+          <div className={`sidebar-link ${active.type === 'calendar-manager' ? 'active' : ''}`} onClick={() => goTo({ type: 'calendar-manager' })}>
+            <span>📅</span> 行事曆管理
+          </div>
 
           <div className="sidebar-section-title">會員</div>
           <div className={`sidebar-link ${active.type === 'users-manager' ? 'active' : ''}`} onClick={() => goTo({ type: 'users-manager' })}>
             <span>👥</span> 使用者管理
+          </div>
+          <div className={`sidebar-link ${active.type === 'forum-manager' ? 'active' : ''}`} onClick={() => goTo({ type: 'forum-manager' })}>
+            <span>💬</span> 討論區管理
           </div>
 
           <div className="sidebar-section-title">工具</div>
@@ -3108,8 +4680,14 @@ function App() {
               showToast={showToast}
             />
           )}
+          {active.type === 'calendar-manager' && (
+            <CalendarManagerView password={password} showToast={showToast} />
+          )}
           {active.type === 'users-manager' && (
             <UsersManagerView password={password} showToast={showToast} />
+          )}
+          {active.type === 'forum-manager' && (
+            <ForumManagerView password={password} showToast={showToast} />
           )}
         </div>
       </main>
