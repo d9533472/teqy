@@ -3790,11 +3790,20 @@ function ForumSection({ data, anchorId }) {
 
   const loadForum = async () => {
     setLoading(true);
+    setMsg(null);
     try {
       const r = await gasPost({ action: 'forumGetData' });
-      if (r.ok) setForumData(r.data);
+      console.log('[Forum] loadForum response:', r);
+      if (r.ok && r.data) {
+        setForumData(r.data);
+      } else {
+        setForumData({ categories: [], threads: [] });
+        setMsg({ type: 'error', text: '討論區載入失敗:' + (r.error || '回應格式錯誤') });
+      }
     } catch (e) {
-      setMsg({ type: 'error', text: '討論區載入失敗' });
+      console.error('[Forum] loadForum error:', e);
+      setForumData({ categories: [], threads: [] });
+      setMsg({ type: 'error', text: '討論區載入失敗:' + (e.message || '網路錯誤') });
     }
     setLoading(false);
   };
@@ -3943,7 +3952,21 @@ function ForumSection({ data, anchorId }) {
     );
   }
 
-  if (!forumData) return null;
+  if (!forumData) {
+    return (
+      <section id={anchorId} className="forum-section">
+        <div className="max-w-5xl mx-auto px-6 lg:px-12 py-16 text-center">
+          <div className="forum-empty" style={{ marginBottom: 16 }}>
+            討論區資料未載入。可能原因:<br/>
+            · GAS 後端尚未部署最新版本<br/>
+            · 網路中斷<br/>
+            · forumGetData API 失效
+          </div>
+          <button className="forum-btn-primary" onClick={loadForum}>↻ 重試</button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id={anchorId} className="forum-section">
