@@ -3775,6 +3775,61 @@ function ResetPasswordModal() {
 }
 
 
+// ErrorBoundary — catches any crash in child components and shows the error
+class ForumErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('[Forum ErrorBoundary]', error, errorInfo);
+    this.setState({ errorInfo });
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <section className="forum-section">
+          <div className="max-w-5xl mx-auto px-6 py-16">
+            <div style={{ background: '#fff5f5', border: '2px solid #c33', borderRadius: 8, padding: 24 }}>
+              <h2 style={{ color: '#c33', marginBottom: 16, fontSize: 20 }}>⚠️ 討論區發生錯誤</h2>
+              <div style={{ marginBottom: 12, fontWeight: 600 }}>請把以下訊息回報給 Claude:</div>
+              <div style={{ background: '#fff', padding: 12, borderRadius: 4, fontFamily: 'monospace', fontSize: 13, color: '#c33', wordBreak: 'break-all', marginBottom: 12 }}>
+                {String(this.state.error?.message || this.state.error || 'Unknown error')}
+              </div>
+              {this.state.error?.stack && (
+                <details>
+                  <summary style={{ cursor: 'pointer', fontSize: 13, color: '#666' }}>展開詳細 stack trace</summary>
+                  <pre style={{ background: '#fff', padding: 12, borderRadius: 4, fontSize: 11, overflow: 'auto', maxHeight: 300, marginTop: 8 }}>
+                    {this.state.error.stack}
+                  </pre>
+                </details>
+              )}
+              <button
+                onClick={() => this.setState({ hasError: false, error: null, errorInfo: null })}
+                style={{ marginTop: 16, padding: '8px 16px', background: '#8b2421', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+              >
+                ↻ 重試
+              </button>
+            </div>
+          </div>
+        </section>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function ForumSectionWrapper(props) {
+  return (
+    <ForumErrorBoundary>
+      <ForumSection {...props} />
+    </ForumErrorBoundary>
+  );
+}
+
 function ForumSection({ data, anchorId }) {
   const { user } = useContext(UserCtx);
   const [forumData, setForumData] = useState(null);
@@ -5088,7 +5143,7 @@ const SECTION_RENDERERS = {
   hero: HeroSection,
   marquee: MarqueeSection,
   auth: AuthSection,
-  forum: ForumSection,
+  forum: ForumSectionWrapper,
   'calendar-mini': CalendarMiniSection,
   'calendar-full': CalendarFullSection,
   albums: AlbumsSection,
