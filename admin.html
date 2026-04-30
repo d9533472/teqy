@@ -173,6 +173,31 @@
     box-shadow: 0 24px 60px -16px rgba(0,0,0,0.3);
   }
 
+  /* Section type picker — scrollable for many section types */
+  .section-picker-modal {
+    max-width: 720px;
+    max-height: 85vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .section-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--bg-card);
+  }
+  .section-picker-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 24px;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* Type picker grid */
   .type-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .type-picker-card {
@@ -2150,18 +2175,20 @@ function SectionEditor({ section, onUpdate, onDelete, onMoveUp, onMoveDown, canM
 function SectionTypePicker({ onPick, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 640 }}>
-        <div className="flex items-center justify-between mb-4">
+      <div className="modal-card section-picker-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="section-picker-header">
           <h3 className="font-serif text-xl font-medium">選擇區塊類型</h3>
           <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
         </div>
-        <div className="type-picker-grid">
-          {Object.entries(SECTION_SCHEMAS).map(([type, schema]) => (
-            <div key={type} className="type-picker-card" onClick={() => onPick(type)}>
-              <div className="icon">{schema.icon}</div>
-              <div className="name">{schema.label}</div>
-            </div>
-          ))}
+        <div className="section-picker-body">
+          <div className="type-picker-grid">
+            {Object.entries(SECTION_SCHEMAS).map(([type, schema]) => (
+              <div key={type} className="type-picker-card" onClick={() => onPick(type)}>
+                <div className="icon">{schema.icon}</div>
+                <div className="name">{schema.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
