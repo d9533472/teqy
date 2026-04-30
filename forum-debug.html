@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>討論區診斷工具</title>
+<style>
+  body { font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; background: #f5efe4; color: #1a1410; margin: 0; padding: 20px; line-height: 1.6; }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 { color: #8b2421; margin-bottom: 8px; }
+  .test { background: #faf5eb; border: 1px solid #d4cab7; border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .test-name { font-weight: 600; font-size: 16px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .badge { padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .ok { background: #d8e8d4; color: #2d5530; }
+  .fail { background: #f0d4d4; color: #8b2421; }
+  .pending { background: #e8e0c8; color: #8a7a6a; }
+  .test-detail { font-size: 13px; color: #57463a; margin-top: 6px; padding: 8px 12px; background: #f5efe4; border-radius: 4px; word-break: break-all; }
+  .test-error { color: #8b2421; font-family: monospace; font-size: 12px; white-space: pre-wrap; }
+  .verdict { background: #8b2421; color: #f5efe4; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 16px; line-height: 1.7; }
+  .verdict.success { background: #2d5530; }
+  button { background: #8b2421; color: #f5efe4; border: none; padding: 10px 20px; border-radius: 4px; font-size: 14px; cursor: pointer; }
+  pre { background: #ede4d2; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 11px; max-height: 200px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔍 討論區診斷工具</h1>
+  <p>這個頁面會自動跑 5 項檢查,告訴你討論區為什麼顯示不出來。</p>
+
+  <div id="tests"></div>
+
+  <div id="verdict"></div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzjSa-FA9S8U4Z8MqBc81btmXG118_k3K_cLoDxBOxDSV2KJyjLXrSRcQStDhIyzcYP/exec';
+
+const tests = [];
+const testsEl = document.getElementById('tests');
+const verdictEl = document.getElementById('verdict');
+
+function addTest(name) {
+  const t = { name, status: 'pending', detail: '', error: '' };
+  tests.push(t);
+  render();
+  return t;
+}
+function render() {
+  testsEl.innerHTML = tests.map((t, i) => `
+    <div class="test">
+      <div class="test-name">
+        ${i + 1}. ${t.name}
+        <span class="badge ${t.status}">${t.status === 'ok' ? '✓ 通過' : t.status === 'fail' ? '✗ 失敗' : '⋯ 檢測中'}</span>
+      </div>
+      ${t.detail ? `<div class="test-detail">${t.detail}</div>` : ''}
+      ${t.error ? `<div class="test-detail test-error">${t.error}</div>` : ''}
+    </div>
+  `).join('');
+}
+function showVerdict(html, isSuccess) {
+  verdictEl.innerHTML = `<div class="verdict ${isSuccess ? 'success' : ''}">${html}</div>`;
+}
+
+async function runTests() {
+  // Test 1: GAS URL 可達
+  const t1 = addTest('GAS 端點可不可以連線?');
+  try {
+    const r = await fetch(GAS_URL + '?action=getContent');
+    if (r.ok) {
+      t1.status = 'ok';
+      t1.detail = `HTTP ${r.status} OK`;
+    } else {
+      t1.status = 'fail';
+      t1.detail = `HTTP ${r.status} — GAS 沒有正確回應`;
+    }
+  } catch (e) {
+    t1.status = 'fail';
+    t1.error = '無法連線到 GAS:' + e.message;
+  }
+  render();
+  if (t1.status === 'fail') {
+    showVerdict('<strong>問題:GAS 端點連不上。</strong><br>請確認:<br>1. GAS 部署網址正確<br>2. GAS 有部署為「執行身分:我」、「存取權:任何人」<br>3. 網路連線正常', false);
+    return;
+  }
+
+  // Test 2: forumGetData endpoint
+  const t2 = addTest('forumGetData API 有沒有回應?');
+  let forumResponse;
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'forumGetData' })
+    });
+    const text = await r.text();
+    try {
+      forumResponse = JSON.parse(text);
+      t2.status = 'ok';
+      t2.detail = '回應:<pre>' + JSON.stringify(forumResponse, null, 2).substring(0, 500) + '</pre>';
+    } catch (parseErr) {
+      t2.status = 'fail';
+      t2.error = '回應不是有效 JSON,前 500 字:\n' + text.substring(0, 500);
+    }
+  } catch (e) {
+    t2.status = 'fail';
+    t2.error = 'API 呼叫失敗:' + e.message;
+  }
+  render();
+  if (t2.status === 'fail') {
+    showVerdict('<strong>問題:forumGetData API 掛了。</strong><br>最可能原因:GAS 沒重新部署「新版本」。<br>請去 GAS → 部署 → 管理部署作業 → ✏️ → 版本選「<strong>新版本</strong>」 → 部署。', false);
+    return;
+  }
+
+  // Test 3: response shape
+  const t3 = addTest('forumGetData 回應格式正確?');
+  if (forumResponse && forumResponse.ok && forumResponse.data) {
+    t3.status = 'ok';
+    const cats = forumResponse.data.categories || [];
+    const threads = forumResponse.data.threads || [];
+    t3.detail = `分類: ${cats.length} 個,文章: ${threads.length} 篇`;
+  } else {
+    t3.status = 'fail';
+    t3.error = '回應格式不對:' + JSON.stringify(forumResponse).substring(0, 300);
+  }
+  render();
+
+  // Test 4: 檢查 React 載入
+  const t4 = addTest('React 18 CDN 可以載入?');
+  try {
+    const r = await fetch('https://unpkg.com/react@18/umd/react.production.min.js', { mode: 'no-cors' });
+    t4.status = 'ok';
+    t4.detail = 'React CDN 可達';
+  } catch (e) {
+    t4.status = 'fail';
+    t4.error = 'React CDN 無法載入,瀏覽器可能擋了 CDN';
+  }
+  render();
+
+  // Test 5: 檢查 Babel CDN
+  const t5 = addTest('Babel CDN 可以載入?');
+  try {
+    const r = await fetch('https://unpkg.com/@babel/standalone/babel.min.js', { mode: 'no-cors' });
+    t5.status = 'ok';
+    t5.detail = 'Babel CDN 可達';
+  } catch (e) {
+    t5.status = 'fail';
+    t5.error = 'Babel CDN 無法載入(沒 Babel 整個 React 跑不起來)';
+  }
+  render();
+
+  // Test 6: 你瀏覽器 + 網址
+  const t6 = addTest('當前環境資訊');
+  t6.status = 'ok';
+  t6.detail = `
+    當前網址: ${window.location.href}<br>
+    瀏覽器: ${navigator.userAgent}<br>
+    時間: ${new Date().toLocaleString('zh-TW')}
+  `;
+  render();
+
+  // Final verdict
+  if (t1.status === 'ok' && t2.status === 'ok' && t3.status === 'ok' && t4.status === 'ok' && t5.status === 'ok') {
+    showVerdict(`
+      <strong>✓ 後端 + CDN 全都正常!</strong><br><br>
+      問題在 <strong>index.html</strong> 本身。最可能的原因:<br>
+      1. <strong>GitHub 上的 index.html 是舊版</strong> — 確認你已上傳最新的 index.html<br>
+      2. <strong>瀏覽器快取舊版</strong> — 把網址後面加 <code>?v=99</code> 強制重抓<br>
+      3. <strong>JavaScript 整段 crash</strong> — 看下方步驟拿錯誤訊息給 Claude
+    `, true);
+  } else {
+    showVerdict('<strong>有檢查失敗,請看上面紅色 ✗ 的項目。</strong>', false);
+  }
+}
+
+runTests();
+</script>
+</body>
+</html>
