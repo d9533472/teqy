@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>最低限度討論區測試</title>
+<style>
+  body { font-family: -apple-system, "PingFang TC", sans-serif; background: #f5efe4; color: #1a1410; margin: 0; padding: 20px; line-height: 1.6; }
+  .container { max-width: 700px; margin: 0 auto; }
+  h1 { color: #8b2421; }
+  .step { background: #faf5eb; border: 1px solid #d4cab7; border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .step-header { font-weight: 600; margin-bottom: 8px; }
+  .ok { color: #2d5530; }
+  .fail { color: #8b2421; }
+  pre { background: #ede4d2; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; max-height: 300px; }
+  .item { background: white; border-left: 3px solid #b8860b; padding: 12px; margin-bottom: 8px; border-radius: 4px; }
+  .verdict { background: #8b2421; color: #f5efe4; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 16px; }
+  .verdict.ok { background: #2d5530; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🧪 最低限度討論區測試</h1>
+  <p>這頁不用 React、不用 Babel,純粹的 HTML + JS,只負責顯示 forumGetData 的回傳。如果連這頁都空白,那就不是討論區程式碼的問題。</p>
+
+  <div id="output"></div>
+  <div id="verdict"></div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzjSa-FA9S8U4Z8MqBc81btmXG118_k3K_cLoDxBOxDSV2KJyjLXrSRcQStDhIyzcYP/exec';
+
+function log(html) {
+  document.getElementById('output').innerHTML += html;
+}
+function verdict(html, isOk) {
+  document.getElementById('verdict').innerHTML = `<div class="verdict ${isOk ? 'ok' : ''}">${html}</div>`;
+}
+
+(async function() {
+  log('<div class="step"><div class="step-header">⏳ 步驟 1:呼叫 GAS forumGetData...</div></div>');
+
+  const startTime = Date.now();
+  let response;
+  let rawText;
+
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'forumGetData' })
+    });
+    rawText = await r.text();
+    const elapsed = Date.now() - startTime;
+    log(`<div class="step"><div class="step-header ok">✓ 步驟 2:HTTP ${r.status},耗時 ${elapsed} ms</div><pre>${rawText.substring(0, 1000)}</pre></div>`);
+
+    try {
+      response = JSON.parse(rawText);
+    } catch (e) {
+      log(`<div class="step"><div class="step-header fail">✗ JSON 解析失敗</div><pre>${e.message}</pre></div>`);
+      verdict('<strong>問題:GAS 回應不是有效的 JSON。</strong>可能是 GAS 拋例外但沒被 jsonOut 包起來。', false);
+      return;
+    }
+  } catch (e) {
+    log(`<div class="step"><div class="step-header fail">✗ 網路請求失敗:${e.message}</div></div>`);
+    verdict('<strong>問題:無法呼叫 GAS。</strong>網路或 GAS URL 問題。', false);
+    return;
+  }
+
+  log(`<div class="step"><div class="step-header ok">✓ 步驟 3:JSON 解析成功</div><pre>${JSON.stringify(response, null, 2).substring(0, 800)}</pre></div>`);
+
+  if (!response.ok || !response.data) {
+    log(`<div class="step"><div class="step-header fail">✗ 回應 ok=false 或 data 為空</div></div>`);
+    verdict('<strong>問題:GAS 回應 ok=false。</strong>需要檢查 GAS log。', false);
+    return;
+  }
+
+  const cats = response.data.categories || [];
+  const threads = response.data.threads || [];
+
+  log(`<div class="step"><div class="step-header ok">✓ 步驟 4:資料解析成功</div>分類: ${cats.length} 個<br>文章: ${threads.length} 篇</div>`);
+
+  // 顯示分類
+  log('<div class="step"><div class="step-header">📁 分類列表</div>' +
+    cats.map(c => `<div class="item">
+      <strong>${c.icon || '·'} ${c.name}</strong>
+      ${c.parentId ? `(子分類,父分類 ID: ${c.parentId})` : ''}
+      ${c.description ? `<br><span style="color:#8a7a6a">${c.description}</span>` : ''}
+    </div>`).join('') +
+    '</div>');
+
+  // 顯示文章
+  log('<div class="step"><div class="step-header">📝 文章列表</div>' +
+    (threads.length === 0 ? '尚無文章' :
+      threads.map(t => `<div class="item">
+        <strong>${t.title}</strong>
+        ${t.pinned ? '📌' : ''} ${t.locked ? '🔒' : ''}
+        <br><span style="color:#8a7a6a">${t.author?.nickname || '?'} · ${t.replyCount || 0} 留言 · ${t.likeCount || 0} 讚</span>
+      </div>`).join('')
+    ) + '</div>');
+
+  verdict(`
+    <strong>✓ 完全沒問題!</strong><br><br>
+    GAS 後端正常,資料也讀得到。<br>
+    分類 ${cats.length} 個、文章 ${threads.length} 篇都顯示出來了。<br><br>
+    那就是主站 <code>index.html</code> 的 React 那層出問題。<br>
+    最可能:某個 component 拋了錯誤造成整個 React tree 不渲染。
+  `, true);
+})();
+</script>
+</body>
+</html>
