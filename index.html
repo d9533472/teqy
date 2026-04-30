@@ -2258,9 +2258,27 @@ function useReveal() {
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-    return () => obs.disconnect();
-  });
+
+    const observeAll = () => {
+      document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+    };
+    observeAll();
+
+    // Also watch for new .reveal elements added later (e.g. forum after API loads)
+    const mut = new MutationObserver(() => {
+      observeAll();
+      // Failsafe: any element that's already in the viewport should become visible immediately
+      document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('visible');
+        }
+      });
+    });
+    mut.observe(document.body, { childList: true, subtree: true });
+
+    return () => { obs.disconnect(); mut.disconnect(); };
+  }, []);
 }
 
 function HtmlContent({ html, className }) {
@@ -4148,7 +4166,7 @@ function ForumListView({ data, user, categoryFilter, onCategoryChange, onOpenThr
   const showSubCats = subCats.length > 0;
 
   return (
-    <div className="reveal">
+    <div className="reveal visible">
       {/* Top-level category tabs (always shows root level) */}
       <div className="forum-cats">
         <button className={`forum-cat-tab ${!categoryFilter ? 'active' : ''}`} onClick={() => onCategoryChange(null)}>
@@ -4278,7 +4296,7 @@ function ForumThreadView({ thread, user, categories, busy, onBack, onLike,
   }, [thread.replies]);
 
   return (
-    <div className="reveal">
+    <div className="reveal visible">
       <button className="forum-back" onClick={onBack}>← 返回討論區</button>
 
       <article className="forum-thread-detail">
