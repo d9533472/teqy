@@ -5383,6 +5383,13 @@ function ForumAttachmentsField({ value, onChange }) {
         try {
           const base64 = e.target.result.split(',')[1];
           const token = localStorage.getItem('jc_user_token');
+          if (!token) {
+            alert('請先登入會員才能上傳附件');
+            setUploading(false);
+            setProgress(0);
+            if (fileRef.current) fileRef.current.value = '';
+            return;
+          }
           const r = await gasPost({
             action: 'forumUploadAttachment',
             token,
@@ -5392,10 +5399,16 @@ function ForumAttachmentsField({ value, onChange }) {
           });
           if (r.ok && r.attachment) {
             onChange([...(value || []), r.attachment]);
+          } else if (r.error === 'session_expired') {
+            localStorage.removeItem('jc_user_token');
+            alert('您的登入已過期。頁面會重新整理,請重新登入。');
+            window.location.reload();
+            return;
           } else {
             const errMap = {
               file_too_large: '檔案超過 10 MB 上限',
-              login_required: '請先登入',
+              login_required: '請先登入會員',
+              blocked: '此帳號已被停用,無法上傳',
               missing_data: '檔案資料不完整'
             };
             alert(errMap[r.error] || ('上傳失敗: ' + (r.error || '')));
@@ -5555,18 +5568,35 @@ function ForumRichEditor({ editorRef, initialContent, placeholder, compact }) {
 
   const handleImage = async (file) => {
     if (!file) return;
+    const token = localStorage.getItem('jc_user_token');
+    if (!token) {
+      alert('請先登入會員才能上傳圖片');
+      return;
+    }
     setUploading(true);
     try {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const base64 = e.target.result.split(',')[1];
-        const token = localStorage.getItem('jc_user_token');
         const r = await gasPost({ action: 'forumUploadImage', token, base64, filename: file.name, mimeType: file.type });
         if (r.ok) {
           const img = `<p><img src="${r.url}" alt="${r.filename || ''}" style="max-width: 100%; height: auto; border-radius: 4px;" /></p>`;
           document.execCommand('insertHTML', false, img);
         } else {
-          alert('圖片上傳失敗: ' + (r.error || ''));
+          if (r.error === 'session_expired') {
+            // Token is in localStorage but server says it's invalid — clean up
+            localStorage.removeItem('jc_user_token');
+            alert('您的登入已過期(超過 7 天未活動或被停用)。請重新登入再上傳圖片。\n\n頁面會重新整理。');
+            window.location.reload();
+            return;
+          }
+          if (r.error === 'login_required') {
+            alert('請先登入會員才能上傳圖片');
+          } else if (r.error === 'blocked') {
+            alert('此帳號已被停用,無法上傳');
+          } else {
+            alert('圖片上傳失敗: ' + (r.error || '未知錯誤'));
+          }
         }
         setUploading(false);
         if (fileRef.current) fileRef.current.value = '';
