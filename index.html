@@ -1928,6 +1928,379 @@
   }
   .cal-modal-link:hover { background: var(--temple-red-deep); }
 
+  /* ============================================================ */
+  /* CALENDAR FEATURE — homepage feature widget (4 layouts) */
+  /* ============================================================ */
+  .cal-feat-section {
+    background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
+    border-top: 1px solid rgba(184,134,11,0.12);
+    border-bottom: 1px solid rgba(184,134,11,0.12);
+  }
+  .cal-feat-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 16px;
+    margin-bottom: 36px;
+  }
+  .cal-feat-desc {
+    margin-top: 12px;
+    color: var(--ink-light);
+    max-width: 600px;
+    line-height: 1.7;
+  }
+  .cal-feat-more {
+    color: var(--temple-red); font-size: 14px;
+    text-decoration: none;
+    padding: 10px 22px;
+    border: 1px solid rgba(139,36,33,0.3);
+    border-radius: 999px;
+    transition: all 0.3s;
+    font-family: 'Noto Serif TC', serif;
+    letter-spacing: 0.05em;
+  }
+  .cal-feat-more:hover {
+    background: var(--temple-red); color: var(--paper-warm); border-color: var(--temple-red);
+  }
+  .cal-feat-empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--ink-mute);
+    background: var(--paper-warm);
+    border: 1px dashed rgba(184,134,11,0.3);
+    border-radius: 4px;
+    font-style: italic;
+  }
+  .cal-feat-empty-side {
+    text-align: center; padding: 32px 16px;
+    color: var(--ink-mute);
+    background: rgba(184,134,11,0.06);
+    border-radius: 4px;
+    font-style: italic;
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* === Generic card === */
+  .cal-feat-card {
+    position: relative;
+    display: flex;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    --cat-color: var(--gold);
+  }
+  a.cal-feat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -16px rgba(94,23,20,0.2);
+    border-color: var(--cat-color);
+  }
+  .cal-feat-stripe {
+    flex-shrink: 0;
+    width: 6px;
+    background: var(--cat-color);
+  }
+  .cal-feat-card-body {
+    flex: 1;
+    padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 12px;
+    min-width: 0;
+  }
+  .cal-feat-date {
+    display: inline-flex; align-items: baseline;
+    gap: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--temple-red);
+    line-height: 1;
+    flex-wrap: wrap;
+  }
+  .cal-feat-date-day {
+    font-size: 3rem; font-weight: 500;
+  }
+  .cal-feat-date-mo {
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--gold);
+  }
+  .cal-feat-date-multi {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-style: italic;
+  }
+  .cal-feat-date-year {
+    font-size: 0.85rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+  }
+  .cal-feat-cat {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    align-self: flex-start;
+    letter-spacing: 0.03em;
+  }
+  .cal-feat-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.4rem; font-weight: 500;
+    color: var(--ink); line-height: 1.45;
+    margin: 0;
+  }
+  .cal-feat-card-large .cal-feat-title { font-size: 1.85rem; }
+  .cal-feat-desc-text {
+    color: var(--ink-light);
+    font-size: 14px; line-height: 1.7;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cal-feat-meta {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    font-size: 13px; color: var(--ink-light);
+    padding-top: 6px;
+    border-top: 1px solid rgba(184,134,11,0.12);
+  }
+  .cal-feat-meta-row {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .cal-feat-meta-icon {
+    color: var(--gold);
+    font-size: 12px;
+  }
+  .cal-feat-cta {
+    margin-top: auto;
+    padding-top: 8px;
+    color: var(--temple-red);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    font-family: 'Noto Serif TC', serif;
+    transition: transform 0.3s;
+  }
+  a.cal-feat-card:hover .cal-feat-cta { transform: translateX(4px); }
+
+  /* === Layout 1: Hero + Side === */
+  .cal-feat-hero-side {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    min-height: 380px;
+  }
+  .cal-feat-hero-col { display: flex; }
+  .cal-feat-hero-col .cal-feat-card { flex: 1; }
+  .cal-feat-hero-col .cal-feat-card-body { padding: 36px 40px; }
+  .cal-feat-hero-col .cal-feat-stripe { width: 8px; }
+  .cal-feat-side-col {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .cal-feat-side-col .cal-feat-card { flex: 1; }
+  .cal-feat-side-col .cal-feat-date-day { font-size: 2.2rem; }
+  .cal-feat-side-col .cal-feat-title { font-size: 1.15rem; }
+  .cal-feat-side-col .cal-feat-card-body { padding: 18px 22px; gap: 8px; }
+  @media (max-width: 768px) {
+    .cal-feat-hero-side { grid-template-columns: 1fr; }
+    .cal-feat-hero-col .cal-feat-card-body { padding: 24px 22px; }
+    .cal-feat-card-large .cal-feat-title { font-size: 1.4rem; }
+    .cal-feat-date-day { font-size: 2.4rem !important; }
+  }
+
+  /* === Layout 2: Carousel === */
+  .cal-feat-carousel {
+    position: relative;
+  }
+  .cal-feat-carousel-stage {
+    min-height: 320px;
+  }
+  .cal-feat-carousel-stage .cal-feat-card {
+    width: 100%;
+    min-height: 280px;
+  }
+  .cal-feat-carousel-stage .cal-feat-card-body {
+    padding: 36px 40px;
+  }
+  .cal-feat-carousel-controls {
+    display: flex; justify-content: center; align-items: center;
+    gap: 16px; margin-top: 24px;
+  }
+  .cal-feat-arrow {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.3);
+    color: var(--ink-light); font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .cal-feat-arrow:hover {
+    background: var(--temple-red); color: var(--paper-warm); border-color: var(--temple-red);
+  }
+  .cal-feat-dots {
+    display: flex; gap: 8px;
+  }
+  .cal-feat-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(184,134,11,0.25);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s;
+  }
+  .cal-feat-dot.active {
+    background: var(--temple-red);
+    width: 24px;
+    border-radius: 999px;
+  }
+  @media (max-width: 768px) {
+    .cal-feat-carousel-stage .cal-feat-card-body { padding: 24px 22px; }
+  }
+
+  /* === Layout 3: Triple === */
+  .cal-feat-triple {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .cal-feat-triple .cal-feat-card-body { padding: 24px 26px; gap: 10px; }
+  .cal-feat-triple .cal-feat-date-day { font-size: 2.2rem; }
+  .cal-feat-triple .cal-feat-title { font-size: 1.2rem; }
+  @media (max-width: 900px) {
+    .cal-feat-triple { grid-template-columns: 1fr; }
+  }
+
+  /* === Layout 4: Mini Month === */
+  .cal-feat-mm {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .cal-feat-mm-cal {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 6px;
+    padding: 20px;
+  }
+  .cal-feat-mm-month {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 14px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .cal-feat-mm-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  .cal-feat-mm-weekdays > div {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-mute);
+    padding: 4px;
+    letter-spacing: 0.1em;
+  }
+  .cal-feat-mm-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-feat-mm-cell {
+    aspect-ratio: 1 / 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    padding: 4px 0 6px;
+    background: rgba(245,239,228,0.5);
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .cal-feat-mm-cell.empty { background: transparent; }
+  .cal-feat-mm-cell.has-event {
+    background: var(--paper-deep);
+    cursor: default;
+  }
+  .cal-feat-mm-cell.today {
+    background: var(--temple-red);
+    color: var(--paper-warm);
+  }
+  .cal-feat-mm-cell.today .cal-feat-mm-day {
+    color: var(--paper-warm); font-weight: 600;
+  }
+  .cal-feat-mm-day {
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .cal-feat-mm-dots {
+    display: flex; gap: 2px; margin-top: 2px;
+  }
+  .cal-feat-mm-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .cal-feat-mm-list {
+    display: flex; flex-direction: column;
+    gap: 12px;
+  }
+  .cal-feat-mm-list-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.15rem;
+    color: var(--ink);
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+    margin-bottom: 4px;
+  }
+  .cal-feat-mm-item {
+    display: flex; gap: 14px;
+    padding: 12px 14px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s;
+  }
+  a.cal-feat-mm-item:hover {
+    transform: translateX(4px);
+    border-color: var(--gold);
+    box-shadow: 0 6px 14px -8px rgba(94,23,20,0.15);
+  }
+  .cal-feat-mm-item-date {
+    flex-shrink: 0;
+    width: 56px;
+    border-left: 3px solid var(--gold);
+    padding-left: 10px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cal-feat-mm-item-d {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 500;
+    color: var(--temple-red); line-height: 1;
+  }
+  .cal-feat-mm-item-m {
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: 2px;
+  }
+  .cal-feat-mm-item-info {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .cal-feat-mm-item-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink); line-height: 1.4;
+  }
+  .cal-feat-mm-item-meta {
+    font-size: 12px; color: var(--ink-light);
+  }
+  @media (max-width: 768px) {
+    .cal-feat-mm { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 640px) {
     .cal-cell { min-height: 64px; padding: 4px; }
     .cal-cell-day { font-size: 12px; }
@@ -5231,6 +5604,303 @@ function CalendarMiniSection({ data, anchorId }) {
   );
 }
 
+function CalendarFeatureSection({ data, anchorId }) {
+  const calData = useCalendarData();
+  const layout = data.layout || 'hero-side';   // hero-side | carousel | triple | mini-month
+  const limit = parseInt(data.limit, 10) || (layout === 'carousel' ? 8 : 3);
+  const showFields = data.showFields || ['date', 'category', 'time', 'location'];
+  const has = (f) => showFields.includes(f);
+  const linkBase = data.fullCalendarUrl || '';
+
+  if (!calData) {
+    return (
+      <section id={anchorId} className="cal-feat-section">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 py-16 text-center" style={{ color: 'var(--ink-mute)' }}>載入中⋯</div>
+      </section>
+    );
+  }
+
+  const today = new Date();
+  const todayStr = formatYmdLocal(today);
+  const events = (calData.events || [])
+    .filter(e => (e.endDate || e.startDate) >= todayStr)
+    .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')))
+    .slice(0, limit);
+
+  if (events.length === 0) {
+    return (
+      <section id={anchorId} className="cal-feat-section">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+          <div className="cal-feat-header reveal">
+            {data.eyebrow && <div className="eyebrow mb-3" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml
+              ? <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light" html={data.titleHtml} />
+              : <h2 className="font-serif-tc text-4xl lg:text-5xl font-light">近期活動</h2>}
+          </div>
+          <div className="cal-feat-empty reveal">目前無未來活動安排</div>
+        </div>
+      </section>
+    );
+  }
+
+  const cats = calData.categories || [];
+  const linkFor = (e) => linkBase ? `${linkBase}?eventId=${e.id}` : '';
+
+  return (
+    <section id={anchorId} className="cal-feat-section">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+        {/* Header */}
+        <div className="cal-feat-header reveal">
+          <div>
+            {data.eyebrow && <div className="eyebrow mb-3" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml
+              ? <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light" html={data.titleHtml} />
+              : <h2 className="font-serif-tc text-4xl lg:text-5xl font-light">近期活動</h2>}
+            {data.description && <p className="cal-feat-desc">{data.description}</p>}
+          </div>
+          {linkBase && <a href={linkBase} className="cal-feat-more">查看完整行事曆 →</a>}
+        </div>
+
+        {/* Layouts */}
+        {layout === 'hero-side' && <CalFeatHeroSide events={events} cats={cats} linkFor={linkFor} has={has} />}
+        {layout === 'carousel' && <CalFeatCarousel events={events} cats={cats} linkFor={linkFor} has={has} interval={parseInt(data.carouselInterval, 10) || 5} />}
+        {layout === 'triple' && <CalFeatTriple events={events} cats={cats} linkFor={linkFor} has={has} />}
+        {layout === 'mini-month' && <CalFeatMiniMonth events={(calData.events || []).filter(e => (e.endDate || e.startDate) >= todayStr)} allFutureEvents={events} cats={cats} linkFor={linkFor} has={has} />}
+      </div>
+    </section>
+  );
+}
+
+// Helper — extract + render card pieces (shared across layouts)
+function CalFeatCard({ event, cat, linkFor, has, size }) {
+  const sd = new Date(event.startDate + 'T00:00:00');
+  const ed = new Date((event.endDate || event.startDate) + 'T00:00:00');
+  const isMulti = event.endDate && event.endDate !== event.startDate;
+  const linkTarget = linkFor(event);
+  const sizeCls = size === 'large' ? 'cal-feat-card-large' : size === 'wide' ? 'cal-feat-card-wide' : '';
+  const Wrapper = linkTarget ? 'a' : 'div';
+  const wrapperProps = linkTarget ? { href: linkTarget } : {};
+
+  return (
+    <Wrapper className={`cal-feat-card ${sizeCls}`} style={{ '--cat-color': cat.color }} {...wrapperProps}>
+      {/* Color stripe */}
+      <div className="cal-feat-stripe" style={{ background: cat.color }}></div>
+
+      <div className="cal-feat-card-body">
+        {/* Date stamp (top) */}
+        {has('date') && (
+          <div className="cal-feat-date">
+            <div className="cal-feat-date-day">{sd.getDate()}</div>
+            <div className="cal-feat-date-mo">{['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'][sd.getMonth()]}</div>
+            {isMulti && (
+              <div className="cal-feat-date-multi">~ {ed.getMonth() + 1}/{ed.getDate()}</div>
+            )}
+            <div className="cal-feat-date-year">{sd.getFullYear()}</div>
+          </div>
+        )}
+
+        {/* Category tag */}
+        {has('category') && (
+          <span className="cal-feat-cat" style={{ background: cat.color + '22', color: cat.color }}>
+            {cat.icon} {cat.name}
+          </span>
+        )}
+
+        {/* Title */}
+        <h3 className="cal-feat-title">{event.title}</h3>
+
+        {/* Description (only on hero/carousel) */}
+        {has('description') && event.description && size && (
+          <p className="cal-feat-desc-text">{event.description}</p>
+        )}
+
+        {/* Meta — time + location */}
+        {(has('time') || has('location')) && (
+          <div className="cal-feat-meta">
+            {has('time') && (event.startTime || event.allDay) && (
+              <span className="cal-feat-meta-row">
+                <span className="cal-feat-meta-icon">🕐</span>
+                {event.allDay || !event.startTime ? '全日' : event.startTime + (event.endTime ? `–${event.endTime}` : '')}
+              </span>
+            )}
+            {has('location') && event.location && (
+              <span className="cal-feat-meta-row">
+                <span className="cal-feat-meta-icon">📍</span>
+                {event.location}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* CTA hint */}
+        {linkTarget && (
+          <div className="cal-feat-cta">查看詳情 →</div>
+        )}
+      </div>
+    </Wrapper>
+  );
+}
+
+// Layout 1: hero (large) + 2 small wide cards
+function CalFeatHeroSide({ events, cats, linkFor, has }) {
+  const catById = (id) => cats.find(c => c.id === id) || { name: '其他', icon: '·', color: '#6b6359' };
+  const [hero, ...rest] = events;
+  const sides = rest.slice(0, 2);
+  return (
+    <div className="cal-feat-hero-side reveal">
+      <div className="cal-feat-hero-col">
+        <CalFeatCard event={hero} cat={catById(hero.categoryId)} linkFor={linkFor} has={has} size="large" />
+      </div>
+      <div className="cal-feat-side-col">
+        {sides.map(e => (
+          <CalFeatCard key={e.id} event={e} cat={catById(e.categoryId)} linkFor={linkFor} has={has} size="wide" />
+        ))}
+        {sides.length === 0 && (
+          <div className="cal-feat-empty-side">僅一場近期活動</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Layout 2: full-width carousel
+function CalFeatCarousel({ events, cats, linkFor, has, interval }) {
+  const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const catById = (id) => cats.find(c => c.id === id) || { name: '其他', icon: '·', color: '#6b6359' };
+
+  useEffect(() => {
+    if (paused || events.length <= 1) return;
+    const t = setInterval(() => setIdx(i => (i + 1) % events.length), interval * 1000);
+    return () => clearInterval(t);
+  }, [events.length, interval, paused]);
+
+  const cur = events[idx];
+  return (
+    <div className="cal-feat-carousel reveal" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <div className="cal-feat-carousel-stage">
+        <CalFeatCard key={cur.id} event={cur} cat={catById(cur.categoryId)} linkFor={linkFor} has={has} size="large" />
+      </div>
+      <div className="cal-feat-carousel-controls">
+        <button className="cal-feat-arrow" onClick={() => setIdx(i => (i - 1 + events.length) % events.length)} aria-label="上一個">‹</button>
+        <div className="cal-feat-dots">
+          {events.map((_, i) => (
+            <button key={i} className={`cal-feat-dot ${i === idx ? 'active' : ''}`} onClick={() => setIdx(i)} aria-label={`第 ${i + 1} 個`} />
+          ))}
+        </div>
+        <button className="cal-feat-arrow" onClick={() => setIdx(i => (i + 1) % events.length)} aria-label="下一個">›</button>
+      </div>
+    </div>
+  );
+}
+
+// Layout 3: 3 equal columns
+function CalFeatTriple({ events, cats, linkFor, has }) {
+  const catById = (id) => cats.find(c => c.id === id) || { name: '其他', icon: '·', color: '#6b6359' };
+  return (
+    <div className="cal-feat-triple reveal">
+      {events.slice(0, 3).map(e => (
+        <CalFeatCard key={e.id} event={e} cat={catById(e.categoryId)} linkFor={linkFor} has={has} />
+      ))}
+    </div>
+  );
+}
+
+// Layout 4: mini month grid + featured event
+function CalFeatMiniMonth({ events, allFutureEvents, cats, linkFor, has }) {
+  const catById = (id) => cats.find(c => c.id === id) || { name: '其他', icon: '·', color: '#6b6359' };
+  const today = new Date();
+  const cursor = new Date(today.getFullYear(), today.getMonth(), 1);
+  const days = calMonthDays(cursor.getFullYear(), cursor.getMonth());
+  const todayStr = formatYmdLocal(today);
+  const yearMonth = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
+
+  // Build event-by-date for this month
+  const eventsByDate = {};
+  events.forEach(ev => {
+    let d = ev.startDate;
+    const end = ev.endDate || ev.startDate;
+    while (d <= end) {
+      if (d.startsWith(yearMonth)) {
+        if (!eventsByDate[d]) eventsByDate[d] = [];
+        eventsByDate[d].push(ev);
+      }
+      d = addDaysStr(d, 1);
+    }
+  });
+
+  // Featured = first 3 upcoming
+  const featured = allFutureEvents.slice(0, 3);
+
+  return (
+    <div className="cal-feat-mm reveal">
+      {/* Mini month grid */}
+      <div className="cal-feat-mm-cal">
+        <div className="cal-feat-mm-month">
+          {cursor.getFullYear()} 年 {cursor.getMonth() + 1} 月
+        </div>
+        <div className="cal-feat-mm-weekdays">
+          {['日','一','二','三','四','五','六'].map(d => <div key={d}>{d}</div>)}
+        </div>
+        <div className="cal-feat-mm-grid">
+          {days.map((d, i) => {
+            if (!d) return <div key={i} className="cal-feat-mm-cell empty"></div>;
+            const evs = eventsByDate[d.dateStr] || [];
+            const isToday = d.dateStr === todayStr;
+            const dotColors = [...new Set(evs.map(e => catById(e.categoryId).color))].slice(0, 3);
+            return (
+              <div key={i} className={`cal-feat-mm-cell ${isToday ? 'today' : ''} ${evs.length > 0 ? 'has-event' : ''}`}>
+                <div className="cal-feat-mm-day">{d.day}</div>
+                {evs.length > 0 && (
+                  <div className="cal-feat-mm-dots">
+                    {dotColors.map((c, j) => (
+                      <span key={j} className="cal-feat-mm-dot" style={{ background: c }}></span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {/* Featured upcoming list */}
+      <div className="cal-feat-mm-list">
+        <div className="cal-feat-mm-list-title">近期活動</div>
+        {featured.map(e => {
+          const cat = catById(e.categoryId);
+          const sd = new Date(e.startDate + 'T00:00:00');
+          const linkTarget = linkFor(e);
+          const Wrapper = linkTarget ? 'a' : 'div';
+          const wrapperProps = linkTarget ? { href: linkTarget } : {};
+          return (
+            <Wrapper key={e.id} className="cal-feat-mm-item" {...wrapperProps}>
+              <div className="cal-feat-mm-item-date" style={{ borderColor: cat.color }}>
+                <div className="cal-feat-mm-item-d">{sd.getDate()}</div>
+                <div className="cal-feat-mm-item-m">{sd.getMonth() + 1}月</div>
+              </div>
+              <div className="cal-feat-mm-item-info">
+                {has('category') && (
+                  <span className="cal-feat-cat" style={{ background: cat.color + '22', color: cat.color, fontSize: 11 }}>
+                    {cat.icon} {cat.name}
+                  </span>
+                )}
+                <div className="cal-feat-mm-item-title">{e.title}</div>
+                {(has('time') && e.startTime) && (
+                  <div className="cal-feat-mm-item-meta">🕐 {e.startTime}{e.endTime ? `–${e.endTime}` : ''}</div>
+                )}
+                {(has('location') && e.location) && (
+                  <div className="cal-feat-mm-item-meta">📍 {e.location}</div>
+                )}
+              </div>
+            </Wrapper>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+
 function CalendarFullSection({ data, anchorId }) {
   const calData = useCalendarData();
   const today = new Date();
@@ -5617,6 +6287,7 @@ const SECTION_RENDERERS = {
   auth: AuthSection,
   forum: ForumSectionWrapper,
   'calendar-mini': CalendarMiniSection,
+  'calendar-feature': CalendarFeatureSection,
   'calendar-full': CalendarFullSection,
   albums: AlbumsSection,
   'cards-corner': CardsCornerSection,
