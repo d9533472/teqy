@@ -5384,6 +5384,7 @@ function ForumAttachmentsField({ value, onChange }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileRef = useRef(null);
+  const { logout } = useContext(UserCtx);
 
   const onFile = async (file) => {
     if (!file) return;
@@ -5416,7 +5417,8 @@ function ForumAttachmentsField({ value, onChange }) {
           if (r.ok && r.attachment) {
             onChange([...(value || []), r.attachment]);
           } else if (r.error === 'session_expired') {
-            alert('上傳失敗:登入狀態驗證失敗。\n\n請先儲存或複製您正在編輯的內容,然後到上方「會員」選單登出再重新登入,再試一次上傳。');
+            await logout();
+            alert('登入狀態驗證失敗 — 已自動登出。\n\n請到上方「會員」區重新登入,再試一次上傳附件。');
           } else {
             const errMap = {
               file_too_large: '檔案超過 10 MB 上限',
@@ -5567,6 +5569,7 @@ function ForumInlineEdit({ initialContent, onCancel, onSave, busy }) {
 function ForumRichEditor({ editorRef, initialContent, placeholder, compact }) {
   const fileRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const { logout } = useContext(UserCtx);
 
   useEffect(() => {
     if (editorRef.current && initialContent !== undefined) {
@@ -5597,8 +5600,10 @@ function ForumRichEditor({ editorRef, initialContent, placeholder, compact }) {
           document.execCommand('insertHTML', false, img);
         } else {
           if (r.error === 'session_expired') {
-            // Server says this token is no longer valid — but DON'T auto-reload (user might lose draft)
-            alert('上傳失敗:登入狀態驗證失敗。\n\n請先儲存或複製您正在編輯的內容,然後到上方「會員」選單登出再重新登入,再試一次上傳。');
+            // Token in localStorage but server doesn't recognize it — likely expired or wiped
+            // Force-logout to sync UI state, but don't reload page (preserve user's draft)
+            await logout();
+            alert('登入狀態驗證失敗 — 已自動登出。\n\n您剛才打的內容仍會保留在編輯器中,請複製起來,然後到上方「會員」區重新登入,再貼回去重試上傳圖片。');
           } else if (r.error === 'login_required') {
             alert('請先登入會員才能上傳圖片');
           } else if (r.error === 'blocked') {
@@ -6847,8 +6852,18 @@ function App() {
     const token = localStorage.getItem('jc_user_token');
     if (!token) return;
     gasPost({ action: 'userGetMe', token })
-      .then(r => { if (r.ok) setUser(r.user); else localStorage.removeItem('jc_user_token'); })
-      .catch(() => {});
+      .then(r => {
+        if (r.ok) {
+          setUser(r.user);
+        } else {
+          // Token in localStorage but server doesn't recognize it — clean up fully
+          localStorage.removeItem('jc_user_token');
+          setUser(null);
+        }
+      })
+      .catch(() => {
+        // Network error — leave token alone, will retry next mount
+      });
   }, []);
 
   const userLogin = (userObj, token) => {
