@@ -4517,6 +4517,30 @@ function ForumSectionWrapper(props) {
   );
 }
 
+function CalendarFullSectionWrapper(props) {
+  return (
+    <ForumErrorBoundary>
+      <CalendarFullSection {...props} />
+    </ForumErrorBoundary>
+  );
+}
+
+function CalendarMiniSectionWrapper(props) {
+  return (
+    <ForumErrorBoundary>
+      <CalendarMiniSection {...props} />
+    </ForumErrorBoundary>
+  );
+}
+
+function CalendarFeatureSectionWrapper(props) {
+  return (
+    <ForumErrorBoundary>
+      <CalendarFeatureSection {...props} />
+    </ForumErrorBoundary>
+  );
+}
+
 function ForumSection({ data, anchorId }) {
   const { user } = useContext(UserCtx);
   const [forumData, setForumData] = useState(null);
@@ -5930,12 +5954,40 @@ function CalendarFullSection({ data, anchorId }) {
       const ev = (calData.events || []).find(e => e.id === eid);
       if (ev) {
         setSelectedEvent(ev);
-        const d = new Date(ev.startDate + 'T00:00:00');
-        setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
-        setSelectedDate(ev.startDate);
+        const d = parseEventDate(ev.startDate);
+        if (!isNaN(d.getTime())) {
+          setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
+          setSelectedDate(canonicalDateStr(ev.startDate));
+        }
       }
     }
   }, [calData]);
+
+  // IMPORTANT: useMemo MUST be called every render (before any early return)
+  // otherwise React throws "Rendered fewer hooks than expected" and the whole component crashes silently
+  const events = useMemo(() => {
+    if (!calData) return [];
+    return (calData.events || []).filter(e => !filterCat || e.categoryId === filterCat);
+  }, [calData, filterCat]);
+
+  const eventsByDate = useMemo(() => {
+    const map = {};
+    events.forEach(ev => {
+      const start = canonicalDateStr(ev.startDate);
+      const end = canonicalDateStr(ev.endDate || ev.startDate);
+      if (!start) return;
+      // Add to every date in range
+      let d = start;
+      let safety = 0;  // prevent infinite loop if dates are bad
+      while (d <= end && safety < 400) {
+        if (!map[d]) map[d] = [];
+        map[d].push(ev);
+        d = addDaysStr(d, 1);
+        safety++;
+      }
+    });
+    return map;
+  }, [events]);
 
   if (!calData) {
     return (
@@ -5946,23 +5998,6 @@ function CalendarFullSection({ data, anchorId }) {
       </section>
     );
   }
-
-  const events = (calData.events || []).filter(e => !filterCat || e.categoryId === filterCat);
-  const eventsByDate = useMemo(() => {
-    const map = {};
-    events.forEach(ev => {
-      const start = ev.startDate;
-      const end = ev.endDate || start;
-      // Add to every date in range
-      let d = start;
-      while (d <= end) {
-        if (!map[d]) map[d] = [];
-        map[d].push(ev);
-        d = addDaysStr(d, 1);
-      }
-    });
-    return map;
-  }, [events]);
 
   const goPrev = () => {
     if (viewMode === 'week') {
@@ -6323,9 +6358,9 @@ const SECTION_RENDERERS = {
   marquee: MarqueeSection,
   auth: AuthSection,
   forum: ForumSectionWrapper,
-  'calendar-mini': CalendarMiniSection,
-  'calendar-feature': CalendarFeatureSection,
-  'calendar-full': CalendarFullSection,
+  'calendar-mini': CalendarMiniSectionWrapper,
+  'calendar-feature': CalendarFeatureSectionWrapper,
+  'calendar-full': CalendarFullSectionWrapper,
   albums: AlbumsSection,
   'cards-corner': CardsCornerSection,
   timeline: TimelineSection,
