@@ -5143,11 +5143,25 @@ function CalendarMiniSection({ data, anchorId }) {
   const todayStr = formatYmdLocal(today);
   const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
 
-  // Filter: this month, future-only (today included), max 5
-  const upcoming = (calData.events || [])
-    .filter(e => (e.startDate || '').startsWith(yearMonth) && (e.endDate || e.startDate) >= todayStr)
-    .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')))
-    .slice(0, 5);
+  // Filter mode: "month" = this calendar month, "next" = next N upcoming (default)
+  // Default is "next" since "month" can leave the widget empty if no events this month
+  const mode = data.filterMode || 'next';
+  const limit = parseInt(data.limit, 10) || 5;
+
+  // Get all future-or-current events (event still ongoing OR starts today/later)
+  const allUpcoming = (calData.events || [])
+    .filter(e => (e.endDate || e.startDate) >= todayStr)
+    .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')));
+
+  // Apply mode filter
+  const upcoming = (mode === 'month'
+    ? allUpcoming.filter(e =>
+        (e.startDate || '').startsWith(yearMonth) ||  // starts this month
+        (e.endDate || '').startsWith(yearMonth) ||    // ends this month
+        ((e.startDate || '') < `${yearMonth}-01` && (e.endDate || e.startDate) >= todayStr)  // spans across this month
+      )
+    : allUpcoming
+  ).slice(0, limit);
 
   const linkBase = data.fullCalendarUrl || '';
 
@@ -5159,14 +5173,20 @@ function CalendarMiniSection({ data, anchorId }) {
             {data.eyebrow && <div className="eyebrow mb-2" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
             {data.titleHtml
               ? <HtmlContent className="font-serif-tc text-3xl font-light" html={data.titleHtml} />
-              : <h2 className="font-serif-tc text-3xl font-light">本月活動</h2>}
-            <div className="cal-mini-subtitle">{today.getFullYear()} 年 {today.getMonth() + 1} 月 · 共 {upcoming.length} 場</div>
+              : <h2 className="font-serif-tc text-3xl font-light">{mode === 'month' ? '本月活動' : '近期活動'}</h2>}
+            <div className="cal-mini-subtitle">
+              {mode === 'month'
+                ? `${today.getFullYear()} 年 ${today.getMonth() + 1} 月 · 共 ${upcoming.length} 場`
+                : `${upcoming.length} 場即將到來的活動`}
+            </div>
           </div>
           {linkBase && <a href={linkBase} className="cal-mini-more">查看完整行事曆 →</a>}
         </div>
 
         {upcoming.length === 0 ? (
-          <div className="cal-mini-empty reveal">本月暫無活動安排</div>
+          <div className="cal-mini-empty reveal">
+            {mode === 'month' ? '本月暫無活動安排' : '目前無未來活動'}
+          </div>
         ) : (
           <div className="cal-mini-list reveal">
             {upcoming.map(ev => {

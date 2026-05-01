@@ -1367,12 +1367,17 @@ const SECTION_SCHEMAS = {
     ]
   },
   'calendar-mini': {
-    label: '行事曆 - 小工具(本月活動)',
+    label: '行事曆 - 小工具(近期活動)',
     icon: '📅',
-    summary: (d) => d.eyebrow || '本月活動',
+    summary: (d) => d.eyebrow || (d.filterMode === 'month' ? '本月活動' : '近期活動'),
     fields: [
-      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'This Month' },
-      { key: 'titleHtml', label: '標題', type: 'html', placeholder: '本月活動' },
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'Upcoming' },
+      { key: 'titleHtml', label: '標題 (留空用預設)', type: 'html', placeholder: '近期活動' },
+      { key: 'filterMode', label: '顯示哪些活動?', type: 'select', options: [
+        { value: 'next', label: '未來最近的活動 (推薦,不會空白)' },
+        { value: 'month', label: '只顯示本月活動 (本月沒活動時會空白)' }
+      ], help: '建議用「未來最近的活動」,即使這個月沒活動也會顯示下個月最近的幾場' },
+      { key: 'limit', label: '顯示幾筆?', type: 'text', placeholder: '5', help: '預設 5 筆' },
       { key: 'fullCalendarUrl', label: '完整行事曆頁面連結 (選填)', type: 'link', help: '設定後右上角會出現「查看完整行事曆 →」按鈕,且每張卡片可點進去看詳情' }
     ]
   },
@@ -2653,6 +2658,7 @@ function FooterEditor({ footer, onUpdate }) {
 // Navigation Editor
 // ============================================================
 function NavItemEditor({ item, onUpdate, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown, depth }) {
+  const { pages = [] } = useContext(ContentCtx);
   const update = (key, val) => onUpdate({ ...item, [key]: val });
   const updateChild = (i, child) => {
     const newChildren = [...(item.children || [])];
@@ -2674,6 +2680,33 @@ function NavItemEditor({ item, onUpdate, onDelete, onMoveUp, onMoveDown, canMove
     update('children', [...(item.children || []), { id: uid(), label: '新項目', type: 'anchor', target: '' }]);
   };
 
+  // Collect all anchors across all pages for the anchor dropdown
+  const anchorOptions = useMemo(() => {
+    const out = [];
+    pages.forEach(p => {
+      (p.sections || []).forEach(s => {
+        if (s.anchorId) {
+          const schema = (typeof SECTION_SCHEMAS !== 'undefined') ? SECTION_SCHEMAS[s.type] : null;
+          const label = schema ? `${schema.label} (#${s.anchorId})` : `#${s.anchorId}`;
+          out.push({ id: s.anchorId, label, page: p.title });
+        }
+      });
+    });
+    return out;
+  }, [pages]);
+
+  // Reset target when type changes (so old slug/anchor doesn't leak across types)
+  const handleTypeChange = (newType) => {
+    let newTarget = '';
+    if (newType === 'page' && pages.length > 0) {
+      const home = pages.find(p => p.isHome) || pages[0];
+      newTarget = home.slug || '/';
+    } else if (newType === 'anchor' && anchorOptions.length > 0) {
+      newTarget = anchorOptions[0].id;
+    }
+    onUpdate({ ...item, type: newType, target: newTarget });
+  };
+
   return (
     <div className="repeater-item" style={{ marginLeft: depth * 24 }}>
       <div className="repeater-controls">
@@ -2688,20 +2721,61 @@ function NavItemEditor({ item, onUpdate, onDelete, onMoveUp, onMoveDown, canMove
         </div>
         <div>
           <label className="field-label">類型</label>
-          <select value={item.type || 'anchor'} onChange={(e) => update('type', e.target.value)}>
-            <option value="anchor">錨點 (#section-id)</option>
-            <option value="page">頁面 (內部頁)</option>
-            <option value="external">外部連結</option>
+          <select value={item.type || 'anchor'} onChange={(e) => handleTypeChange(e.target.value)}>
+            <option value="anchor">⚓ 區塊錨點</option>
+            <option value="page">📄 內部頁面</option>
+            <option value="external">🌐 外部連結</option>
           </select>
         </div>
       </div>
       <div className="mt-3">
-        <label className="field-label">
-          {item.type === 'anchor' && '錨點 ID (不含 #)'}
-          {item.type === 'page' && '頁面 slug'}
-          {item.type === 'external' && '完整網址 (https://)'}
-        </label>
-        <input type="text" value={item.target || ''} onChange={(e) => update('target', e.target.value)} className="font-mono" />
+        {item.type === 'page' && (
+          <>
+            <label className="field-label">選擇頁面</label>
+            {pages.length === 0 ? (
+              <div className="field-help" style={{ color: 'var(--danger)' }}>還沒有任何頁面,請先到「頁面」分頁建立</div>
+            ) : (
+              <select value={item.target || ''} onChange={(e) => update('target', e.target.value)}>
+                {pages.map(p => (
+                  <option key={p.id} value={p.slug || '/'}>
+                    {p.title}{p.isHome ? ' (首頁)' : ''} {p.slug ? `· /${p.slug}` : ''}
+                  </option>
+                ))}
+              </select>
+            )}
+          </>
+        )}
+        {item.type === 'anchor' && (
+          <>
+            <label className="field-label">選擇區塊</label>
+            {anchorOptions.length === 0 ? (
+              <div className="field-help" style={{ color: 'var(--danger)' }}>
+                目前沒有任何區塊設定錨點 ID。請先到區塊設定填入「錨點 ID」欄位
+              </div>
+            ) : (
+              <select value={item.target || ''} onChange={(e) => update('target', e.target.value)}>
+                <option value="">— 選擇區塊 —</option>
+                {anchorOptions.map(a => (
+                  <option key={a.id + '-' + a.page} value={a.id}>
+                    {a.label} · {a.page}
+                  </option>
+                ))}
+              </select>
+            )}
+          </>
+        )}
+        {item.type === 'external' && (
+          <>
+            <label className="field-label">完整網址 (https://)</label>
+            <input
+              type="text"
+              value={item.target || ''}
+              onChange={(e) => update('target', e.target.value)}
+              className="font-mono"
+              placeholder="https://example.com"
+            />
+          </>
+        )}
       </div>
       {depth === 0 && (
         <div className="mt-4 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
