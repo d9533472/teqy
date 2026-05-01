@@ -5141,6 +5141,48 @@ function CalendarImportPanel({ password, showToast, onImported }) {
     reader.onload = (e) => setCsvText(e.target.result);
     reader.readAsText(file);
   };
+
+  const downloadCalendarTemplate = () => {
+    const today = new Date();
+    const ymd = (offsetDays) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() + offsetDays);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+
+    // Build sample rows — 5 examples covering different scenarios
+    const rows = [
+      ['title', 'description', 'category', 'startDate', 'endDate', 'startTime', 'endTime', 'location', 'address', 'url'],
+      ['中元普渡法會', '一年一度中元普渡法會,歡迎信眾參加', '法會', ymd(7), ymd(7), '09:00', '12:00', '大雄寶殿', '台北市文山區木柵路三段五號', 'https://example.com/register'],
+      ['親子DIY手作', '小朋友也可以參加的傳統工藝課程', '活動', ymd(14), ymd(14), '14:00', '16:30', '文化園區', '', ''],
+      ['佛學進階班(連續四週)', '從基礎到進階,適合已修讀過初級班的學員', '課程', ymd(21), ymd(42), '19:00', '21:00', '講堂二樓', '', ''],
+      ['法會準備義工招募', '需要 10 位義工協助場地佈置與接待', '其他', ymd(5), ymd(5), '', '', '', '', ''],
+      ['全日禪修營', '需提前報名,提供素食三餐', '法會', ymd(30), ymd(31), '', '', '禪修中心', '南投縣埔里鎮中山路一段', 'https://example.com/retreat']
+    ];
+
+    // Build CSV — quote fields containing comma/quote/newline; double internal quotes
+    const escapeField = (v) => {
+      const s = String(v || '');
+      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    };
+    const csv = rows.map(r => r.map(escapeField).join(',')).join('\r\n');
+
+    // Add UTF-8 BOM so Excel opens it correctly with Chinese
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '行事曆範例_' + ymd(0) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('已下載範例檔', 'success');
+  };
   const onIcsFile = (file) => {
     if (!file) return;
     const reader = new FileReader();
@@ -5197,6 +5239,20 @@ function CalendarImportPanel({ password, showToast, onImported }) {
           <div className="text-sm mb-3" style={{ color: 'var(--ink-light)' }}>
             從 Excel 編輯後存成 CSV (UTF-8) 檔案匯入。
           </div>
+
+          {/* Template download */}
+          <div className="p-3 mb-4" style={{ background: 'rgba(184,134,11,0.08)', border: '1px solid rgba(184,134,11,0.3)', borderRadius: 6, fontSize: 13 }}>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <div style={{ fontWeight: 500, marginBottom: 4 }}>📥 第一次使用?下載範例 CSV</div>
+                <div style={{ color: 'var(--ink-soft)', fontSize: 12 }}>含 5 筆範例活動 + 完整欄位示範,直接用 Excel 打開編輯就好</div>
+              </div>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={downloadCalendarTemplate}>
+                ⬇ 下載範例檔
+              </button>
+            </div>
+          </div>
+
           <div className="p-3 mb-4" style={{ background: 'var(--bg)', borderRadius: 6, fontSize: 13 }}>
             <div style={{ fontWeight: 500, marginBottom: 6 }}>必要欄位 (CSV 第一列要是這些欄名):</div>
             <div className="font-mono text-xs" style={{ color: 'var(--temple-red)' }}>
@@ -5209,7 +5265,8 @@ function CalendarImportPanel({ password, showToast, onImported }) {
             <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-mute)' }}>
               · 日期格式:<code>2026-04-30</code>(YYYY-MM-DD)<br/>
               · 時間格式:<code>09:00</code>(HH:MM)<br/>
-              · category 可填分類名稱(法會/活動/課程/其他),會自動對應;對應不到歸到「其他」
+              · category 可填分類名稱(法會/活動/課程/其他),會自動對應;對應不到歸到「其他」<br/>
+              · ⚠️ Excel 存檔時請選「<strong>CSV UTF-8</strong>」格式,中文才不會亂碼
             </div>
           </div>
           <input type="file" accept=".csv,text/csv" ref={csvFileRef} onChange={(e) => onCsvFile(e.target.files[0])} className="mb-3" />
