@@ -5460,7 +5460,18 @@ function useCalendarData() {
   const [data, setData] = useState(null);
   useEffect(() => {
     gasPost({ action: 'calendarGetData' }).then(r => {
-      if (r.ok) setData(r.data);
+      if (r.ok && r.data) {
+        // Normalize all event dates (some may be in "2026/5/16" format from old CSV imports)
+        const normalized = {
+          ...r.data,
+          events: (r.data.events || []).map(e => ({
+            ...e,
+            startDate: canonicalDateStr(e.startDate),
+            endDate: canonicalDateStr(e.endDate || e.startDate)
+          }))
+        };
+        setData(normalized);
+      }
     }).catch(() => {});
   }, []);
   return data;
@@ -6274,6 +6285,32 @@ function CalendarEventModal({ event, categories, onClose }) {
 function formatYmdLocal(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
+
+// Normalize a stored date string to YYYY-MM-DD (handles "2026/5/16", "2026.5.16", or already-clean "2026-05-16")
+function canonicalDateStr(s) {
+  if (!s) return '';
+  const str = String(s).trim();
+  // Already YYYY-MM-DD
+  let m = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (m) return `${m[1]}-${String(m[2]).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}`;
+  // YYYY/M/D or YYYY.M.D
+  m = str.match(/^(\d{4})[\/.](\d{1,2})[\/.](\d{1,2})$/);
+  if (m) return `${m[1]}-${String(m[2]).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}`;
+  // Has a T (already an ISO with time) — extract date part
+  if (str.includes('T')) {
+    const datePart = str.split('T')[0];
+    return canonicalDateStr(datePart);
+  }
+  return str;  // fallback (still might be invalid but we tried)
+}
+
+// Safe date parser — turns any of the stored formats into a Date at midnight local
+function parseEventDate(s) {
+  const canon = canonicalDateStr(s);
+  if (!canon) return new Date(NaN);
+  return new Date(canon + 'T00:00:00');
+}
+
 function addDaysStr(dateStr, n) {
   const d = new Date(dateStr + 'T00:00:00');
   d.setDate(d.getDate() + n);
