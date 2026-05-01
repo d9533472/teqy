@@ -733,6 +733,31 @@
   .admin-reply-body p:last-child { margin-bottom: 0; }
   .admin-reply-body img { max-width: 100%; height: auto; border-radius: 4px; }
 
+  /* Admin attachment cards */
+  .admin-att-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+  .admin-att-card-clickable { cursor: pointer; }
+  .admin-att-card-clickable:hover {
+    border-color: var(--temple-red);
+    background: var(--bg);
+  }
+  .admin-att-icon {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    background: rgba(184,134,11,0.1);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
   /* Forum editor (admin) — shares forum-editor styles from index, redefine here */
   .forum-editor {
     border: 1px solid var(--border);
@@ -807,6 +832,61 @@
   }
   .albums-picker-name { flex: 1; font-size: 13px; color: var(--ink); min-width: 0; }
   .albums-picker-name-meta { font-size: 11px; color: var(--ink-mute); }
+
+  /* Event picker (for marquee event selection) */
+  .event-picker { display: flex; flex-direction: column; gap: 12px; }
+  .event-picker-selected {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .event-picker-selected-title {
+    font-size: 12px; color: var(--ink-mute); font-weight: 500;
+    margin-bottom: 4px; padding: 0 4px;
+  }
+  .event-picker-pool {
+    border: 1px dashed var(--border-strong);
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .event-picker-pool-list {
+    display: flex; flex-direction: column; gap: 4px;
+    max-height: 320px; overflow-y: auto;
+    padding-right: 4px;
+  }
+  .event-picker-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .event-picker-row:hover { border-color: var(--gold); }
+  .event-picker-row.selected { background: var(--bg-card); cursor: grab; }
+  .event-picker-row.selected:active { cursor: grabbing; }
+  .event-picker-row.in-selection { background: rgba(139,36,33,0.04); border-color: var(--temple-red); }
+  .event-picker-handle {
+    color: var(--ink-mute); font-size: 12px;
+    flex-shrink: 0; cursor: grab;
+  }
+  .event-picker-tag {
+    flex-shrink: 0;
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 500;
+  }
+  .event-picker-info { flex: 1; min-width: 0; }
+  .event-picker-title {
+    font-size: 13px; color: var(--ink); font-weight: 500;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .event-picker-meta {
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: 1px;
+  }
   .albums-picker-add {
     background: var(--bg-card);
     border: 1px dashed var(--border-strong);
@@ -1241,7 +1321,7 @@ const SECTION_SCHEMAS = {
   marquee: {
     label: '跑馬燈公告',
     icon: '🔔',
-    summary: (d) => `跑馬燈 (${(d.items || []).length} 則)`,
+    summary: (d) => `跑馬燈 (${(d.items || []).length} 則文字 + ${(d.selectedEventIds || []).length} 個活動)`,
     fields: [
       { key: 'label', label: '左側標籤文字', type: 'text', placeholder: '最新訊息', help: '預設「最新訊息」,可改成「公告」「法會通知」等' },
       { key: 'style', label: '樣式', type: 'select', options: [
@@ -1249,12 +1329,21 @@ const SECTION_SCHEMAS = {
         { value: 'dark', label: '深色(墨黑)— 比較突顯' },
         { value: 'accent', label: '強調(寺廟紅)— 最醒目' }
       ]},
-      { key: 'interval', label: '切換秒數', type: 'text', placeholder: '4', help: '每隔幾秒切換下一條,預設 4 秒' },
-      { key: 'items', label: '公告清單', type: 'repeater', itemFields: [
+      { key: 'animation', label: '動畫效果', type: 'select', options: [
+        { value: 'fade', label: '淡入淡出 — 一條一條浮現' },
+        { value: 'slide-vertical', label: '上下翻譯 — 由下往上推' },
+        { value: 'slide-horizontal', label: '左右切換 — 由左滑入' },
+        { value: 'scroll', label: '水平床狀謄 — 不間斷滾動' }
+      ]},
+      { key: 'interval', label: '停留秒數 (淡入淡出/翻譯/切換 適用)', type: 'text', placeholder: '4', help: '每條訊息顯示幾秒後切換下一條,預設 4 秒。連續滾動模式不需設定' },
+      { key: 'scrollSpeed', label: '滾動速度 (僅水平床狀謄)', type: 'text', placeholder: '60', help: '每秒幾像素,數字越大越快,預設 60 px/秒' },
+      { key: 'items', label: '📝 文字公告(自訂內容)', type: 'repeater', itemFields: [
         { key: 'date', label: '日期 (選填,例: 2026.05.15)', type: 'text' },
         { key: 'text', label: '公告內容', type: 'text' },
         { key: 'url', label: '連結 (選填,點擊前往)', type: 'link' }
-      ]}
+      ]},
+      { key: 'selectedEventIds', label: '📅 從行事曆挑選活動', type: 'event-picker', help: '從行事曆勾選要顯示的活動,過期活動會自動隱藏' },
+      { key: 'fullCalendarUrl', label: '行事曆完整頁面連結 (選填,讓活動可點擊)', type: 'link', help: '若有此設定,活動點擊後會跳到行事曆頁面' }
     ]
   },
   auth: {
@@ -1615,6 +1704,172 @@ function RepeaterField({ value, onChange, itemFields, password, showToast }) {
         </div>
       ))}
       <button type="button" className="btn btn-secondary btn-sm" onClick={add}>+ 新增一項</button>
+    </div>
+  );
+}
+
+function EventPicker({ value, onChange, password, showToast }) {
+  const [events, setEvents] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [filterCat, setFilterCat] = useState('');
+  const [draggedIdx, setDraggedIdx] = useState(null);
+
+  const selectedIds = value || [];
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await gasPost({ action: 'adminCalendarGetAll', password });
+        if (!cancelled && r.ok) {
+          setEvents(r.data.events || []);
+          setCategories(r.data.categories || []);
+        }
+      } catch (e) {
+        if (!cancelled) showToast('讀取行事曆失敗', 'error');
+      }
+      if (!cancelled) setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const todayStr = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })();
+
+  const catById = (id) => categories.find(c => c.id === id) || { name: '其他', icon: '·', color: '#999' };
+
+  const toggle = (id) => {
+    if (selectedIds.includes(id)) onChange(selectedIds.filter(x => x !== id));
+    else onChange([...selectedIds, id]);
+  };
+  const removeAt = (i) => onChange(selectedIds.filter((_, idx) => idx !== i));
+
+  const onDragStart = (i) => setDraggedIdx(i);
+  const onDragOver = (e) => e.preventDefault();
+  const onDrop = (e, i) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === i) return;
+    const next = [...selectedIds];
+    const [moved] = next.splice(draggedIdx, 1);
+    next.splice(i, 0, moved);
+    onChange(next);
+    setDraggedIdx(null);
+  };
+
+  if (loading) return <div className="text-sm" style={{ padding: 16, color: 'var(--ink-mute)' }}>讀取行事曆⋯</div>;
+  if (!events) return null;
+
+  if (events.length === 0) {
+    return (
+      <div className="albums-picker">
+        <div className="albums-picker-empty">
+          行事曆是空的。請先到左側選單「📅 行事曆管理」新增活動
+        </div>
+      </div>
+    );
+  }
+
+  const selectedEvents = selectedIds
+    .map(id => events.find(e => e.id === id))
+    .filter(Boolean);
+
+  // Filter pool: show only future events, optionally filtered
+  let pool = events
+    .filter(e => (e.endDate || e.startDate) >= todayStr)
+    .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')));
+  if (search) {
+    const s = search.toLowerCase();
+    pool = pool.filter(e =>
+      e.title.toLowerCase().includes(s) ||
+      (e.location || '').toLowerCase().includes(s)
+    );
+  }
+  if (filterCat) pool = pool.filter(e => e.categoryId === filterCat);
+
+  return (
+    <div className="event-picker">
+      {/* Selected events (draggable for reorder) */}
+      {selectedEvents.length > 0 && (
+        <div className="event-picker-selected">
+          <div className="event-picker-selected-title">已選 {selectedEvents.length} 個活動(可拖拉調整輪播順序)</div>
+          {selectedEvents.map((ev, i) => {
+            const cat = catById(ev.categoryId);
+            const sd = new Date(ev.startDate + 'T00:00:00');
+            return (
+              <div
+                key={ev.id}
+                className="event-picker-row selected"
+                draggable
+                onDragStart={() => onDragStart(i)}
+                onDragOver={onDragOver}
+                onDrop={(e) => onDrop(e, i)}
+                onDragEnd={() => setDraggedIdx(null)}
+              >
+                <span className="event-picker-handle">⋮⋮</span>
+                <span className="event-picker-tag" style={{ background: cat.color + '22', color: cat.color }}>
+                  {cat.icon} {cat.name}
+                </span>
+                <div className="event-picker-info">
+                  <div className="event-picker-title">{ev.title}</div>
+                  <div className="event-picker-meta">
+                    {sd.getMonth() + 1}/{sd.getDate()}
+                    {ev.startTime && ` · ${ev.startTime}`}
+                    {ev.location && ` · ${ev.location}`}
+                  </div>
+                </div>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeAt(i)}>✕</button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pool */}
+      <div className="event-picker-pool">
+        <div className="flex flex-wrap gap-2 mb-2">
+          <input type="text" placeholder="🔍 搜尋活動名稱/地點" value={search} onChange={(e) => setSearch(e.target.value)} style={{ flex: 1, minWidth: 160 }} />
+          <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)}>
+            <option value="">全部分類</option>
+            {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+          </select>
+        </div>
+
+        {pool.length === 0 ? (
+          <div className="albums-picker-empty">沒有符合條件的未來活動</div>
+        ) : (
+          <div className="event-picker-pool-list">
+            {pool.map(ev => {
+              const cat = catById(ev.categoryId);
+              const sd = new Date(ev.startDate + 'T00:00:00');
+              const isSelected = selectedIds.includes(ev.id);
+              return (
+                <div
+                  key={ev.id}
+                  className={`event-picker-row ${isSelected ? 'in-selection' : ''}`}
+                  onClick={() => toggle(ev.id)}
+                >
+                  <input type="checkbox" checked={isSelected} readOnly />
+                  <span className="event-picker-tag" style={{ background: cat.color + '22', color: cat.color }}>
+                    {cat.icon} {cat.name}
+                  </span>
+                  <div className="event-picker-info">
+                    <div className="event-picker-title">{ev.title}</div>
+                    <div className="event-picker-meta">
+                      {sd.getMonth() + 1}/{sd.getDate()}
+                      {ev.startTime && ` · ${ev.startTime}`}
+                      {ev.location && ` · ${ev.location}`}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -2097,6 +2352,7 @@ function FieldRenderer({ field, value, onChange, password, showToast }) {
       {type === 'link' && <LinkField value={value} onChange={onChange} placeholder={placeholder} />}
       {type === 'albums-editor' && <AlbumsEditor value={value} onChange={onChange} password={password} showToast={showToast} />}
       {type === 'albums-picker' && <AlbumsPicker value={value} onChange={onChange} />}
+      {type === 'event-picker' && <EventPicker value={value} onChange={onChange} password={password} showToast={showToast} />}
       {type === 'repeater' && <RepeaterField value={value} onChange={onChange} itemFields={field.itemFields} password={password} showToast={showToast} />}
       {type === 'group' && <GroupField value={value} onChange={onChange} subFields={field.subFields} password={password} showToast={showToast} />}
       {help && <div className="field-help">{help}</div>}
@@ -3385,6 +3641,7 @@ function stripHtmlAdmin(s) { return String(s || '').replace(/<[^>]+>/g, ' '); }
 function ForumThreadAdminView({ thread, categories, onBack, onPin, onLock, onDelete, onMove, onUpdate, onUpdateReply, onDeleteReply }) {
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(thread.title);
+  const [editAttachments, setEditAttachments] = useState(thread.attachments || []);
   const editorRef = useRef(null);
   const [editingReplyId, setEditingReplyId] = useState(null);
   const replyEditorRefs = useRef({});
@@ -3392,6 +3649,7 @@ function ForumThreadAdminView({ thread, categories, onBack, onPin, onLock, onDel
   useEffect(() => {
     if (editing && editorRef.current) {
       editorRef.current.innerHTML = thread.contentHtml || '';
+      setEditAttachments(thread.attachments || []);
     }
   }, [editing, thread.id]);
 
@@ -3401,7 +3659,7 @@ function ForumThreadAdminView({ thread, categories, onBack, onPin, onLock, onDel
     const html = editorRef.current?.innerHTML || '';
     if (!editTitle.trim()) { alert('標題不可空白'); return; }
     if (!html.trim() || html === '<br>') { alert('內容不可空白'); return; }
-    const ok = await onUpdate({ title: editTitle.trim(), contentHtml: html });
+    const ok = await onUpdate({ title: editTitle.trim(), contentHtml: html, attachments: editAttachments });
     if (ok) setEditing(false);
   };
 
@@ -3470,6 +3728,16 @@ function ForumThreadAdminView({ thread, categories, onBack, onPin, onLock, onDel
             <div dangerouslySetInnerHTML={{ __html: thread.contentHtml }} />
           )}
         </div>
+
+        {/* Attachments */}
+        {editing ? (
+          <div className="mt-4">
+            <label className="field-label">📎 附件 (單檔上限 10 MB)</label>
+            <AdminAttachmentsField value={editAttachments} onChange={setEditAttachments} />
+          </div>
+        ) : (
+          <AdminAttachmentDisplay attachments={thread.attachments} />
+        )}
 
         <div className="text-xs mt-3" style={{ color: 'var(--ink-mute)' }}>
           {(thread.replies || []).length} 則留言 · {(thread.likes || []).length} 個讚
@@ -3581,6 +3849,7 @@ function ForumAdminComposeModal({ categories, onClose, onSubmit }) {
   const [authorJob, setAuthorJob] = useState('管理員');
   const [pinned, setPinned] = useState(true);
   const [locked, setLocked] = useState(false);
+  const [attachments, setAttachments] = useState([]);
   const editorRef = useRef(null);
   const [busy, setBusy] = useState(false);
 
@@ -3597,7 +3866,8 @@ function ForumAdminComposeModal({ categories, onClose, onSubmit }) {
       contentHtml: html,
       authorName: authorName.trim(),
       authorJob: authorJob.trim(),
-      pinned, locked
+      pinned, locked,
+      attachments
     });
     setBusy(false);
   };
@@ -3650,6 +3920,9 @@ function ForumAdminComposeModal({ categories, onClose, onSubmit }) {
           <label className="field-label mt-3">內容</label>
           <AdminContentEditor editorRef={editorRef} />
 
+          <label className="field-label mt-3">📎 附件 (選填,單檔上限 10 MB)</label>
+          <AdminAttachmentsField value={attachments} onChange={setAttachments} />
+
           <div className="flex gap-2 mt-4 justify-end">
             <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>取消</button>
             <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? '發布中⋯' : '發布文章'}</button>
@@ -3658,6 +3931,125 @@ function ForumAdminComposeModal({ categories, onClose, onSubmit }) {
       </div>
     </div>
   );
+}
+
+// Admin attachment uploader — uses admin password instead of token
+function AdminAttachmentsField({ value, onChange }) {
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
+
+  const onFile = async (file) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert(`檔案過大: ${file.name}。單檔上限 10 MB`);
+      return;
+    }
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target.result.split(',')[1];
+          // Admin uses session token via login; if no token use admin password
+          const token = localStorage.getItem('jc_user_token') || '';
+          const r = await gasPost({
+            action: 'forumUploadAttachment',
+            token,
+            base64,
+            filename: file.name,
+            mimeType: file.type
+          });
+          if (r.ok && r.attachment) {
+            onChange([...(value || []), r.attachment]);
+          } else {
+            // For admin without user token, suggest a workaround
+            if (r.error === 'login_required') {
+              alert('管理員上傳附件需要先以會員身份登入前台。請先到前台註冊一個管理員帳號並登入,或使用前台發文功能。');
+            } else {
+              alert('上傳失敗: ' + (r.error || ''));
+            }
+          }
+        } catch (err) {
+          alert('上傳失敗: ' + err.message);
+        }
+        setUploading(false);
+        if (fileRef.current) fileRef.current.value = '';
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setUploading(false);
+      alert('檔案讀取失敗');
+    }
+  };
+
+  const removeAt = (i) => onChange((value || []).filter((_, idx) => idx !== i));
+  const list = value || [];
+
+  return (
+    <div>
+      {list.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
+          {list.map((att, i) => (
+            <div key={att.id} className="admin-att-card">
+              <div className="admin-att-icon">{adminAttIcon(att.mimeType, att.filename)}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 500, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.filename}</div>
+                <div style={{ fontSize: 11, color: 'var(--ink-mute)' }}>{adminFormatBytes(att.size)}</div>
+              </div>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeAt(i)} style={{ color: 'var(--danger)' }}>✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <button type="button" className="btn btn-secondary btn-sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
+        {uploading ? '上傳中⋯' : '+ 加入附件'}
+      </button>
+      <input ref={fileRef} type="file" style={{ display: 'none' }} onChange={(e) => onFile(e.target.files[0])} />
+    </div>
+  );
+}
+
+// Read-only display of attachments in admin thread view
+function AdminAttachmentDisplay({ attachments }) {
+  if (!attachments || attachments.length === 0) return null;
+  return (
+    <div className="mt-4 p-3" style={{ background: 'rgba(184,134,11,0.06)', border: '1px solid rgba(184,134,11,0.2)', borderRadius: 6 }}>
+      <div className="text-sm font-medium mb-2" style={{ color: 'var(--ink-light)' }}>📎 附件 ({attachments.length})</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {attachments.map(att => (
+          <a key={att.id} href={att.downloadUrl} target="_blank" rel="noreferrer" className="admin-att-card admin-att-card-clickable">
+            <div className="admin-att-icon">{adminAttIcon(att.mimeType, att.filename)}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 500, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--ink)' }}>{att.filename}</div>
+              <div style={{ fontSize: 11, color: 'var(--ink-mute)' }}>{adminFormatBytes(att.size)} · 下載 ↓</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function adminFormatBytes(b) {
+  if (!b) return '';
+  if (b < 1024) return b + ' B';
+  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+  return (b / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function adminAttIcon(mime, filename) {
+  const lower = (filename || '').toLowerCase();
+  const m = (mime || '').toLowerCase();
+  if (m.startsWith('image/')) return '🖼';
+  if (m === 'application/pdf' || lower.endsWith('.pdf')) return '📄';
+  if (lower.match(/\.(docx?|odt|rtf)$/) || m.includes('word')) return '📝';
+  if (lower.match(/\.(xlsx?|csv|ods)$/) || m.includes('sheet') || m.includes('excel')) return '📊';
+  if (lower.match(/\.(pptx?|odp)$/) || m.includes('presentation')) return '📽';
+  if (lower.match(/\.(zip|rar|7z|tar|gz)$/) || m.includes('zip')) return '🗜';
+  if (lower.match(/\.(mp4|mov|avi|mkv|webm)$/) || m.startsWith('video/')) return '🎬';
+  if (lower.match(/\.(mp3|wav|m4a|flac|ogg)$/) || m.startsWith('audio/')) return '🎵';
+  if (lower.match(/\.(txt|md|log)$/) || m.startsWith('text/')) return '📃';
+  return '📎';
 }
 
 // ============================================================
@@ -4022,6 +4414,17 @@ function SystemHealthView({ password, showToast }) {
             {health.pendingBroadcasts}
           </div>
         </div>
+        {health.attachmentStats && (
+          <div className="card p-5">
+            <div className="text-sm mb-1" style={{ color: 'var(--ink-mute)' }}>討論區附件</div>
+            <div className="font-cormorant" style={{ fontSize: 28, fontWeight: 500, color: 'var(--gold)' }}>
+              {health.attachmentStats.count}
+            </div>
+            <div className="text-xs" style={{ color: 'var(--ink-mute)', marginTop: 2 }}>
+              共 {(health.attachmentStats.totalBytes / 1024 / 1024).toFixed(1)} MB
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

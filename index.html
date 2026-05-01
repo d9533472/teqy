@@ -1339,6 +1339,96 @@
   .forum-msg-success { background: rgba(74,124,79,0.1); color: #2d5530; border: 1px solid rgba(74,124,79,0.3); }
   .forum-msg-error { background: rgba(168,56,56,0.1); color: var(--temple-red); border: 1px solid rgba(168,56,56,0.3); }
 
+  /* Attachments */
+  .forum-att-field {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .forum-att-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .forum-att-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .forum-att-card-clickable { cursor: pointer; }
+  .forum-att-card-clickable:hover {
+    border-color: var(--temple-red);
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px -6px rgba(94,23,20,0.15);
+  }
+  .forum-att-icon {
+    flex-shrink: 0;
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(184,134,11,0.1);
+    border-radius: 4px;
+    font-size: 20px;
+  }
+  .forum-att-info { flex: 1; min-width: 0; }
+  .forum-att-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .forum-att-meta {
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .forum-att-remove {
+    flex-shrink: 0;
+    background: transparent; border: none;
+    color: var(--ink-mute);
+    cursor: pointer; padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  .forum-att-remove:hover { background: rgba(168,56,56,0.1); color: var(--temple-red); }
+  .forum-att-upload-btn {
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px dashed rgba(184,134,11,0.4);
+    border-radius: 4px;
+    color: var(--ink-light);
+    cursor: pointer;
+    font-family: inherit; font-size: 14px;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .forum-att-upload-btn:hover:not(:disabled) {
+    border-color: var(--temple-red);
+    color: var(--temple-red);
+    background: rgba(139,36,33,0.03);
+  }
+  .forum-att-upload-btn:disabled { opacity: 0.6; cursor: wait; }
+
+  /* Attachment display in thread (read-only) */
+  .forum-att-display {
+    margin-top: 24px;
+    padding: 16px;
+    background: rgba(184,134,11,0.05);
+    border: 1px solid rgba(184,134,11,0.2);
+    border-radius: 4px;
+  }
+  .forum-att-display-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+  .forum-att-display-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
   @media (max-width: 640px) {
     .forum-thread-detail { padding: 20px; }
     .forum-thread-title-big { font-size: 1.4rem; }
@@ -2116,14 +2206,75 @@
   .marquee-item {
     display: inline-flex; align-items: center; gap: 16px;
     text-decoration: none;
-    transition: opacity 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1);
-    opacity: 1; transform: translateY(0);
     white-space: nowrap;
     overflow: hidden; text-overflow: ellipsis;
     width: 100%;
   }
-  .marquee-item.fading { opacity: 0; transform: translateY(-8px); }
   .marquee-item:hover { color: inherit; }
+
+  /* === Animation: fade === */
+  .marquee-anim-fade {
+    transition: opacity 0.4s cubic-bezier(0.22,1,0.36,1);
+    opacity: 1;
+  }
+  .marquee-anim-fade.marquee-out { opacity: 0; }
+  .marquee-anim-fade.marquee-in { opacity: 1; }
+
+  /* === Animation: vertical slide === */
+  .marquee-anim-slide-vertical {
+    transition: opacity 0.35s cubic-bezier(0.22,1,0.36,1), transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    opacity: 1; transform: translateY(0);
+  }
+  .marquee-anim-slide-vertical.marquee-out { opacity: 0; transform: translateY(-12px); }
+  .marquee-anim-slide-vertical.marquee-in { opacity: 1; transform: translateY(0); }
+
+  /* === Animation: horizontal slide === */
+  .marquee-anim-slide-horizontal {
+    transition: opacity 0.35s cubic-bezier(0.22,1,0.36,1), transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    opacity: 1; transform: translateX(0);
+  }
+  .marquee-anim-slide-horizontal.marquee-out { opacity: 0; transform: translateX(-20px); }
+  .marquee-anim-slide-horizontal.marquee-in { opacity: 1; transform: translateX(0); }
+
+  /* === Animation: continuous scroll === */
+  .marquee-track-scroll {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-width: 0;
+  }
+  .marquee-scroll-inner {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: marqueeScroll linear infinite;
+    will-change: transform;
+  }
+  .marquee-scroll-inner:hover { animation-play-state: paused; }
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-scroll-item {
+    display: inline-flex; align-items: center; gap: 12px;
+    text-decoration: none;
+    padding-right: 24px;
+    flex-shrink: 0;
+  }
+  .marquee-scroll-sep {
+    color: var(--gold);
+    margin-left: 16px; opacity: 0.5;
+  }
+
+  /* Event tag (calendar event in marquee) */
+  .marquee-event-tag {
+    flex-shrink: 0;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
 
   .marquee-classic .marquee-item { color: var(--ink); }
   .marquee-classic .marquee-item:hover .marquee-text { color: var(--temple-red); }
@@ -3042,27 +3193,108 @@ function SpacerSection({ data }) {
 }
 
 function MarqueeSection({ data, anchorId }) {
-  const items = (data.items || []).filter(it => it.text);
+  const calData = useCalendarData();
+  const intervalSec = parseFloat(data.interval) || 4;
+  const animation = data.animation || 'fade';  // fade | slide-vertical | slide-horizontal | scroll
+  const scrollSpeed = parseInt(data.scrollSpeed, 10) || 60;  // px/sec for scroll mode
+  const fullCalendarUrl = data.fullCalendarUrl || '';
+
+  // Build items: interleave text items with selected calendar events
+  const items = useMemo(() => {
+    const todayStr = (() => {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    })();
+
+    const textItems = (data.items || []).filter(it => it.text).map(it => ({
+      kind: 'text',
+      date: it.date,
+      text: it.text,
+      url: it.url
+    }));
+
+    let eventItems = [];
+    if (calData && Array.isArray(data.selectedEventIds) && data.selectedEventIds.length > 0) {
+      const events = calData.events || [];
+      const cats = calData.categories || [];
+      eventItems = data.selectedEventIds
+        .map(id => events.find(e => e.id === id))
+        .filter(e => e && (e.endDate || e.startDate) >= todayStr)  // skip past events
+        .map(e => {
+          const cat = cats.find(c => c.id === e.categoryId) || { name: '其他', icon: '·', color: '#6b6359' };
+          const sd = new Date(e.startDate + 'T00:00:00');
+          const dateStr = `${sd.getMonth() + 1}/${sd.getDate()}`;
+          const timeStr = e.allDay || !e.startTime ? '全日' : e.startTime + (e.endTime ? `–${e.endTime}` : '');
+          const parts = [`${cat.icon} ${dateStr} ${cat.name}`];
+          if (e.location) parts.push(e.location);
+          parts.push(timeStr);
+          parts.push(e.title);
+          return {
+            kind: 'event',
+            date: dateStr,
+            text: parts.slice(1).join(' · '),  // location · time · title
+            prefix: `${cat.icon} ${cat.name}`,
+            color: cat.color,
+            url: fullCalendarUrl ? `${fullCalendarUrl}?eventId=${e.id}` : '',
+            eventTitle: e.title
+          };
+        });
+    }
+
+    // Interleave: text1, event1, text2, event2, ...
+    const interleaved = [];
+    const maxLen = Math.max(textItems.length, eventItems.length);
+    for (let i = 0; i < maxLen; i++) {
+      if (textItems[i]) interleaved.push(textItems[i]);
+      if (eventItems[i]) interleaved.push(eventItems[i]);
+    }
+    return interleaved;
+  }, [data.items, data.selectedEventIds, calData, fullCalendarUrl]);
+
+  if (!items.length) return null;
+
+  // Different animation modes
+  if (animation === 'scroll') {
+    // Continuous horizontal scroll — duplicate list for seamless loop
+    return (
+      <MarqueeScroll items={items} data={data} anchorId={anchorId} speedPxPerSec={scrollSpeed} />
+    );
+  }
+
+  // For fade / slide-vertical / slide-horizontal — paginated with timer
+  return (
+    <MarqueePaginated
+      items={items}
+      data={data}
+      anchorId={anchorId}
+      animation={animation}
+      intervalSec={intervalSec}
+    />
+  );
+}
+
+// ---------- Paginated mode (fade / slide) ----------
+function MarqueePaginated({ items, data, anchorId, animation, intervalSec }) {
   const [idx, setIdx] = useState(0);
-  const [fading, setFading] = useState(false);
-  const intervalSec = parseInt(data.interval || 4, 10);
+  const [direction, setDirection] = useState('in'); // in | out
+  const labelText = data.label || '最新訊息';
   const style = data.style || 'classic';
+  const cur = items[idx] || items[0];
 
   useEffect(() => {
     if (items.length <= 1) return;
     const t = setInterval(() => {
-      setFading(true);
+      setDirection('out');
       setTimeout(() => {
         setIdx(i => (i + 1) % items.length);
-        setFading(false);
+        setDirection('in');
       }, 400);
     }, intervalSec * 1000);
     return () => clearInterval(t);
   }, [items.length, intervalSec]);
 
-  if (!items.length) return null;
-  const cur = items[idx] || items[0];
-  const labelText = data.label || '最新訊息';
+  // Animation class: applied to inner element for transition
+  const animClass = `marquee-anim-${animation} ${direction === 'out' ? 'marquee-out' : 'marquee-in'}`;
 
   return (
     <section id={anchorId} className={`marquee-section marquee-${style}`}>
@@ -3075,14 +3307,22 @@ function MarqueeSection({ data, anchorId }) {
             </svg>
             <span>{labelText}</span>
           </div>
-          <div className="marquee-track">
-            <a className={`marquee-item ${fading ? 'fading' : ''}`}
+          <div className="marquee-track marquee-track-paginated">
+            <a className={`marquee-item ${animClass} ${cur.kind === 'event' ? 'is-event' : ''}`}
                href={cur.url || '#'}
                target={cur.url && cur.url.startsWith('http') ? '_blank' : '_self'}
                rel={cur.url && cur.url.startsWith('http') ? 'noreferrer' : ''}
-               style={{ pointerEvents: cur.url ? 'auto' : 'none' }}>
-              {cur.date && <span className="marquee-date">{cur.date}</span>}
-              <span className="marquee-text">{cur.text}</span>
+               style={{
+                 pointerEvents: cur.url ? 'auto' : 'none',
+                 ...(cur.kind === 'event' && cur.color ? { '--event-color': cur.color } : {})
+               }}>
+              {cur.kind === 'event' && cur.prefix && (
+                <span className="marquee-event-tag" style={{ background: cur.color + '22', color: cur.color }}>
+                  {cur.prefix}
+                </span>
+              )}
+              {cur.kind !== 'event' && cur.date && <span className="marquee-date">{cur.date}</span>}
+              <span className="marquee-text">{cur.kind === 'event' ? cur.eventTitle + (cur.text ? ' · ' + cur.text.split(' · ').slice(0, -1).join(' · ') : '') : cur.text}</span>
               {cur.url && (
                 <svg className="marquee-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M5 12h14M13 6l6 6-6 6"/>
@@ -3097,6 +3337,62 @@ function MarqueeSection({ data, anchorId }) {
               <span className="marquee-total">{items.length}</span>
             </div>
           )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Continuous horizontal scroll ----------
+function MarqueeScroll({ items, data, anchorId, speedPxPerSec }) {
+  const labelText = data.label || '最新訊息';
+  const style = data.style || 'classic';
+  const trackRef = useRef(null);
+  const [duration, setDuration] = useState(30);
+
+  // Compute animation duration based on actual content width and desired speed
+  useEffect(() => {
+    if (!trackRef.current) return;
+    const w = trackRef.current.scrollWidth / 2;  // we duplicate the list, so half is one full cycle
+    if (w > 0) setDuration(w / speedPxPerSec);
+  }, [items, speedPxPerSec]);
+
+  // Duplicate items so animation loops seamlessly
+  const doubled = [...items, ...items];
+
+  return (
+    <section id={anchorId} className={`marquee-section marquee-${style}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="marquee-bar">
+          <div className="marquee-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span>{labelText}</span>
+          </div>
+          <div className="marquee-track marquee-track-scroll">
+            <div className="marquee-scroll-inner" ref={trackRef} style={{ animationDuration: duration + 's' }}>
+              {doubled.map((item, i) => (
+                <a key={i} className={`marquee-scroll-item ${item.kind === 'event' ? 'is-event' : ''}`}
+                   href={item.url || '#'}
+                   target={item.url && item.url.startsWith('http') ? '_blank' : '_self'}
+                   rel={item.url && item.url.startsWith('http') ? 'noreferrer' : ''}
+                   style={{ pointerEvents: item.url ? 'auto' : 'none' }}>
+                  {item.kind === 'event' && item.prefix && (
+                    <span className="marquee-event-tag" style={{ background: (item.color || '#999') + '22', color: item.color || '#999' }}>
+                      {item.prefix}
+                    </span>
+                  )}
+                  {item.kind !== 'event' && item.date && <span className="marquee-date">{item.date}</span>}
+                  <span className="marquee-text">
+                    {item.kind === 'event' ? `${item.eventTitle}${item.text ? ' · ' + item.text.split(' · ').slice(0, -1).join(' · ') : ''}` : item.text}
+                  </span>
+                  <span className="marquee-scroll-sep">·</span>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -3912,11 +4208,11 @@ function ForumSection({ data, anchorId }) {
   };
 
   // === Actions ===
-  const submitNewThread = async ({ categoryId, title, contentHtml }) => {
+  const submitNewThread = async ({ categoryId, title, contentHtml, attachments }) => {
     setBusy(true);
     try {
       const token = localStorage.getItem('jc_user_token');
-      const r = await gasPost({ action: 'forumCreateThread', token, categoryId, title, contentHtml });
+      const r = await gasPost({ action: 'forumCreateThread', token, categoryId, title, contentHtml, attachments: attachments || [] });
       if (r.ok) {
         showToast('發文成功 🪷');
         setShowCompose(false);
@@ -3929,12 +4225,12 @@ function ForumSection({ data, anchorId }) {
     setBusy(false);
   };
 
-  const submitEditThread = async ({ title, contentHtml }) => {
+  const submitEditThread = async ({ title, contentHtml, attachments }) => {
     if (!editingThread) return;
     setBusy(true);
     try {
       const token = localStorage.getItem('jc_user_token');
-      const r = await gasPost({ action: 'forumUpdateThread', token, threadId: editingThread.id, patch: { title, contentHtml } });
+      const r = await gasPost({ action: 'forumUpdateThread', token, threadId: editingThread.id, patch: { title, contentHtml, attachments: attachments || [] } });
       if (r.ok) {
         showToast('已更新');
         setEditingThread(null);
@@ -4324,6 +4620,8 @@ function ForumThreadView({ thread, user, categories, busy, onBack, onLike,
 
             <div className="forum-thread-body" dangerouslySetInnerHTML={{ __html: thread.contentHtml }} />
 
+            <ForumAttachmentList attachments={thread.attachments} />
+
             <div className="forum-thread-actions">
               <button className={`forum-like-btn ${liked ? 'active' : ''}`} onClick={() => onLike(null)} disabled={!user}>
                 {liked ? '❤️' : '🤍'} <span>{(thread.likes || []).length}</span>
@@ -4455,13 +4753,14 @@ function ForumComposeModal({ categories, initialCategoryId, onClose, onSubmit, b
   const [categoryId, setCategoryId] = useState(initialCategoryId || (categories[0]?.id || ''));
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [attachments, setAttachments] = useState([]);
   const editorRef = useRef(null);
   const submit = (e) => {
     e?.preventDefault?.();
     const html = editorRef.current?.innerHTML || content;
     if (!title.trim()) { alert('請填寫標題'); return; }
     if (!html.trim() || html.trim() === '<br>') { alert('請填寫內容'); return; }
-    onSubmit({ categoryId, title: title.trim(), contentHtml: html });
+    onSubmit({ categoryId, title: title.trim(), contentHtml: html, attachments });
   };
   return (
     <div className="forum-modal-overlay" onClick={onClose}>
@@ -4477,6 +4776,8 @@ function ForumComposeModal({ categories, initialCategoryId, onClose, onSubmit, b
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} required />
           <label className="auth-label mt-3">內容</label>
           <ForumRichEditor editorRef={editorRef} onChange={setContent} />
+          <label className="auth-label mt-3">📎 附件 (選填,單檔上限 10 MB)</label>
+          <ForumAttachmentsField value={attachments} onChange={setAttachments} />
           <div className="flex gap-2 mt-4 justify-end">
             <button type="button" className="forum-btn-ghost" onClick={onClose}>取消</button>
             <button type="submit" className="forum-btn-primary" disabled={busy}>{busy ? '送出中⋯' : '發表'}</button>
@@ -4489,13 +4790,14 @@ function ForumComposeModal({ categories, initialCategoryId, onClose, onSubmit, b
 
 function ForumThreadEditForm({ thread, busy, onCancel, onSave }) {
   const [title, setTitle] = useState(thread.title);
+  const [attachments, setAttachments] = useState(thread.attachments || []);
   const editorRef = useRef(null);
   const submit = (e) => {
     e?.preventDefault?.();
     const html = editorRef.current?.innerHTML || '';
     if (!title.trim()) { alert('請填寫標題'); return; }
     if (!html.trim() || html === '<br>') { alert('請填寫內容'); return; }
-    onSave({ title: title.trim(), contentHtml: html });
+    onSave({ title: title.trim(), contentHtml: html, attachments });
   };
   return (
     <form onSubmit={submit}>
@@ -4503,12 +4805,144 @@ function ForumThreadEditForm({ thread, busy, onCancel, onSave }) {
       <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       <label className="auth-label mt-3">內容</label>
       <ForumRichEditor editorRef={editorRef} initialContent={thread.contentHtml} />
+      <label className="auth-label mt-3">📎 附件 (選填,單檔上限 10 MB)</label>
+      <ForumAttachmentsField value={attachments} onChange={setAttachments} />
       <div className="flex gap-2 mt-4 justify-end">
         <button type="button" className="forum-btn-ghost" onClick={onCancel}>取消</button>
         <button type="submit" className="forum-btn-primary" disabled={busy}>{busy ? '儲存中⋯' : '儲存變更'}</button>
       </div>
     </form>
   );
+}
+
+// Attachment uploader / display component
+function ForumAttachmentsField({ value, onChange }) {
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const fileRef = useRef(null);
+
+  const onFile = async (file) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert(`檔案過大: ${file.name} (${forumFormatBytes(file.size)})。單檔上限 10 MB`);
+      return;
+    }
+    setUploading(true);
+    setProgress(0);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target.result.split(',')[1];
+          const token = localStorage.getItem('jc_user_token');
+          const r = await gasPost({
+            action: 'forumUploadAttachment',
+            token,
+            base64,
+            filename: file.name,
+            mimeType: file.type
+          });
+          if (r.ok && r.attachment) {
+            onChange([...(value || []), r.attachment]);
+          } else {
+            const errMap = {
+              file_too_large: '檔案超過 10 MB 上限',
+              login_required: '請先登入',
+              missing_data: '檔案資料不完整'
+            };
+            alert(errMap[r.error] || ('上傳失敗: ' + (r.error || '')));
+          }
+        } catch (err) {
+          alert('上傳失敗: ' + err.message);
+        }
+        setUploading(false);
+        setProgress(0);
+        if (fileRef.current) fileRef.current.value = '';
+      };
+      reader.onprogress = (e) => {
+        if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100));
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setUploading(false);
+      alert('檔案讀取失敗');
+    }
+  };
+
+  const removeAt = (i) => onChange((value || []).filter((_, idx) => idx !== i));
+
+  const list = value || [];
+
+  return (
+    <div className="forum-att-field">
+      {list.length > 0 && (
+        <div className="forum-att-list">
+          {list.map((att, i) => (
+            <div key={att.id} className="forum-att-card">
+              <div className="forum-att-icon">{forumAttIcon(att.mimeType, att.filename)}</div>
+              <div className="forum-att-info">
+                <div className="forum-att-name">{att.filename}</div>
+                <div className="forum-att-meta">{forumFormatBytes(att.size)}</div>
+              </div>
+              <button type="button" className="forum-att-remove" onClick={() => removeAt(i)} title="移除">✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <button type="button" className="forum-att-upload-btn" onClick={() => fileRef.current?.click()} disabled={uploading}>
+        {uploading ? `上傳中⋯ ${progress > 0 ? progress + '%' : ''}` : '+ 加入附件'}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        style={{ display: 'none' }}
+        onChange={(e) => onFile(e.target.files[0])}
+      />
+    </div>
+  );
+}
+
+// Display attachments (read-only) inside thread body
+function ForumAttachmentList({ attachments }) {
+  if (!attachments || attachments.length === 0) return null;
+  return (
+    <div className="forum-att-display">
+      <div className="forum-att-display-title">📎 附件 ({attachments.length})</div>
+      <div className="forum-att-display-list">
+        {attachments.map(att => (
+          <a key={att.id} href={att.downloadUrl} target="_blank" rel="noreferrer" className="forum-att-card forum-att-card-clickable" title="點擊下載">
+            <div className="forum-att-icon">{forumAttIcon(att.mimeType, att.filename)}</div>
+            <div className="forum-att-info">
+              <div className="forum-att-name">{att.filename}</div>
+              <div className="forum-att-meta">{forumFormatBytes(att.size)} · 下載 ↓</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function forumFormatBytes(b) {
+  if (!b) return '';
+  if (b < 1024) return b + ' B';
+  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+  return (b / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function forumAttIcon(mime, filename) {
+  const lower = (filename || '').toLowerCase();
+  const m = (mime || '').toLowerCase();
+  if (m.startsWith('image/')) return '🖼';
+  if (m === 'application/pdf' || lower.endsWith('.pdf')) return '📄';
+  if (lower.match(/\.(docx?|odt|rtf)$/) || m.includes('word')) return '📝';
+  if (lower.match(/\.(xlsx?|csv|ods)$/) || m.includes('sheet') || m.includes('excel')) return '📊';
+  if (lower.match(/\.(pptx?|odp)$/) || m.includes('presentation')) return '📽';
+  if (lower.match(/\.(zip|rar|7z|tar|gz)$/) || m.includes('zip') || m.includes('compressed')) return '🗜';
+  if (lower.match(/\.(mp4|mov|avi|mkv|webm)$/) || m.startsWith('video/')) return '🎬';
+  if (lower.match(/\.(mp3|wav|m4a|flac|ogg)$/) || m.startsWith('audio/')) return '🎵';
+  if (lower.match(/\.(txt|md|log)$/) || m.startsWith('text/')) return '📃';
+  return '📎';
 }
 
 function ForumReplyForm({ parentId, replies, busy, onCancel, onSubmit }) {
