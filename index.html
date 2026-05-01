@@ -1446,6 +1446,15 @@
     background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
     border-top: 1px solid rgba(184,134,11,0.15);
   }
+  .cal-mini-list .cal-mini-section,
+  .cal-mini-section.cal-mini-list {
+    /* keep existing list styles */
+  }
+  /* Strip layout has narrower padding */
+  .cal-mini-section.cal-mini-strip > div {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
   .cal-mini-header {
     display: flex; justify-content: space-between; align-items: flex-end;
     flex-wrap: wrap; gap: 16px;
@@ -1528,6 +1537,148 @@
   .cal-mini-meta {
     display: flex; flex-wrap: wrap; gap: 10px;
     font-size: 12px; color: var(--ink-light);
+  }
+
+  /* === Mini layout 2: 3-card carousel === */
+  .cal-mini-carousel {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .cal-mini-carousel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    animation: calMiniFade 0.5s ease-out;
+  }
+  @keyframes calMiniFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cal-mini-c-card {
+    display: flex;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    min-height: 130px;
+  }
+  .cal-mini-c-clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px -10px rgba(94,23,20,0.18);
+    border-color: var(--gold);
+  }
+  .cal-mini-c-empty {
+    background: transparent;
+    border: 1px dashed rgba(184,134,11,0.15);
+    pointer-events: none;
+  }
+  .cal-mini-c-stripe {
+    flex-shrink: 0;
+    width: 4px;
+  }
+  .cal-mini-c-body {
+    flex: 1; min-width: 0;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .cal-mini-c-date {
+    display: flex; align-items: baseline; gap: 6px;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--temple-red);
+    line-height: 1; margin-bottom: 4px;
+  }
+  .cal-mini-c-day { font-size: 1.6rem; font-weight: 500; }
+  .cal-mini-c-mo { font-size: 0.85rem; font-style: italic; color: var(--gold); }
+  .cal-mini-c-cat { font-size: 11px; font-weight: 500; }
+  .cal-mini-c-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; font-weight: 500; color: var(--ink);
+    line-height: 1.4;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .cal-mini-c-meta {
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: auto; padding-top: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .cal-mini-c-dots {
+    display: flex; justify-content: center; gap: 6px;
+    margin-top: 4px;
+  }
+  .cal-mini-c-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(184,134,11,0.25);
+    border: none; padding: 0; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .cal-mini-c-dot.active {
+    background: var(--temple-red);
+    width: 18px; border-radius: 999px;
+  }
+  @media (max-width: 768px) {
+    .cal-mini-carousel-grid { grid-template-columns: 1fr; }
+    .cal-mini-c-empty { display: none; }
+  }
+
+  /* === Mini layout 3: Single horizontal strip === */
+  .cal-mini-strip-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -8px;
+    padding: 4px 8px 12px;
+  }
+  .cal-mini-strip-wrap::-webkit-scrollbar { height: 6px; }
+  .cal-mini-strip-wrap::-webkit-scrollbar-track { background: transparent; }
+  .cal-mini-strip-wrap::-webkit-scrollbar-thumb {
+    background: rgba(184,134,11,0.25); border-radius: 4px;
+  }
+  .cal-mini-strip {
+    display: flex; gap: 10px;
+    padding: 0 4px;
+    width: max-content;  /* allow horizontal scroll if too many */
+  }
+  .cal-mini-s-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 18px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 999px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+  .cal-mini-s-clickable:hover {
+    border-color: var(--temple-red);
+    background: var(--paper-warm);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -6px rgba(94,23,20,0.2);
+  }
+  .cal-mini-s-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+  }
+  .cal-mini-s-date strong {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .cal-mini-s-icon { font-size: 14px; }
+  .cal-mini-s-title {
+    font-family: 'Noto Serif TC', serif;
+    color: var(--ink); font-weight: 500;
+  }
+  .cal-mini-s-time, .cal-mini-s-loc {
+    color: var(--ink-mute); font-size: 12px;
+  }
+  @media (max-width: 640px) {
+    .cal-mini-s-pill { padding: 8px 14px; font-size: 12px; }
+    .cal-mini-s-title { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
   }
 
   /* Full calendar */
@@ -5537,6 +5688,8 @@ function calMonthDays(year, month) {
 
 function CalendarMiniSection({ data, anchorId }) {
   const calData = useCalendarData();
+  const layout = data.miniLayout || 'list';  // list | carousel | strip
+
   if (!calData) {
     return (
       <section id={anchorId} className="cal-mini-section">
@@ -5552,21 +5705,19 @@ function CalendarMiniSection({ data, anchorId }) {
   const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
 
   // Filter mode: "month" = this calendar month, "next" = next N upcoming (default)
-  // Default is "next" since "month" can leave the widget empty if no events this month
   const mode = data.filterMode || 'next';
-  const limit = parseInt(data.limit, 10) || 5;
+  const defaultLimit = layout === 'strip' ? 6 : 3;
+  const limit = parseInt(data.limit, 10) || defaultLimit;
 
-  // Get all future-or-current events (event still ongoing OR starts today/later)
   const allUpcoming = (calData.events || [])
     .filter(e => (e.endDate || e.startDate) >= todayStr)
     .sort((a, b) => (a.startDate + (a.startTime || '')).localeCompare(b.startDate + (b.startTime || '')));
 
-  // Apply mode filter
   const upcoming = (mode === 'month'
     ? allUpcoming.filter(e =>
-        (e.startDate || '').startsWith(yearMonth) ||  // starts this month
-        (e.endDate || '').startsWith(yearMonth) ||    // ends this month
-        ((e.startDate || '') < `${yearMonth}-01` && (e.endDate || e.startDate) >= todayStr)  // spans across this month
+        (e.startDate || '').startsWith(yearMonth) ||
+        (e.endDate || '').startsWith(yearMonth) ||
+        ((e.startDate || '') < `${yearMonth}-01` && (e.endDate || e.startDate) >= todayStr)
       )
     : allUpcoming
   ).slice(0, limit);
@@ -5574,14 +5725,14 @@ function CalendarMiniSection({ data, anchorId }) {
   const linkBase = data.fullCalendarUrl || '';
 
   return (
-    <section id={anchorId} className="cal-mini-section">
-      <div className="max-w-5xl mx-auto px-6 lg:px-12 py-16">
+    <section id={anchorId} className={`cal-mini-section cal-mini-${layout}`}>
+      <div className="max-w-5xl mx-auto px-6 lg:px-12 py-12">
         <div className="cal-mini-header reveal">
           <div>
             {data.eyebrow && <div className="eyebrow mb-2" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
             {data.titleHtml
-              ? <HtmlContent className="font-serif-tc text-3xl font-light" html={data.titleHtml} />
-              : <h2 className="font-serif-tc text-3xl font-light">{mode === 'month' ? '本月活動' : '近期活動'}</h2>}
+              ? <HtmlContent className="font-serif-tc text-2xl font-light" html={data.titleHtml} />
+              : <h2 className="font-serif-tc text-2xl font-light">{mode === 'month' ? '本月活動' : '近期活動'}</h2>}
             <div className="cal-mini-subtitle">
               {mode === 'month'
                 ? `${today.getFullYear()} 年 ${today.getMonth() + 1} 月 · 共 ${upcoming.length} 場`
@@ -5596,46 +5747,147 @@ function CalendarMiniSection({ data, anchorId }) {
             {mode === 'month' ? '本月暫無活動安排' : '目前無未來活動'}
           </div>
         ) : (
-          <div className="cal-mini-list reveal">
-            {upcoming.map(ev => {
-              const cat = calCategoryById(calData.categories, ev.categoryId);
-              const startDate = new Date(ev.startDate + 'T00:00:00');
-              const endDate = new Date((ev.endDate || ev.startDate) + 'T00:00:00');
-              const isMultiDay = ev.endDate && ev.endDate !== ev.startDate;
-              const inner = (
-                <>
-                  <div className="cal-mini-date" style={{ borderColor: cat.color }}>
-                    <div className="cal-mini-day">{startDate.getDate()}</div>
-                    <div className="cal-mini-month">{startDate.getMonth() + 1} 月</div>
-                    {isMultiDay && (
-                      <div className="cal-mini-multi">~{endDate.getMonth() + 1}/{endDate.getDate()}</div>
-                    )}
-                  </div>
-                  <div className="cal-mini-info">
-                    <div className="cal-mini-cat-tag" style={{ background: cat.color + '20', color: cat.color }}>
-                      {cat.icon} {cat.name}
-                    </div>
-                    <div className="cal-mini-title">{ev.title}</div>
-                    <div className="cal-mini-meta">
-                      {ev.startTime && <span>🕐 {ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</span>}
-                      {ev.location && <span>📍 {ev.location}</span>}
-                    </div>
-                  </div>
-                </>
-              );
-              if (linkBase) {
-                return (
-                  <a key={ev.id} href={`${linkBase}?eventId=${ev.id}`} className="cal-mini-card cal-mini-clickable">
-                    {inner}
-                  </a>
-                );
-              }
-              return <div key={ev.id} className="cal-mini-card">{inner}</div>;
-            })}
-          </div>
+          <>
+            {layout === 'list' && (
+              <CalMiniList events={upcoming} cats={calData.categories} linkBase={linkBase} />
+            )}
+            {layout === 'carousel' && (
+              <CalMiniCarousel events={upcoming} cats={calData.categories} linkBase={linkBase} interval={parseInt(data.carouselInterval, 10) || 6} />
+            )}
+            {layout === 'strip' && (
+              <CalMiniStrip events={upcoming} cats={calData.categories} linkBase={linkBase} />
+            )}
+          </>
         )}
       </div>
     </section>
+  );
+}
+
+// === Layout 1: Original vertical list ===
+function CalMiniList({ events, cats, linkBase }) {
+  return (
+    <div className="cal-mini-list reveal">
+      {events.map(ev => {
+        const cat = calCategoryById(cats, ev.categoryId);
+        const startDate = parseEventDate(ev.startDate);
+        const endDate = parseEventDate(ev.endDate || ev.startDate);
+        const isMultiDay = ev.endDate && ev.endDate !== ev.startDate;
+        const inner = (
+          <>
+            <div className="cal-mini-date" style={{ borderColor: cat.color }}>
+              <div className="cal-mini-day">{startDate.getDate()}</div>
+              <div className="cal-mini-month">{startDate.getMonth() + 1} 月</div>
+              {isMultiDay && <div className="cal-mini-multi">~{endDate.getMonth() + 1}/{endDate.getDate()}</div>}
+            </div>
+            <div className="cal-mini-info">
+              <div className="cal-mini-cat-tag" style={{ background: cat.color + '20', color: cat.color }}>
+                {cat.icon} {cat.name}
+              </div>
+              <div className="cal-mini-title">{ev.title}</div>
+              <div className="cal-mini-meta">
+                {ev.startTime && <span>🕐 {ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</span>}
+                {ev.location && <span>📍 {ev.location}</span>}
+              </div>
+            </div>
+          </>
+        );
+        return linkBase
+          ? <a key={ev.id} href={`${linkBase}?eventId=${ev.id}`} className="cal-mini-card cal-mini-clickable">{inner}</a>
+          : <div key={ev.id} className="cal-mini-card">{inner}</div>;
+      })}
+    </div>
+  );
+}
+
+// === Layout 2: Horizontal 3-card carousel (auto rotate background, but visible 3 at a time) ===
+function CalMiniCarousel({ events, cats, linkBase, interval }) {
+  // Show 3 events at a time, rotate to next 3 every `interval` seconds
+  const [pageIdx, setPageIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  // Each "page" = 3 events
+  const pageSize = 3;
+  const pages = [];
+  for (let i = 0; i < events.length; i += pageSize) {
+    pages.push(events.slice(i, i + pageSize));
+  }
+
+  useEffect(() => {
+    if (paused || pages.length <= 1) return;
+    const t = setInterval(() => setPageIdx(i => (i + 1) % pages.length), interval * 1000);
+    return () => clearInterval(t);
+  }, [pages.length, interval, paused]);
+
+  const currentPage = pages[pageIdx] || pages[0] || [];
+
+  return (
+    <div className="cal-mini-carousel reveal" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <div className="cal-mini-carousel-grid" key={pageIdx}>
+        {currentPage.map(ev => {
+          const cat = calCategoryById(cats, ev.categoryId);
+          const sd = parseEventDate(ev.startDate);
+          const inner = (
+            <>
+              <div className="cal-mini-c-stripe" style={{ background: cat.color }}></div>
+              <div className="cal-mini-c-body">
+                <div className="cal-mini-c-date">
+                  <span className="cal-mini-c-day">{sd.getDate()}</span>
+                  <span className="cal-mini-c-mo">{sd.getMonth() + 1} 月</span>
+                </div>
+                <div className="cal-mini-c-cat" style={{ color: cat.color }}>{cat.icon} {cat.name}</div>
+                <div className="cal-mini-c-title">{ev.title}</div>
+                <div className="cal-mini-c-meta">
+                  {ev.startTime && <span>{ev.startTime}{ev.endTime ? `–${ev.endTime}` : ''}</span>}
+                  {ev.location && <span> · {ev.location}</span>}
+                </div>
+              </div>
+            </>
+          );
+          return linkBase
+            ? <a key={ev.id} href={`${linkBase}?eventId=${ev.id}`} className="cal-mini-c-card cal-mini-c-clickable">{inner}</a>
+            : <div key={ev.id} className="cal-mini-c-card">{inner}</div>;
+        })}
+        {/* Fill empties so layout doesn't shift */}
+        {currentPage.length < pageSize && Array.from({ length: pageSize - currentPage.length }).map((_, i) => (
+          <div key={'empty-' + i} className="cal-mini-c-card cal-mini-c-empty"></div>
+        ))}
+      </div>
+      {pages.length > 1 && (
+        <div className="cal-mini-c-dots">
+          {pages.map((_, i) => (
+            <button key={i} className={`cal-mini-c-dot ${i === pageIdx ? 'active' : ''}`} onClick={() => setPageIdx(i)} aria-label={`第 ${i + 1} 頁`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// === Layout 3: Single horizontal strip — ticker-style cards in one row ===
+function CalMiniStrip({ events, cats, linkBase }) {
+  return (
+    <div className="cal-mini-strip-wrap reveal">
+      <div className="cal-mini-strip">
+        {events.map(ev => {
+          const cat = calCategoryById(cats, ev.categoryId);
+          const sd = parseEventDate(ev.startDate);
+          const inner = (
+            <>
+              <span className="cal-mini-s-date" style={{ color: cat.color }}>
+                <strong>{sd.getMonth() + 1}/{sd.getDate()}</strong>
+              </span>
+              <span className="cal-mini-s-icon">{cat.icon}</span>
+              <span className="cal-mini-s-title">{ev.title}</span>
+              {ev.startTime && <span className="cal-mini-s-time">{ev.startTime}</span>}
+              {ev.location && <span className="cal-mini-s-loc">📍 {ev.location}</span>}
+            </>
+          );
+          return linkBase
+            ? <a key={ev.id} href={`${linkBase}?eventId=${ev.id}`} className="cal-mini-s-pill cal-mini-s-clickable">{inner}</a>
+            : <div key={ev.id} className="cal-mini-s-pill">{inner}</div>;
+        })}
+      </div>
+    </div>
   );
 }
 

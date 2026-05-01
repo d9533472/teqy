@@ -171,6 +171,9 @@
     width: 100%;
     padding: 24px;
     box-shadow: 0 24px 60px -16px rgba(0,0,0,0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Section type picker — scrollable for many section types */
@@ -887,6 +890,183 @@
     font-size: 11px; color: var(--ink-mute);
     margin-top: 1px;
   }
+
+  /* Multi-checkbox field */
+  .multi-checkbox-field {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .multi-checkbox-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .multi-checkbox-row:hover { border-color: var(--gold); }
+  .multi-checkbox-row.checked {
+    background: rgba(139,36,33,0.04);
+    border-color: var(--temple-red);
+  }
+  .multi-checkbox-row input[type="checkbox"] {
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  /* Emoji picker */
+  .emoji-picker-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .emoji-picker-trigger-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .emoji-picker-trigger {
+    min-width: 56px;
+    height: 40px;
+    padding: 0 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .emoji-picker-trigger:hover {
+    border-color: var(--temple-red);
+    background: var(--bg);
+  }
+  .emoji-picker-placeholder {
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+  .emoji-picker-custom {
+    width: 56px !important;
+    height: 40px;
+    text-align: center;
+    font-size: 16px !important;
+  }
+  .emoji-picker-clear {
+    width: 28px; height: 28px;
+    border: none; background: transparent;
+    color: var(--ink-mute); cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.15s;
+    font-size: 12px;
+  }
+  .emoji-picker-clear:hover { background: rgba(168,56,56,0.1); color: var(--temple-red); }
+
+  .emoji-picker-popover {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 100;
+    width: 360px;
+    max-width: 90vw;
+    max-height: 420px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 16px 40px -8px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: emojiPopIn 0.15s ease-out;
+  }
+  @keyframes emojiPopIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .emoji-picker-search-row {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+  .emoji-picker-search {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--bg-card);
+  }
+  .emoji-picker-cats {
+    display: flex; gap: 2px;
+    padding: 8px 8px 0;
+    overflow-x: auto;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .emoji-picker-cat {
+    padding: 6px 10px;
+    background: transparent;
+    border: none;
+    border-radius: 4px 4px 0 0;
+    font-size: 12px;
+    color: var(--ink-light);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .emoji-picker-cat:hover { color: var(--ink); background: var(--bg); }
+  .emoji-picker-cat.active {
+    color: var(--temple-red);
+    background: var(--bg-card);
+    border-bottom: 2px solid var(--temple-red);
+    font-weight: 500;
+  }
+  .emoji-picker-section {
+    flex: 1; overflow-y: auto;
+    padding: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .emoji-picker-section-title {
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .emoji-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+  }
+  .emoji-picker-item {
+    aspect-ratio: 1 / 1;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.1s;
+    padding: 0;
+    line-height: 1;
+  }
+  .emoji-picker-item:hover {
+    background: rgba(184,134,11,0.12);
+    border-color: var(--gold);
+    transform: scale(1.15);
+  }
+  .emoji-picker-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 13px;
+    font-style: italic;
+  }
+  @media (max-width: 480px) {
+    .emoji-picker-popover { width: 320px; }
+    .emoji-picker-grid { grid-template-columns: repeat(6, 1fr); }
+  }
   .albums-picker-add {
     background: var(--bg-card);
     border: 1px dashed var(--border-strong);
@@ -1373,12 +1553,44 @@ const SECTION_SCHEMAS = {
     fields: [
       { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'Upcoming' },
       { key: 'titleHtml', label: '標題 (留空用預設)', type: 'html', placeholder: '近期活動' },
+      { key: 'miniLayout', label: '佈局', type: 'select', options: [
+        { value: 'list', label: '📋 直立列表 (原本的,適合側欄)' },
+        { value: 'carousel', label: '🎠 三張卡片橫排輪播 (一次三場,自動切換)' },
+        { value: 'strip', label: '📎 單行橫排藥丸 (極簡,佔最少空間)' }
+      ], help: '橫排輪播跟單行藥丸都很適合首頁;直立列表適合側欄或頁尾' },
       { key: 'filterMode', label: '顯示哪些活動?', type: 'select', options: [
         { value: 'next', label: '未來最近的活動 (推薦,不會空白)' },
         { value: 'month', label: '只顯示本月活動 (本月沒活動時會空白)' }
       ], help: '建議用「未來最近的活動」,即使這個月沒活動也會顯示下個月最近的幾場' },
-      { key: 'limit', label: '顯示幾筆?', type: 'text', placeholder: '5', help: '預設 5 筆' },
+      { key: 'limit', label: '顯示幾筆?', type: 'text', placeholder: '依佈局自動 (列表/輪播=3, 單行=6)' },
+      { key: 'carouselInterval', label: '輪播切換秒數 (僅輪播佈局)', type: 'text', placeholder: '6', help: '預設 6 秒,滑鼠移上去會暫停' },
       { key: 'fullCalendarUrl', label: '完整行事曆頁面連結 (選填)', type: 'link', help: '設定後右上角會出現「查看完整行事曆 →」按鈕,且每張卡片可點進去看詳情' }
+    ]
+  },
+  'calendar-feature': {
+    label: '行事曆 - 精選(首頁特色版)',
+    icon: '✨',
+    summary: (d) => d.eyebrow || `${({'hero-side':'大圖+小卡', 'carousel':'輪播', 'triple':'三欄', 'mini-month':'迷你月曆'})[d.layout || 'hero-side']}`,
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'Upcoming Events' },
+      { key: 'titleHtml', label: '標題 (留空用預設「近期活動」)', type: 'html' },
+      { key: 'description', label: '說明文字 (顯示在標題下方)', type: 'textarea' },
+      { key: 'layout', label: '佈局風格', type: 'select', options: [
+        { value: 'hero-side', label: '🖼 大卡 + 兩個橫排小卡 (3 個活動)' },
+        { value: 'carousel', label: '🎠 輪播全寬畫面 (一次一個大活動,自動切換)' },
+        { value: 'triple', label: '📐 三張並排的平衡卡片' },
+        { value: 'mini-month', label: '📆 迷你月曆 + 今日亮點' }
+      ]},
+      { key: 'limit', label: '顯示活動數量上限', type: 'text', placeholder: '依佈局自動 (大卡+小卡=3, 輪播=8, 三欄=3)', help: '輪播模式建議 5-10 個' },
+      { key: 'carouselInterval', label: '輪播切換秒數 (僅輪播佈局)', type: 'text', placeholder: '5', help: '預設 5 秒,滑鼠移上去會暫停' },
+      { key: 'showFields', label: '卡片要顯示什麼資訊?', type: 'multi-checkbox', options: [
+        { value: 'date', label: '📅 大日期戳記 (建議)' },
+        { value: 'category', label: '🏷 分類色條與標籤 (建議)' },
+        { value: 'time', label: '🕐 時間 (起訖時間或全日)' },
+        { value: 'location', label: '📍 地點' },
+        { value: 'description', label: '📝 活動描述 (僅大卡/輪播顯示)' }
+      ], help: '不勾的就不會顯示' },
+      { key: 'fullCalendarUrl', label: '完整行事曆頁面連結 (選填)', type: 'link', help: '設定後標題右上會出現「查看完整行事曆 →」按鈕,且活動卡可點進去看詳情' }
     ]
   },
   'calendar-full': {
@@ -1426,11 +1638,202 @@ function HtmlField({ value, onChange, help }) {
   return <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} className="font-mono" style={{ fontSize: 13 }} placeholder='<span class="accent">字</span>' />;
 }
 
+// ============================================================
+// EmojiPicker — categorized panel with recent-used memory
+// ============================================================
+const EMOJI_CATALOG = {
+  '法務': ['🪷','🧘','🙏','📿','☸️','🕉️','✨','🌟','💫','🌸','🌺','🪔','🕯️','🪞','📜','📖','✍️','🖋️','🌿','🍃'],
+  '活動': ['🎏','🎉','🎊','🎁','🎈','🎀','🍃','🌳','🍵','🍶','🥢','🍱','🥬','🍚','🌾','🌻','🪴','🌷','🌼','💐'],
+  '時間': ['📅','🗓️','⏰','⏳','🕐','🕑','🕒','🕓','🌅','🌄','🌞','🌜','🌚','🌑','🌕','📆','⌚','🌗'],
+  '場所': ['📍','🏯','⛩️','🏛️','🏠','🏡','🌁','🏞️','🛕','🏔️','🗻','🌄','🌇','🛤️','🌉','🛣️','🚪','🪟'],
+  '人物': ['👥','👤','🧑','👨','👩','👴','👵','🧓','👫','👨‍👩‍👧‍👦','💁','🙋','🤝','💑','💏','👪','🧒','👦','👧'],
+  '自然': ['🌿','🍃','🌳','🌲','🌴','🌵','🌷','🌸','🌹','🌺','🌻','🌼','💐','☀️','🌙','⭐','☁️','🌈','💧','🔥','❄️','🌊','⛰️','🏔️'],
+  '學習': ['📚','📖','📕','📗','📘','📙','📓','📔','📒','📑','🔖','🎓','🖋️','✏️','📝','✒️','🖊️','🖍️','📄','📃','🗞️'],
+  '物品': ['📦','🎒','💼','👜','🛍️','💰','💴','💵','💸','📱','💻','⌨️','🖥️','🖨️','📷','📸','🎥','🎞️','🔑','🗝️'],
+  '溝通': ['💬','💭','🗨️','🗯️','📢','📣','📯','🔔','🔕','📞','☎️','📲','📨','📩','📪','📫','✉️','📧','📤','📥'],
+  '符號': ['✅','✔️','❌','❎','⭕','🚫','⚠️','💯','🆕','🆗','🆙','🔝','🌟','⭐','✨','🎯','🏆','🥇','🥈','🥉','📌','📍','🔖','➡️','⬅️','⬆️','⬇️','🔄','🔃','♻️'],
+  '其他': ['🎨','🎭','🎪','🎬','🎤','🎧','🎹','🥁','🎸','🎺','🎻','🎼','🎵','🎶','🌍','🌏','🗺️','🪐','🌌','🌠']
+};
+
+function EmojiPicker({ value, onChange, placeholder, allowCustom }) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('法務');
+  const [recent, setRecent] = useState(() => {
+    try {
+      const stored = localStorage.getItem('jc_emoji_recent');
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) { return []; }
+  });
+  const popoverRef = useRef(null);
+  const triggerRef = useRef(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target) &&
+          triggerRef.current && !triggerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [open]);
+
+  const pick = (emoji) => {
+    onChange(emoji);
+    // Update recent list (max 16, dedupe)
+    const next = [emoji, ...recent.filter(e => e !== emoji)].slice(0, 16);
+    setRecent(next);
+    try { localStorage.setItem('jc_emoji_recent', JSON.stringify(next)); } catch (e) {}
+    setOpen(false);
+    setSearch('');
+  };
+
+  // Search across all categories — match category name OR emoji itself
+  const filteredEmojis = useMemo(() => {
+    if (!search.trim()) return null;
+    const s = search.trim().toLowerCase();
+    const out = [];
+    Object.entries(EMOJI_CATALOG).forEach(([cat, emojis]) => {
+      const catMatch = cat.includes(search.trim());
+      emojis.forEach(em => {
+        if (catMatch || em.includes(s)) {
+          if (!out.includes(em)) out.push(em);
+        }
+      });
+    });
+    return out;
+  }, [search]);
+
+  const categories = Object.keys(EMOJI_CATALOG);
+
+  return (
+    <div className="emoji-picker-wrap">
+      <div className="emoji-picker-trigger-row">
+        <button
+          ref={triggerRef}
+          type="button"
+          className="emoji-picker-trigger"
+          onClick={() => setOpen(!open)}
+          title="選擇 emoji"
+        >
+          {value || <span className="emoji-picker-placeholder">{placeholder || '點選'}</span>}
+        </button>
+        {allowCustom && (
+          <input
+            type="text"
+            className="emoji-picker-custom"
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            maxLength={4}
+            placeholder="或自訂"
+          />
+        )}
+        {value && (
+          <button type="button" className="emoji-picker-clear" onClick={() => onChange('')} title="清除">✕</button>
+        )}
+      </div>
+
+      {open && (
+        <div className="emoji-picker-popover" ref={popoverRef}>
+          <div className="emoji-picker-search-row">
+            <input
+              type="text"
+              className="emoji-picker-search"
+              placeholder="🔍 搜尋分類名(法會/自然/時間⋯)"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              autoFocus
+            />
+          </div>
+
+          {!search && recent.length > 0 && (
+            <div className="emoji-picker-section">
+              <div className="emoji-picker-section-title">最近使用</div>
+              <div className="emoji-picker-grid">
+                {recent.map((em, i) => (
+                  <button key={i} type="button" className="emoji-picker-item" onClick={() => pick(em)}>{em}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!search && (
+            <>
+              <div className="emoji-picker-cats">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    type="button"
+                    className={`emoji-picker-cat ${activeCategory === cat ? 'active' : ''}`}
+                    onClick={() => setActiveCategory(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <div className="emoji-picker-section">
+                <div className="emoji-picker-grid">
+                  {EMOJI_CATALOG[activeCategory].map((em, i) => (
+                    <button key={i} type="button" className="emoji-picker-item" onClick={() => pick(em)}>{em}</button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {search && (
+            <div className="emoji-picker-section">
+              <div className="emoji-picker-section-title">
+                搜尋結果 ({(filteredEmojis || []).length})
+              </div>
+              {(filteredEmojis || []).length === 0 ? (
+                <div className="emoji-picker-empty">沒有符合的 emoji。試試:法會、自然、時間、場所⋯</div>
+              ) : (
+                <div className="emoji-picker-grid">
+                  {filteredEmojis.map((em, i) => (
+                    <button key={i} type="button" className="emoji-picker-item" onClick={() => pick(em)}>{em}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SelectField({ value, onChange, options }) {
   return (
     <select value={value || ''} onChange={(e) => onChange(e.target.value)}>
       {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
+  );
+}
+
+function MultiCheckboxField({ value, onChange, options }) {
+  // value is an array of selected option values
+  const selected = Array.isArray(value) ? value : [];
+  const toggle = (v) => {
+    if (selected.includes(v)) onChange(selected.filter(x => x !== v));
+    else onChange([...selected, v]);
+  };
+  return (
+    <div className="multi-checkbox-field">
+      {(options || []).map(o => (
+        <label key={o.value} className={`multi-checkbox-row ${selected.includes(o.value) ? 'checked' : ''}`}>
+          <input
+            type="checkbox"
+            checked={selected.includes(o.value)}
+            onChange={() => toggle(o.value)}
+          />
+          <span>{o.label}</span>
+        </label>
+      ))}
+    </div>
   );
 }
 
@@ -2358,6 +2761,7 @@ function FieldRenderer({ field, value, onChange, password, showToast }) {
       {type === 'albums-editor' && <AlbumsEditor value={value} onChange={onChange} password={password} showToast={showToast} />}
       {type === 'albums-picker' && <AlbumsPicker value={value} onChange={onChange} />}
       {type === 'event-picker' && <EventPicker value={value} onChange={onChange} password={password} showToast={showToast} />}
+      {type === 'multi-checkbox' && <MultiCheckboxField value={value} onChange={onChange} options={field.options} />}
       {type === 'repeater' && <RepeaterField value={value} onChange={onChange} itemFields={field.itemFields} password={password} showToast={showToast} />}
       {type === 'group' && <GroupField value={value} onChange={onChange} subFields={field.subFields} password={password} showToast={showToast} />}
       {help && <div className="field-help">{help}</div>}
@@ -4252,7 +4656,7 @@ function ForumCategoriesEditor({ categories, onSave, threads }) {
                   <div className="grid-2">
                     <div>
                       <label className="field-label">圖示(emoji)</label>
-                      <input type="text" value={c.icon || ''} onChange={(e) => update(c.id, { icon: e.target.value })} placeholder="💬" maxLength={2} style={{ fontSize: 18 }} />
+                      <EmojiPicker value={c.icon || ''} onChange={(v) => update(c.id, { icon: v })} placeholder="💬" allowCustom />
                     </div>
                     <div>
                       <label className="field-label">分類名稱</label>
@@ -5182,7 +5586,9 @@ function CalendarCategoriesEditor({ categories, onSave }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {draft.map((c, i) => (
           <div key={c.id} className="cat-tree-row" style={{ padding: 14 }}>
-            <input type="text" value={c.icon || ''} onChange={(e) => update(i, { icon: e.target.value })} maxLength={2} style={{ width: 50, fontSize: 18, textAlign: 'center' }} />
+            <div style={{ flexShrink: 0 }}>
+              <EmojiPicker value={c.icon || ''} onChange={(v) => update(i, { icon: v })} placeholder="·" allowCustom />
+            </div>
             <input type="text" value={c.name || ''} onChange={(e) => update(i, { name: e.target.value })} placeholder="分類名稱" style={{ flex: 1 }} />
             <input type="color" value={c.color || '#6b6359'} onChange={(e) => update(i, { color: e.target.value })} style={{ width: 44, height: 36, padding: 2, border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer' }} />
             <button type="button" className="btn btn-ghost btn-sm" disabled={i === 0} onClick={() => move(i, -1)}>↑</button>
@@ -5264,16 +5670,34 @@ function CalendarImportPanel({ password, showToast, onImported }) {
     reader.readAsText(file);
   };
 
+  const [importErrors, setImportErrors] = useState([]);
+
   const importCsv = async () => {
     if (!csvText.trim()) { showToast('請先選擇 CSV 檔案或貼上內容', 'error'); return; }
     setBusy(true);
+    setImportErrors([]);
     const r = await gasPost({ action: 'adminCalendarImportCsv', password, csv: csvText });
     setBusy(false);
     if (r.ok) {
-      showToast(`成功匯入 ${r.imported} 場活動 (跳過 ${r.skipped})`, 'success');
-      setCsvText(''); if (csvFileRef.current) csvFileRef.current.value = '';
-      onImported();
-    } else showToast('匯入失敗: ' + (r.error || ''), 'error');
+      if (r.imported > 0 && r.skipped === 0) {
+        showToast(`成功匯入 ${r.imported} 場活動 🪷`, 'success');
+        setCsvText('');
+        if (csvFileRef.current) csvFileRef.current.value = '';
+        setImportErrors([]);
+        onImported();
+      } else if (r.imported > 0 && r.skipped > 0) {
+        showToast(`匯入 ${r.imported} 場,跳過 ${r.skipped} 場(下方有錯誤詳情)`, 'success');
+        setImportErrors(r.errors || []);
+        onImported();
+      } else {
+        // imported = 0
+        showToast(`沒有任何活動被匯入,跳過 ${r.skipped} 列(下方有錯誤詳情)`, 'error');
+        setImportErrors(r.errors || []);
+      }
+    } else {
+      showToast('匯入失敗: ' + (r.error || ''), 'error');
+      setImportErrors([]);
+    }
   };
 
   const importIcs = async () => {
@@ -5346,6 +5770,20 @@ function CalendarImportPanel({ password, showToast, onImported }) {
           <input type="file" accept=".csv,text/csv" ref={csvFileRef} onChange={(e) => onCsvFile(e.target.files[0])} className="mb-3" />
           <textarea value={csvText} onChange={(e) => setCsvText(e.target.value)} rows={8} placeholder="或直接貼上 CSV 內容..." style={{ fontFamily: 'monospace', fontSize: 12 }} />
           <button className="btn btn-primary mt-3" onClick={importCsv} disabled={busy || !csvText.trim()}>{busy ? '匯入中⋯' : '匯入 CSV'}</button>
+
+          {importErrors.length > 0 && (
+            <div className="mt-4 p-3" style={{ background: 'rgba(168,56,56,0.08)', border: '1px solid rgba(168,56,56,0.3)', borderRadius: 6 }}>
+              <div className="text-sm font-medium mb-2" style={{ color: 'var(--temple-red)' }}>
+                ⚠️ 匯入錯誤詳情(顯示前 10 筆):
+              </div>
+              <ul style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: 'var(--ink-soft)', lineHeight: 1.7 }}>
+                {importErrors.map((err, i) => <li key={i}>{err}</li>)}
+              </ul>
+              <div className="text-xs mt-2" style={{ color: 'var(--ink-mute)' }}>
+                💡 大部分錯誤是因為 Excel 把 ISO 日期格式自動改成其他格式。建議:1) 在 Excel 裡選整個日期欄 → 設定儲存格格式 → 「文字」 2) 或直接用記事本/VS Code 編輯 CSV(不要用 Excel)
+              </div>
+            </div>
+          )}
         </div>
       )}
 
