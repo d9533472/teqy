@@ -227,6 +227,18 @@
   ::selection { background: var(--temple-red); color: var(--paper-warm); }
 
   .dropdown { position: relative; }
+  /* Invisible bridge so the 12px gap between trigger and menu is still hover-able */
+  .dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 16px;
+    pointer-events: none;
+  }
+  .dropdown:hover::after { pointer-events: auto; }
   .dropdown-menu {
     position: absolute; top: calc(100% + 12px); left: 50%;
     transform: translateX(-50%) translateY(-8px);
@@ -235,12 +247,16 @@
     box-shadow: 0 16px 40px -12px rgba(26,20,16,0.18);
     padding: 12px 0; min-width: 160px;
     opacity: 0; pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* Fade-in fast, but keep visible for ~1s after mouse leaves */
+    transition: opacity 0.25s ease 0.15s, transform 0.25s ease 0.15s;
+    transition-delay: 1s;  /* delay BEFORE hiding when leaving */
     z-index: 50;
   }
-  .dropdown:hover .dropdown-menu {
+  .dropdown:hover .dropdown-menu,
+  .dropdown-menu:hover {
     opacity: 1; pointer-events: auto;
     transform: translateX(-50%) translateY(0);
+    transition-delay: 0s;  /* show immediately on hover */
   }
   .dropdown-menu a {
     display: block; padding: 8px 24px; font-size: 0.9rem;
@@ -5400,10 +5416,7 @@ function ForumAttachmentsField({ value, onChange }) {
           if (r.ok && r.attachment) {
             onChange([...(value || []), r.attachment]);
           } else if (r.error === 'session_expired') {
-            localStorage.removeItem('jc_user_token');
-            alert('您的登入已過期。頁面會重新整理,請重新登入。');
-            window.location.reload();
-            return;
+            alert('上傳失敗:登入狀態驗證失敗。\n\n請先儲存或複製您正在編輯的內容,然後到上方「會員」選單登出再重新登入,再試一次上傳。');
           } else {
             const errMap = {
               file_too_large: '檔案超過 10 MB 上限',
@@ -5584,13 +5597,9 @@ function ForumRichEditor({ editorRef, initialContent, placeholder, compact }) {
           document.execCommand('insertHTML', false, img);
         } else {
           if (r.error === 'session_expired') {
-            // Token is in localStorage but server says it's invalid — clean up
-            localStorage.removeItem('jc_user_token');
-            alert('您的登入已過期(超過 7 天未活動或被停用)。請重新登入再上傳圖片。\n\n頁面會重新整理。');
-            window.location.reload();
-            return;
-          }
-          if (r.error === 'login_required') {
+            // Server says this token is no longer valid — but DON'T auto-reload (user might lose draft)
+            alert('上傳失敗:登入狀態驗證失敗。\n\n請先儲存或複製您正在編輯的內容,然後到上方「會員」選單登出再重新登入,再試一次上傳。');
+          } else if (r.error === 'login_required') {
             alert('請先登入會員才能上傳圖片');
           } else if (r.error === 'blocked') {
             alert('此帳號已被停用,無法上傳');
