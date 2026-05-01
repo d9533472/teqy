@@ -277,6 +277,35 @@
   }
   .mobile-menu.open { transform: translateX(0); }
 
+  /* Mobile nav children (accordion) */
+  .mobile-nav-group {}
+  .mobile-nav-trigger {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer;
+    padding: 4px 0;
+    user-select: none;
+  }
+  .mobile-nav-children {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
+    opacity: 0;
+    padding-left: 16px;
+    margin-top: 0;
+  }
+  .mobile-nav-children.open {
+    max-height: 600px;
+    opacity: 1;
+    margin-top: 12px;
+  }
+  .mobile-nav-children > a {
+    font-size: 1.1rem !important;
+    color: var(--ink-light);
+    padding: 10px 0;
+    line-height: 1.4;
+  }
+  .mobile-nav-children > a:hover { color: var(--temple-red); }
+
   .brush { height: 2px; width: 64px; background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); }
 
   .corner-frame { position: relative; }
@@ -6756,6 +6785,9 @@ function Nav({ site, navigation, ctaButton, onMobileToggle }) {
 }
 
 function MobileMenu({ open, onClose, navigation, ctaButton }) {
+  // Track which top-level items are expanded (accordion)
+  const [expanded, setExpanded] = useState({});
+  const toggle = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
   return (
     <div className={`mobile-menu ${open ? 'open' : ''}`}>
       <button className="absolute top-6 right-6 p-2" onClick={onClose} aria-label="close">
@@ -6764,9 +6796,39 @@ function MobileMenu({ open, onClose, navigation, ctaButton }) {
         </svg>
       </button>
       <div className="font-serif-tc space-y-6 text-2xl" style={{ color: 'var(--ink)' }}>
-        {(navigation || []).map(item => (
-          <a key={item.id} href={navTargetUrl(item)} target={item.type === 'external' ? '_blank' : '_self'} className="block" onClick={onClose}>{item.label}</a>
-        ))}
+        {(navigation || []).map(item => {
+          const hasChildren = item.children && item.children.length > 0;
+          const isOpen = !!expanded[item.id];
+          if (hasChildren) {
+            return (
+              <div key={item.id} className="mobile-nav-group">
+                <div className="mobile-nav-trigger" onClick={() => toggle(item.id)}>
+                  <span>{item.label}</span>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+                       style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }}>
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </div>
+                <div className={`mobile-nav-children ${isOpen ? 'open' : ''}`}>
+                  {/* parent itself, in case the user wants to navigate to the parent's anchor/page */}
+                  {item.target && (
+                    <a href={navTargetUrl(item)} target={item.type === 'external' ? '_blank' : '_self'} className="block" onClick={onClose}>
+                      <span style={{ opacity: 0.7 }}>· {item.label}(總覽)</span>
+                    </a>
+                  )}
+                  {item.children.map(c => (
+                    <a key={c.id} href={navTargetUrl(c)} target={c.type === 'external' ? '_blank' : '_self'} className="block" onClick={onClose}>
+                      <span>· {c.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          return (
+            <a key={item.id} href={navTargetUrl(item)} target={item.type === 'external' ? '_blank' : '_self'} className="block" onClick={onClose}>{item.label}</a>
+          );
+        })}
         {ctaButton && ctaButton.label && (
           <a href={ctaButton.url || '#'} target={ctaButton.url?.startsWith('http') ? '_blank' : '_self'} className="btn-primary inline-block px-8 py-3 text-base mt-4">
             <span>{ctaButton.label}</span>
