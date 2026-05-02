@@ -1,0 +1,3009 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <meta name="theme-color" content="#00B050" />
+  <title>2026 NMDC 團隊淨灘・GO! | Beach Cleanup Registration</title>
+  <meta name="description" content="2026 NMDC 團隊淨灘｜SDGs/ESG Beach Cleanup — 報名就對了！" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Shrikhand&display=swap" rel="stylesheet">
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root{
+      --nmdc-navy:#0A2340; --nmdc-green:#00B050; --nmdc-green-dark:#009043; --nmdc-green-light:#42D47C;
+      --sun:#FFCB47; --sun-deep:#F5A623;
+      --sky:#6DC8E8; --sky-deep:#2AA0D6;
+      --coral:#FF6B4A; --coral-deep:#E85533;
+      --cream:#FFF5E4; --cream-warm:#FFEED2;
+      --sand:#F5E3BE; --sand-deep:#E8CE94;
+      --ink:#0A2340; --ink-soft:#4A5E7A;
+      --tpc-blue:#1A75B8;
+    }
+    html,body{ background:var(--cream); color:var(--ink); scroll-behavior:smooth; }
+    body{ font-family:'Plus Jakarta Sans','Noto Sans TC',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; font-size:17px; }
+    .font-display{ font-family:'Caprasimo','Noto Sans TC',serif; letter-spacing:-0.01em; }
+    .font-chunk{ font-family:'Shrikhand','Caprasimo','Noto Sans TC',serif; }
+    .font-num{ font-family:'Caprasimo',serif; font-feature-settings:'tnum'; }
+
+    .bg-paper{
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,203,71,0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(0,176,80,0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(109,200,232,0.10) 0%, transparent 50%),
+        var(--cream);
+    }
+    .bg-dots{ background-image: radial-gradient(circle, rgba(10,35,64,0.08) 1px, transparent 1.5px); background-size: 18px 18px; }
+
+    .sticker{ background:#fff; border:3px solid var(--ink); border-radius:22px; box-shadow:8px 8px 0 var(--ink); transition:transform .15s ease, box-shadow .15s ease; }
+    .sticker:hover{ transform:translate(-3px,-3px) rotate(0deg) !important; box-shadow:12px 12px 0 var(--ink); }
+    .sticker-clickable:hover{ cursor:pointer; }
+    .sticker-green{ background:var(--nmdc-green); color:#fff; }
+    .sticker-sun{ background:var(--sun); }
+    .sticker-coral{ background:var(--coral); color:#fff; }
+    .sticker-sky{ background:var(--sky); }
+
+    .btn-chunk{ background:var(--nmdc-green); color:#fff; border:3px solid var(--ink); border-radius:999px; box-shadow:5px 5px 0 var(--ink); font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; letter-spacing:0.02em; transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .12s ease, background .15s; }
+    .btn-chunk:hover{ transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--ink); background:var(--nmdc-green-light); }
+    .btn-chunk:active{ transform:translate(3px,3px); box-shadow:2px 2px 0 var(--ink); }
+    .btn-chunk:disabled{ background:#9FBFAB; cursor:not-allowed; transform:none !important; box-shadow:5px 5px 0 var(--ink) !important; }
+
+    .btn-outline{ background:#fff; color:var(--ink); border:2px solid var(--ink); border-radius:999px; box-shadow:3px 3px 0 var(--ink); transition:all .12s ease; font-weight:700; }
+    .btn-outline:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); background:var(--sun); }
+    .btn-outline:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink); }
+
+    .btn-danger{ background:var(--coral); color:#fff; border:2px solid var(--ink); border-radius:999px; box-shadow:3px 3px 0 var(--ink); font-weight:800; transition:all .12s ease; }
+    .btn-danger:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); background:var(--coral-deep); }
+
+    .field{ background:#fff; border:2.5px solid var(--ink); border-radius:12px; transition:all .12s ease; font-family:'Plus Jakarta Sans','Noto Sans TC',sans-serif; font-weight:500; }
+    .field:focus{ outline:none; box-shadow:4px 4px 0 var(--nmdc-green); transform:translate(-1px,-1px); }
+    .field.err{ border-color:var(--coral-deep); background:#FFF0EC; box-shadow:4px 4px 0 var(--coral); }
+    .field.err:focus{ box-shadow:5px 5px 0 var(--coral); }
+
+    .chk{ appearance:none; width:26px; height:26px; border:2.5px solid var(--ink); border-radius:6px; background:#fff; cursor:pointer; position:relative; flex-shrink:0; margin-top:2px; transition:all .12s ease; }
+    .chk:hover{ background:var(--sun); }
+    .chk:checked{ background:var(--nmdc-green); border-color:var(--ink); }
+    .chk:checked::after{ content:""; position:absolute; left:7px; top:2px; width:7px; height:14px; border:solid #fff; border-width:0 3px 3px 0; transform:rotate(45deg); }
+
+    .wavy{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10'><path d='M0 5 Q10 0 20 5 T40 5' stroke='%2300B050' stroke-width='3' fill='none' stroke-linecap='round'/></svg>"); background-position:0 100%; background-size:40px 10px; background-repeat:repeat-x; padding-bottom:12px; }
+    .wavy-coral{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10'><path d='M0 5 Q10 0 20 5 T40 5' stroke='%23FF6B4A' stroke-width='3' fill='none' stroke-linecap='round'/></svg>"); background-position:0 100%; background-size:40px 10px; background-repeat:repeat-x; padding-bottom:12px; }
+
+    .tag{ display:inline-flex; align-items:center; gap:6px; padding:5px 14px; background:var(--sun); border:2px solid var(--ink); border-radius:999px; font-size:13px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; }
+
+    @keyframes spin-slow{ from{transform:rotate(0);} to{transform:rotate(360deg);} }
+    @keyframes bounce-in{ 0%{opacity:0; transform:translateY(20px) scale(.9);} 60%{opacity:1; transform:translateY(-4px) scale(1.02);} 100%{opacity:1; transform:none;} }
+    @keyframes wiggle{ 0%,100%{ transform:rotate(-2deg);} 50%{ transform:rotate(2deg);} }
+    @keyframes float{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+    @keyframes count-bounce{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.08);} }
+    @keyframes sway{ 0%,100%{ transform:rotate(-4deg);} 50%{ transform:rotate(4deg);} }
+    .spin-slow{ animation:spin-slow 30s linear infinite; transform-origin:center; }
+    .bounce-in{ animation:bounce-in .7s cubic-bezier(.34,1.56,.64,1) backwards; }
+    .wiggle{ animation:wiggle 3s ease-in-out infinite; }
+    .float{ animation:float 4s ease-in-out infinite; }
+    .count-bounce{ animation:count-bounce 1s ease-in-out infinite; }
+    .sway{ animation:sway 5s ease-in-out infinite; display:inline-block; }
+
+    .ticket{ background:#fff; border:2.5px solid var(--ink); border-radius:14px; position:relative; padding:20px 22px; box-shadow:4px 4px 0 var(--ink); }
+
+    /* Timeline item for schedule */
+    .sched-row{
+      display:flex; align-items:stretch; gap:16px;
+      background:#fff; border:2.5px solid var(--ink); border-radius:14px;
+      box-shadow:5px 5px 0 var(--ink);
+      overflow:hidden;
+      transition:transform .15s, box-shadow .15s;
+    }
+    .sched-row:hover{ transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--ink); }
+    .sched-time{
+      background:var(--nmdc-navy); color:var(--cream);
+      padding:16px 18px; display:flex; align-items:center; justify-content:center;
+      font-family:'Caprasimo',serif; font-size:1.6rem; min-width:120px;
+      border-right:2.5px solid var(--ink);
+    }
+    .sched-text{ flex:1; padding:16px 18px; display:flex; align-items:center; font-size:1.05rem; font-weight:500; }
+    @media (max-width:640px){
+      .sched-time{ min-width:90px; font-size:1.3rem; padding:12px; }
+      .sched-text{ padding:12px 14px; font-size:0.98rem; }
+    }
+
+    /* Edit drawer */
+    .edit-drawer{ position:fixed; top:0; right:0; bottom:0; width:100%; max-width:560px; background:var(--cream); border-left:3px solid var(--ink); box-shadow:-10px 0 0 var(--ink); z-index:60; display:flex; flex-direction:column; transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); }
+    .edit-drawer.open{ transform:translateX(0); }
+    .edit-drawer-head{ padding:14px 18px; background:var(--nmdc-navy); color:var(--cream); border-bottom:3px solid var(--ink); display:flex; align-items:center; justify-content:space-between; }
+    .edit-drawer-body{ flex:1; overflow-y:auto; padding:14px; }
+    .edit-drawer-foot{ padding:12px 14px; border-top:3px solid var(--ink); background:#fff; display:flex; gap:8px; }
+    .edit-tabs{ display:flex; background:#fff; border-bottom:3px solid var(--ink); overflow-x:auto; }
+    .edit-tab{ flex:1; min-width:90px; padding:12px 8px; font-size:12px; font-weight:800; border-right:2px solid var(--ink); cursor:pointer; text-align:center; background:#fff; transition:background .12s; white-space:nowrap; letter-spacing:0.02em; user-select:none; color:var(--ink); }
+    .edit-tab:last-child{ border-right:0; }
+    .edit-tab:hover{ background:var(--cream-warm); }
+    .edit-tab.active{ background:var(--nmdc-green); color:#fff; }
+
+    .edit-section{ margin-bottom:12px; background:#fff; border:2px solid var(--ink); border-radius:12px; overflow:hidden; }
+    .edit-section-head{ padding:10px 14px; background:var(--sun); border-bottom:2px solid var(--ink); font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:space-between; font-size:14px; user-select:none; }
+    .edit-section.special .edit-section-head{ background:var(--nmdc-green-light); }
+    .edit-section-body{ padding:8px 12px; }
+    .edit-row{ padding:8px 0; border-bottom:1px dashed var(--sand-deep); }
+    .edit-row:last-child{ border-bottom:0; }
+    .edit-key{ font-family:'Plus Jakarta Sans',monospace; font-size:10px; color:var(--ink-soft); font-weight:700; letter-spacing:0.05em; margin-bottom:4px; text-transform:uppercase; }
+    .edit-input{ width:100%; font-family:'Plus Jakarta Sans','Noto Sans TC',sans-serif; font-size:14px; padding:8px 10px; border:2px solid var(--ink); border-radius:8px; background:#fff; font-weight:500; resize:vertical; box-sizing:border-box; }
+    .edit-input:focus{ outline:none; box-shadow:2px 2px 0 var(--nmdc-green); }
+    .edit-input.dirty{ background:#FFFAD6; }
+    .lang-pill{ display:inline-flex; align-items:center; padding:4px 12px; border:2px solid var(--ink); border-radius:999px; font-weight:700; font-size:12px; cursor:pointer; background:#fff; }
+    .lang-pill.active{ background:var(--nmdc-green); color:#fff; }
+    .edit-backdrop{ position:fixed; inset:0; background:rgba(10,35,64,0.4); z-index:55; opacity:0; pointer-events:none; transition:opacity .2s; }
+    .edit-backdrop.open{ opacity:1; pointer-events:auto; }
+    .edit-badge{ position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:50; background:var(--nmdc-green); color:#fff; padding:6px 14px; border:2.5px solid var(--ink); border-radius:999px; box-shadow:3px 3px 0 var(--ink); font-weight:800; font-size:12px; letter-spacing:0.1em; }
+
+    /* Emergency contact block on registration form (red theme) */
+    .em-block{ position:relative; padding:22px 22px 26px; border-radius:18px; border:3px solid var(--ink); background:linear-gradient(180deg, #FFE5DE 0%, #FFD6CB 100%); box-shadow:6px 6px 0 var(--ink); margin-top:8px; }
+    .em-block::before{ content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:60%; height:6px; background:repeating-linear-gradient(90deg, var(--coral-deep) 0 14px, #ffffff 14px 28px); border-radius:6px 6px 0 0; }
+    .em-head{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+    .em-tag{ display:inline-flex; align-items:center; gap:6px; padding:4px 12px; background:var(--coral-deep); color:#fff; border:2.5px solid var(--ink); border-radius:999px; font-size:11px; font-weight:900; letter-spacing:0.12em; text-transform:uppercase; box-shadow:2px 2px 0 var(--ink); }
+    .em-title{ font-family:'Caprasimo',serif; font-size:1.6rem; line-height:1.1; color:var(--coral-deep); }
+    .em-sub{ font-size:14px; font-weight:600; color:#7a3528; margin-bottom:14px; }
+    @media (min-width:768px){ .em-title{ font-size:2rem; } .em-sub{ font-size:15px; } }
+    .em-block .field{ background:#fff; }
+    .em-block .field:focus{ box-shadow:4px 4px 0 var(--coral-deep); }
+
+    /* Final agreement — risk notice + mandatory checkbox */
+    .final-agree{ position:relative; padding:22px 22px 20px; border-radius:18px; border:3px solid var(--coral-deep); background:linear-gradient(180deg, #FFE5DE 0%, #FFCEC0 100%); box-shadow:6px 6px 0 var(--ink); }
+    .final-agree::before{ content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:70%; height:6px; background:repeating-linear-gradient(90deg, var(--coral-deep) 0 14px, var(--sun) 14px 28px); border-radius:6px 6px 0 0; }
+    .final-agree-head{ text-align:center; margin-bottom:10px; }
+    .final-agree-title{ font-family:'Caprasimo',serif; font-size:1.5rem; line-height:1.2; color:var(--coral-deep); margin-bottom:10px; text-align:center; }
+    @media (min-width:768px){ .final-agree-title{ font-size:1.9rem; } }
+    .final-agree-body{ background:#fff; padding:14px 16px; border-radius:12px; border:2px solid var(--ink); font-size:14px; line-height:1.65; color:var(--ink); margin-bottom:14px; font-weight:500; }
+    @media (min-width:768px){ .final-agree-body{ font-size:15px; padding:16px 18px; } }
+    .final-agree-check{ display:flex; align-items:flex-start; gap:12px; cursor:pointer; padding:14px 16px; background:#fff; border:2.5px solid var(--ink); border-radius:12px; box-shadow:3px 3px 0 var(--ink); transition:all .12s ease; }
+    .final-agree-check:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); }
+    .final-agree-check.checked{ background:var(--nmdc-green); color:#fff; border-color:var(--ink); }
+    .final-agree-check.checked .chk{ background:#fff; border-color:var(--ink); }
+    .final-agree-check.checked .chk:checked{ background:#fff; }
+    .final-agree-check.checked .chk:checked::after{ border-color:var(--nmdc-green); }
+    .final-agree-check.err{ animation:shake .5s; border-color:var(--coral-deep); background:#FFF0EC; box-shadow:4px 4px 0 var(--coral); }
+    @keyframes shake{
+      0%, 100% { transform:translateX(0); }
+      20%, 60% { transform:translateX(-6px); }
+      40%, 80% { transform:translateX(6px); }
+    }
+
+    /* Flash attention on the first error after submit */
+    @keyframes flash-attn{
+      0%   { box-shadow:0 0 0 0 rgba(232,85,51,0.7), 4px 4px 0 var(--coral); }
+      40%  { box-shadow:0 0 0 14px rgba(232,85,51,0), 6px 6px 0 var(--coral-deep); }
+      100% { box-shadow:0 0 0 0 rgba(232,85,51,0), 4px 4px 0 var(--coral); }
+    }
+    .flash-error{ animation:flash-attn 1.1s cubic-bezier(.4,0,.6,1) 2, shake .5s; }
+
+    /* Bigger error text with bounce */
+    .field-error-msg{
+      margin-top:6px; padding:8px 12px;
+      background:#FFE5DE; border:2px solid var(--coral-deep); border-radius:8px;
+      font-size:15px; font-weight:800; color:var(--coral-deep);
+      display:flex; align-items:center; gap:6px;
+      animation:err-pop .35s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes err-pop{
+      0%   { opacity:0; transform:translateY(-4px) scale(0.92); }
+      60%  { opacity:1; transform:translateY(0) scale(1.04); }
+      100% { opacity:1; transform:scale(1); }
+    }
+
+    /* Form sections — basic & diet */
+    .form-section{ position:relative; padding:22px 22px 26px; border-radius:18px; border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); }
+    .form-section.basic{ background:linear-gradient(180deg, #FFF6DC 0%, #FFEEC0 100%); }
+    .form-section.diet{ background:linear-gradient(180deg, #DCF6E5 0%, #C0EAD0 100%); }
+    .form-section-head{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+    .form-section-tag{ display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border:2.5px solid var(--ink); border-radius:999px; font-size:11px; font-weight:900; letter-spacing:0.12em; text-transform:uppercase; box-shadow:2px 2px 0 var(--ink); }
+    .form-section.basic .form-section-tag{ background:var(--sun-deep); color:#fff; }
+    .form-section.diet .form-section-tag{ background:var(--nmdc-green-dark); color:#fff; }
+    .form-section-title{ font-family:'Caprasimo',serif; font-size:1.6rem; line-height:1.1; color:var(--ink); }
+    .form-section.diet .form-section-title{ color:var(--nmdc-green-dark); }
+    .form-section-sub{ font-size:14px; font-weight:600; color:var(--ink-soft); margin-bottom:14px; }
+    @media (min-width:768px){
+      .form-section-title{ font-size:2rem; }
+      .form-section-sub{ font-size:15px; }
+    }
+
+    /* Diet radio options */
+    .diet-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .diet-opt{ display:flex; align-items:center; gap:10px; padding:14px 16px; background:#fff; border:2.5px solid var(--ink); border-radius:12px; cursor:pointer; box-shadow:3px 3px 0 var(--ink); transition:all .12s ease; font-weight:700; }
+    .diet-opt:hover{ background:var(--cream-warm); transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); }
+    .diet-opt input{ accent-color:var(--nmdc-green-dark); width:20px; height:20px; flex-shrink:0; }
+    .diet-opt.active{ background:var(--nmdc-green); color:#fff; }
+    .diet-opt.active input{ accent-color:#fff; }
+    .diet-other-input{ margin-top:10px; width:100%; padding:12px 14px; border:2.5px solid var(--ink); border-radius:10px; font-size:15px; font-family:inherit; font-weight:500; background:#fff; box-shadow:3px 3px 0 var(--ink); }
+    .diet-other-input:focus{ outline:none; box-shadow:4px 4px 0 var(--nmdc-green-dark); }
+    @media (max-width:520px){ .diet-grid{ grid-template-columns:1fr; } }
+
+    /* Yes/No toggle */
+    .yn-group{ display:flex; gap:10px; flex-wrap:wrap; }
+    .yn-group.err{ padding:8px; border:2.5px solid var(--coral-deep); border-radius:14px; background:#FFF0EC; box-shadow:4px 4px 0 var(--coral); }
+    .yn-btn{ flex:1; min-width:100px; padding:14px 18px; background:#fff; border:2.5px solid var(--ink); border-radius:12px; font-weight:800; font-size:15px; cursor:pointer; box-shadow:3px 3px 0 var(--ink); transition:all .12s ease; font-family:inherit; }
+    .yn-btn:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); }
+    .yn-btn.active.yes{ background:var(--nmdc-green); color:#fff; }
+    .yn-btn.active.no{ background:var(--ink-soft); color:#fff; }
+
+    .diet-grid.err{ padding:8px; border:2.5px solid var(--coral-deep); border-radius:14px; background:#FFF0EC; box-shadow:4px 4px 0 var(--coral); }
+
+    .agree-row{ display:flex; align-items:flex-start; gap:12px; cursor:pointer; padding-top:12px; padding:16px; border-radius:12px; background:rgba(255,203,71,0.4); border:2px solid var(--ink); }
+    .agree-row.err{ border:2.5px solid var(--coral-deep); background:#FFF0EC; box-shadow:4px 4px 0 var(--coral); }
+
+    /* Companion sub-card */
+    .companion-card{ background:#FFFEF5; border:2.5px dashed var(--ink); border-radius:14px; padding:14px 16px; margin-top:12px; }
+    .companion-card-head{ display:flex; align-items:center; gap:8px; margin-bottom:10px; font-family:'Caprasimo',serif; font-size:1.1rem; }
+    .companion-card-num{ display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:var(--sun-deep); color:#fff; border:2px solid var(--ink); border-radius:999px; font-weight:800; font-size:13px; }
+    .companion-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width:520px){ .companion-grid{ grid-template-columns:1fr; } }
+
+    .same-diet-row{ margin-top:14px; padding:12px 14px; background:rgba(255,255,255,0.6); border:2px solid var(--ink); border-radius:10px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+    .same-diet-row:hover{ background:#fff; }
+
+    /* Per-companion diet rows shown when "same as me" is unchecked */
+    .companion-diet-list{ margin-top:14px; display:flex; flex-direction:column; gap:12px; }
+    .companion-diet-row{ background:rgba(255,255,255,0.7); border:2px dashed var(--ink); border-radius:12px; padding:14px; }
+    .companion-diet-row .diet-opt{ padding:10px 12px; box-shadow:2px 2px 0 var(--ink); }
+    .companion-diet-row .diet-opt:hover{ box-shadow:3px 3px 0 var(--ink); }
+    .companion-diet-name{ display:flex; align-items:center; gap:8px; margin-bottom:10px; font-family:'Caprasimo',serif; font-size:1.1rem; color:var(--nmdc-green-dark); }
+    .companion-diet-name .companion-card-num{ background:var(--nmdc-green); }
+
+    /* Reorder UI */
+    .reorder-item{
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px; background:#fff;
+      border:2px solid var(--ink); border-radius:8px;
+      margin-bottom:6px; font-weight:700;
+    }
+    .reorder-handle{ color:var(--ink-soft); font-size:14px; }
+    .reorder-btns{ display:flex; gap:4px; margin-left:auto; }
+    .reorder-btn{
+      padding:3px 8px; border:1.5px solid var(--ink);
+      border-radius:6px; background:#fff; cursor:pointer;
+      font-size:13px; font-weight:800;
+    }
+    .reorder-btn:hover{ background:var(--sun); }
+    .reorder-btn:disabled{ opacity:0.3; cursor:not-allowed; }
+
+    /* Toggle switch */
+    .toggle{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px; background:#fff;
+      border:2px solid var(--ink); border-radius:12px;
+      cursor:pointer; font-weight:700; font-size:14px;
+      width:100%;
+    }
+    .toggle:hover{ background:var(--cream-warm); }
+    .toggle-sw{
+      width:42px; height:24px; background:#ccc;
+      border:2px solid var(--ink); border-radius:999px;
+      position:relative; flex-shrink:0;
+      transition:background .2s;
+    }
+    .toggle-sw::after{
+      content:""; position:absolute;
+      left:2px; top:1px; width:16px; height:16px;
+      background:#fff; border:1.5px solid var(--ink);
+      border-radius:50%; transition:left .2s;
+    }
+    .toggle.on .toggle-sw{ background:var(--nmdc-green); }
+    .toggle.on .toggle-sw::after{ left:20px; }
+
+    /* Rich editor */
+    .rich-toolbar{ display:flex; gap:4px; padding:6px; background:var(--cream-warm); border:2px solid var(--ink); border-bottom:0; border-radius:8px 8px 0 0; flex-wrap:wrap; align-items:center; }
+    .rich-btn{ padding:6px 10px; border:1.5px solid var(--ink); border-radius:6px; background:#fff; font-weight:800; font-size:12px; cursor:pointer; min-width:32px; font-family:'Plus Jakarta Sans',sans-serif; }
+    .rich-btn:hover{ background:var(--sun); }
+    .rich-btn:active{ transform:translateY(1px); }
+    .rich-select{ padding:6px 8px; border:1.5px solid var(--ink); border-radius:6px; background:#fff; font-weight:700; font-size:12px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; max-width:110px; }
+    .rich-select:hover{ background:var(--sun); }
+    .rich-palette{ position:absolute; top:100%; left:0; margin-top:4px; z-index:5; background:#fff; border:2px solid var(--ink); border-radius:8px; padding:6px; box-shadow:3px 3px 0 var(--ink); display:grid; grid-template-columns:repeat(5, 22px); gap:4px; width:146px; }
+    .rich-swatch{ width:22px; height:22px; border:1.5px solid var(--ink); border-radius:4px; cursor:pointer; padding:0; }
+    .rich-swatch:hover{ transform:scale(1.15); }
+
+    /* === Schedule editor (admin) === */
+    .sched-edit-card{ background:#fff; border:2px solid var(--ink); border-radius:12px; padding:10px; margin-bottom:8px; position:relative; box-shadow:3px 3px 0 var(--ink); }
+    .sched-edit-card:hover{ background:#FFFBEB; }
+    .sched-edit-head{ display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+    .sched-edit-num{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; background:var(--nmdc-green); color:#fff; border:2px solid var(--ink); border-radius:999px; font-weight:800; font-size:11px; flex-shrink:0; }
+    .sched-edit-actions{ margin-left:auto; display:flex; gap:3px; }
+    .sched-edit-act{ width:26px; height:26px; border:1.5px solid var(--ink); border-radius:6px; background:#fff; font-weight:800; font-size:11px; cursor:pointer; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+    .sched-edit-act:hover{ background:var(--sun); }
+    .sched-edit-act:disabled{ opacity:0.3; cursor:not-allowed; }
+    .sched-edit-act.danger{ background:#FFE5DE; }
+    .sched-edit-act.danger:hover{ background:var(--coral); color:#fff; }
+    .sched-edit-body{ display:grid; grid-template-columns:90px 1fr; gap:6px; }
+    .sched-edit-time{ background:#F0F7FF; border:1.5px solid var(--ink); border-radius:6px; padding:6px 8px; font-family:'Caprasimo',serif; font-size:14px; text-align:center; outline:none; font-weight:600; }
+    .sched-edit-time:focus{ background:#fff; box-shadow:2px 2px 0 var(--sky-deep); }
+    .sched-edit-text{ border:1.5px solid var(--ink); border-radius:6px; padding:6px 8px; font-size:13px; outline:none; font-family:'Plus Jakarta Sans','Noto Sans TC',sans-serif; font-weight:500; }
+    .sched-edit-text:focus{ box-shadow:2px 2px 0 var(--nmdc-green); }
+    .sched-add-btn{ width:100%; padding:12px; background:var(--cream-warm); border:2px dashed var(--ink); border-radius:12px; font-weight:800; font-size:13px; cursor:pointer; color:var(--ink); transition:all .15s; font-family:'Plus Jakarta Sans',sans-serif; }
+    .sched-add-btn:hover{ background:var(--sun); border-style:solid; transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--ink); }
+
+    /* === Language Picker Modal === */
+    .lang-picker-backdrop{ position:fixed; inset:0; background:rgba(10,35,64,0.65); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; animation:fade-in .35s ease; }
+    @keyframes fade-in{ from{opacity:0;} to{opacity:1;} }
+    .lang-picker-card{ background:var(--cream); border:4px solid var(--ink); border-radius:28px; box-shadow:12px 12px 0 var(--ink); padding:32px 28px 28px; max-width:560px; width:100%; position:relative; animation:pop-in .5s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes pop-in{ 0%{opacity:0; transform:scale(.85) translateY(20px);} 100%{opacity:1; transform:none;} }
+    .lang-picker-close{ position:absolute; top:12px; right:12px; width:36px; height:36px; background:#fff; border:2.5px solid var(--ink); border-radius:999px; font-weight:800; cursor:pointer; box-shadow:2px 2px 0 var(--ink); }
+    .lang-picker-close:hover{ background:var(--sun); transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--ink); }
+    .lang-picker-title{ font-family:'Caprasimo',serif; font-size:2.4rem; line-height:1.1; text-align:center; margin-bottom:6px; }
+    .lang-picker-sub{ text-align:center; font-size:14px; color:var(--ink-soft); font-weight:600; margin-bottom:24px; letter-spacing:0.02em; }
+    .lang-picker-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .lang-picker-btn{ background:#fff; border:3px solid var(--ink); border-radius:20px; padding:22px 16px; cursor:pointer; font-family:inherit; text-align:center; box-shadow:5px 5px 0 var(--ink); transition:all .15s cubic-bezier(.34,1.56,.64,1); display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .lang-picker-btn:hover{ transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--ink); }
+    .lang-picker-btn:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }
+    .lang-picker-btn.zh:hover{ background:var(--sun); }
+    .lang-picker-btn.en:hover{ background:var(--sky); }
+    .lang-picker-flag{ font-size:48px; line-height:1; height:48px; display:flex; align-items:center; justify-content:center; }
+    .lang-picker-flag svg{ height:40px; width:auto; }
+    /* Flag (rectangular) — bordered + boxed */
+    .lang-picker-btn.zh .lang-picker-flag svg{ border:1.5px solid var(--ink); border-radius:4px; box-shadow:2px 2px 0 var(--ink); }
+    .lang-picker-name{ font-family:'Caprasimo',serif; font-size:1.6rem; line-height:1; }
+    .lang-picker-tag{ font-size:12px; font-weight:700; color:var(--ink-soft); letter-spacing:0.1em; text-transform:uppercase; }
+    .lang-picker-emojis{ text-align:center; font-size:28px; margin-bottom:8px; letter-spacing:8px; }
+    .lang-picker-slogan{ position:relative; margin:18px auto 22px; padding:18px 26px; max-width:460px; background:linear-gradient(135deg, rgba(0,176,80,0.10) 0%, rgba(109,200,232,0.12) 100%); border:2.5px dashed var(--nmdc-green-dark); border-radius:14px; }
+    .lang-picker-slogan::before{ content:"❝"; position:absolute; top:-22px; left:-8px; font-family:Georgia,serif; font-size:36px; color:var(--nmdc-green-dark); line-height:1; background:var(--cream); padding:0 6px; border-radius:50%; }
+    .lang-picker-slogan::after{ content:"❞"; position:absolute; bottom:-32px; right:-8px; font-family:Georgia,serif; font-size:36px; color:var(--nmdc-green-dark); line-height:1; background:var(--cream); padding:0 6px; border-radius:50%; }
+    .slogan-zh{ font-family:'Noto Sans TC',serif; font-weight:700; font-size:1.15rem; line-height:1.5; color:var(--ink); text-align:center; letter-spacing:0.04em; }
+    .slogan-en{ font-family:'Caprasimo',serif; font-size:0.95rem; color:var(--nmdc-green-dark); text-align:center; margin-top:8px; letter-spacing:0.01em; line-height:1.3; }
+    @media (max-width:480px){
+      .lang-picker-slogan{ padding:14px 14px; margin:14px auto 20px; }
+      .slogan-zh{ font-size:1rem; }
+      .slogan-en{ font-size:0.85rem; }
+    }
+    @media (max-width:480px){
+      .lang-picker-title{ font-size:1.9rem; }
+      .lang-picker-card{ padding:26px 20px 22px; }
+      .lang-picker-grid{ gap:10px; }
+      .lang-picker-btn{ padding:18px 10px; }
+      .lang-picker-flag{ font-size:38px; height:38px; }
+      .lang-picker-flag svg{ height:32px; }
+      .lang-picker-name{ font-size:1.3rem; }
+    }
+    .rich-editor{ border:2px solid var(--ink); border-top:0; border-radius:0 0 8px 8px; padding:14px; min-height:240px; font-family:'Plus Jakarta Sans','Noto Sans TC',sans-serif; font-size:14px; background:#fff; outline:none; line-height:1.6; overflow-y:auto; max-height:500px; }
+    .rich-editor:focus{ box-shadow:0 0 0 2px var(--nmdc-green); }
+    .rich-editor.dirty{ background:#FFFAD6; }
+    .rich-editor p{ margin:0 0 0.8em; }
+    .rich-editor ul,.rich-editor ol{ margin:0 0 0.8em; padding-left:1.5em; }
+    .rich-editor li{ margin:0 0 0.3em; }
+    .rich-editor strong{ font-weight:700; }
+    .rich-editor em{ font-style:italic; }
+    .rich-editor a{ color:var(--nmdc-green-dark); text-decoration:underline; }
+    .rich-editor h1,.rich-editor h2,.rich-editor h3{ font-weight:700; margin:0.6em 0 0.3em; }
+    .rich-editor h2{ font-size:1.2em; }
+    .rich-editor h3{ font-size:1.1em; }
+
+    .token-chip{ display:inline-flex; align-items:center; padding:3px 8px; background:var(--sun); border:1.5px solid var(--ink); border-radius:999px; font-size:11px; font-weight:700; font-family:'Plus Jakarta Sans',monospace; cursor:pointer; margin:2px; }
+    .token-chip:hover{ background:var(--sun-deep); }
+
+    .reg-table{ width:100%; border-collapse:separate; border-spacing:0; font-size:13px; background:#fff; border:2px solid var(--ink); border-radius:10px; overflow:hidden; }
+    .reg-table th,.reg-table td{ padding:10px 8px; border-bottom:1.5px dashed var(--sand-deep); text-align:left; vertical-align:top; }
+    .reg-table tr:last-child td{ border-bottom:0; }
+    .reg-table th{ background:var(--sun); font-weight:800; position:sticky; top:0; border-bottom:2px solid var(--ink); font-size:11px; letter-spacing:0.05em; text-transform:uppercase; }
+    .reg-table tr:hover td{ background:#FFFBEB; }
+    .reg-lang-badge{ display:inline-block; padding:2px 8px; border:1.5px solid var(--ink); border-radius:999px; font-size:10px; font-weight:800; letter-spacing:0.05em; }
+    .reg-lang-badge.zh{ background:#FFE5DE; color:#B53A1F; }
+    .reg-lang-badge.en{ background:#D9EFFA; color:#1F6691; }
+    .reg-serial{ font-family:'Caprasimo',serif; font-size:1.1em; color:var(--nmdc-green-dark); }
+    .reg-small{ color:var(--ink-soft); font-size:11px; }
+
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:80; padding:12px 20px; border:2.5px solid var(--ink); border-radius:999px; box-shadow:4px 4px 0 var(--ink); font-weight:700; background:var(--nmdc-green); color:#fff; animation:bounce-in .5s cubic-bezier(.34,1.56,.64,1); max-width:90vw; text-align:center; }
+    .toast.err{ background:var(--coral); }
+
+    /* Floating beach doodles */
+    .beach-doodle{ position:absolute; pointer-events:none; z-index:1; }
+
+    @media (max-width:768px){
+      input,select,textarea{ font-size:16px !important; }
+      .edit-drawer{ max-width:100%; }
+      body{ font-size:16px; }
+    }
+
+    @media (pointer:fine){
+      ::-webkit-scrollbar{ width:14px; }
+      ::-webkit-scrollbar-track{ background:var(--cream); }
+      ::-webkit-scrollbar-thumb{ background:var(--nmdc-green); border:3px solid var(--cream); border-radius:999px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="env,react">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    // ====================================================================
+    // CONFIGURATION
+    // ====================================================================
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxzZ9Ft0orOCkRChGR7jmAa4_adVbqHwnSUGfJez7-CaLnVZTe3kX4rHqxypSP93vvbMg/exec";
+
+    // ====================================================================
+    // TEAM DETECTION (URL parameter ?team=baishatun for 白沙屯淨灘團)
+    // Default = "nmdc" (main NMDC employees)
+    // ====================================================================
+    const _urlParams = new URLSearchParams(window.location.search);
+    const _rawTeam = String(_urlParams.get("team") || "").toLowerCase().trim();
+    const TEAM = _rawTeam === "baishatun" ? "baishatun" : "nmdc";
+    const IS_BAISHATUN = TEAM === "baishatun";
+
+    // Update title bar for 白沙屯
+    if(IS_BAISHATUN){
+      document.title = "2026 NMDC × 白沙屯淨灘團・GO! | Beach Cleanup Registration";
+    }
+
+    const NMDC_LOGO = "data:image/png;base64,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";
+    const TPC_LOGO  = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAflBMVEX6+/wFaKsAAADmBRFcn8mqzeMvhbuJutkCbbP2nKTwWmYNcrEMcbEBf389jcAAfP/sOEXzeoQAAP8qg7pcoMsbmbH5vMLw8vcrkM4A//8ACX8AP78xicCbtc9AjL+jxeYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiAeEmAAAAIHRSTlP//QD////+/wv//2OqAv8C//8BWxwW/wUhAQIETQz/C458V9kAAApiSURBVHjarVvZYuMqDCW2AC/ZnEkz7Sx3/v8vr1mEBAjHaeuHzjR1OOhoQQihur3PZfjl/vn3Ps/H44E9x+M8v93DK5fdw6l9r50G9/P+J4fM4Of5fX3ldjp9I/CbG+x9boISuJvfMHwP8O3NyfqDhgewWrFHWwD6a8D+OrCD/fkHZTWQQWbwYJLce6CfADtYFDaBagAwEcYYRoBGyWf1FHoT+HJLsBGV5CoeSC8k6G0z2wJe5/wnDusH5aBOUmCS+7dseC1Cr77wKeDVJe9Bt348awrZmHo1nDN12KDrYXWu14GH7qdKsEhglEk2LmDs2MT3i8Afp+6ehtH/Fca1+s8ZjWulWxfGBUT40A23V4BX7f7IYU2U1crWlfyshJ69zvYCD93fI7IMJCyZtLcsuz7rP+cEHuamTZpy1PSwF3gINBvUVbQY04whGnmIE/S/aJy1jKwk3ESzG8FoRmEzcDklFLYFm8iqhavj163K+U7PuFK//siwTa5gHemeBWTVwI3fpUGgEHB0nyu1lE6VPBD/00BWIq6JNFtOW/ZMDzfkKtJU/gVQPcD0VSMrCfccJ6zi1ypYNS1+4PXFsVcSNFq1ib9XyErAhfAd/t2S52vg0L0y1cgarZoprUTOgE9cXjRKIUp6KW2kRPWTEoW2ka/4a2HbKlsW7kFATdoRxFWPfiSBG8h86nECQxa4GfDp1z1Qo8keQfJYD6RRYEeAgIyzjsjeny8fMnB35LhapnnF7eO4nhRvaiIyEM0B+dj9loCHbg4mQeal27gK44MOny2byFF93MAU4b4HRLONe/UKjqOtL5/jbEYpiiYFAxrYpQS+DT+DYUGgsIWLrJK/RDW3kE14a1WaW8Yo51aCgjdxe84iTtP/oYEMaX4Z2Yp7ksZXTBt3RIGtymy7l5HDzGxS83C7ZMCDE/jsEa1/21ZLQiB0UjmeQZFHRB4rZI344Cx74MBvPmQhM7ry33HCsQs4NoUpIi995c9Jd4xsD3w7RR9CXRgpZDjcB8ViejTau59XFU6QZhMt+0TAQxQ4UGxSSCLXXVygTN4KRaaXXnPIlYFrpNlGkd8R+Hb7540lzMpWCg4mtY56TTKIIo8emRTC1IyW7Tx7+EDgELPQliuig9n01Xii0a+vshlysgGVOXe/UOKfKDDg9HKi19GuDXepX/XPVHqzZiL73ZxyPhw0fI6MwK7BniCPtWVbFNmvzCr6MLQEntJYqqHhAy2QQc19pRaNlkW+7LZVd/xE1wKPlQxaAtbVPK+1yMmwh+5jBfamBWQBz4iW905PNKPJbiEEEdXdOj9jKwp8raiT1kv+EadoGZnIJpLqBlhpVpfuDX3J65+GWyZBwbgQCytBbRQs9dURE83rpIhpnwQwgaPzFkYqLpgHPmEie2SappAcuFa/nE3rxIJm358EfcGh8vNs0YjIV/zukoUvRDl2FxVtGs2uYmycMt+QM0+dTccHTfz+o8G1ctHD1EyPSdYst7CiwOV8fJ5Suz+6ztlxrVL0sHEXliuqyF1NI9UuJuThCjVB4hQSsA4fMJueaLp8b6RDiat+DnkSPvaMtDF9lwg/dipTsSmIdt+ZxjxTbj7cy7xNLTnZkdSoZBW8uFBxa1nYrhprcZlk+ZLHDJndoJgXZ0mMuBzp7ae1WE2RLhOXQKfkAIzUR56iH6qvP9GxxmiAzLrU0VGf21Z0om/ADQlYHEtHkGBdiowabctTsyff2Ie8pMQzBUcPfGAEQLCIUd5s68PTR/Dx6YrwaNYxJYje5PUO/p1RiSUVZZ4DS1FtSkUEw8yYAwdvChQv6jMCN8Ia4gvA5FIbGV3pPCE1feJQfPsFTWD7kt0Yeb1oP98E7CV+HkO+DLxLxdtDfFJiswv4cxJDta1+RWSzadWycZE7jW2zLstQtB4VlZgX3ClmvW6+17D5H5tlq5SEpEIJpGME2Awghxo4hswzVSb7TZFzYKpACka9UJUgbkljyOSLxCGE9SvV7ySRUZUIHGeixYrrw0XpuDzli4RfFi1fj6cqxcuTeaASumYJ4Fn0ijCWtCxmiYDGBMQtpIvkUWeiNgIj9aJpOcxeTgSy1MemvGGSKgCaV0URGFJ5GFQj6WKpj0nAmOydWbI3SptrlrcHyk1yopYvjVKyBzHZu3OzNkJ6OOZHpr7s7o9yA3D8aP3MtnK9B86a72FUvmcT0sNpacfQ5prQs0EWltBbSujzLYyttk7SKctT4Kkn2q7JGU2+hZnjpu2cbdrSZtHNgZtXvm3Bc/v1N53ptjaUQ8rn46aNKZkXBK60recuvWtd6tlucSy2qVh+wY05lkBstbEfM8eCHdmWr6aWuyBi2qu4KEWcWdQbXSmhrlqFEzH0LUq/NIvO+DzYF7PKkitFYPEF0i6SWYhQtQJeIycaDYvONNueb6BVXnwJlUzyMMgWtDTIkgURFBNYvilVFcdcYBTu0N2yAtthq8D22NZyXW0SC2zACmwn4nqzpLiZAsGTYuYh1deopIhF1EZNcRJrigBnwO4IwwWuGeJ1Y8OLqKlsLIusxCoqj1yWmda1tola4DkCY6Fc4cmAbiAXaxQCM19a5NotUKFcs0J5OhoAXO3qxS24ND+Kh/gTWK3v4SHrBRWNCgU+pcOQvweqZNenThOecUyNuAnZMYxcn1d02PbBjn+SyGlqZSVDsdAJsi/FuklZtQGWNuTHP9mBl5aSib6ncdOOlQIIK2G6l6/CsZOlo9yTcMSn8acRuhEc8rSxHqMP9VJJuTpP5YeawA4/QdgOFGe1Js9nr3ioOQrpgsHEuDjU7MJSoVnqDFvHxwSc0JfmMa7F8aRj3PLg2jT2rFeG7KVAe3hsHR/r9sF1PKo/pwJwuyWCh06dqOlbjRG0wQTxqJ6aE4Cf60vII6tdY9SaNnDjUI3mhK77je0YJr0OG+0YqUTQbkEBPlCzHYPUzGLxJrKhokd5fMqr+bT7aDSgUMuNoj4dudVnYsCqsafVBGietNxQkxFDlnL2UHVUqU9u6tvtTawrrdlkhAGMzdPKih77BCzXPX2fos5byTbaqlgjmcJSvxGte7liC6Mj+rHVwgZ7GslwnQKGmFrwpNY537Q3CkdBB960t6N1DpENb1I0EvQ0xsBf1oeot9CwLranzYKIfOAzD6dNBfQS61NjRXJ41fK+vR3tkbwhlDoUrdCH6kQut+0JVhvef7urITRrgaVWUG0EbF2hxhcgaxme97XApqZfSHiWd8eb4rYC6/k1oPLO1deafj3yEem2LJ3TUPfQVy3WjO9X25zzxu6i0Vjs7E69z3Fq9pON3b6V/a1sS2cKds3s+BDxEdXYz7eyh+Z94c5As3tfW6jvDcynl5v3w3WFNwZN+j3n1qW1ZS3uKruu0F0+c0Hjhpom29o8Hjhb9S0XNOKVlDnXL93FEG+k0JWUty9cSQnm/be6hOPZZcZVWle4e/SVSzh47ejHMalXP70Z8j3XjtJFq5n5LOTnWlrzOPJdF60C4S9dLbt809UyfplufnqZrhu+8zIdvz54d9cHD+X1weEeprf/+uD/pLZt/7vpt2MAAAAASUVORK5CYII=";
+
+    // Default Google Maps search link for location
+    const DEFAULT_MAP_URL = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("苑港漁業公園 苗栗苑裡");
+
+    // ====================================================================
+    // Email defaults
+    // ====================================================================
+    const DEFAULT_EMAIL_BODY_ZH = `<p>嗨 {{name}}，</p>
+<p>你的 <strong>2026 NMDC 團隊淨灘</strong> 報名已成功！🎉</p>
+<p><strong>報名資訊</strong><br>
+報名序號：<strong>{{confirmationNumber}}</strong><br>
+姓名：{{name}}<br>
+公司：{{company}}<br>
+職稱：{{title}}<br>
+電話：{{phone}}</p>
+<p><strong>活動資訊</strong><br>
+📅 日期：2026/6/18 · 6/25 · 6/28（日期待確認）<br>
+⏰ 時間：09:00 – 12:00<br>
+📍 地點：苗栗苑裡沙灘 · 苑港漁業公園<br>
+（苗栗縣苑裡鎮西部濱海快速公路 360 號）</p>
+<p>活動前一週我們會再寄一次行前通知給你，包含當天集合時間、交通資訊與準備事項。</p>
+<p>有任何問題請聯絡：Vicky 0970-002-367 · MJ 0970-002-503</p>
+<p>謝謝你一起為海灘做點事 💚</p>
+<p>— NMDC Energy</p>`;
+
+    const DEFAULT_EMAIL_BODY_EN = `<p>Hi {{name}},</p>
+<p>Your registration for <strong>2026 NMDC Team Beach Cleanup</strong> is confirmed! 🎉</p>
+<p><strong>Registration Details</strong><br>
+Confirmation #: <strong>{{confirmationNumber}}</strong><br>
+Name: {{name}}<br>
+Company: {{company}}<br>
+Title: {{title}}<br>
+Phone: {{phone}}</p>
+<p><strong>Event Details</strong><br>
+📅 Date: Jun 18 · 25 · 28 / 2026 (dates TBC)<br>
+⏰ Time: 09:00 – 12:00<br>
+📍 Location: Yuanli Beach · Yuangang Fishing Park</p>
+<p>A briefing will be sent one week before the event.</p>
+<p>Questions? Contact Vicky 0970-002-367 · MJ 0970-002-503</p>
+<p>Thanks 💚<br>— NMDC Energy</p>`;
+
+    // ====================================================================
+    // DEFAULT TEXT REGISTRY
+    // ====================================================================
+    const DEFAULTS = {
+      zh: {
+        "header.tag": "BEACH CLEANUP 2026",
+        "hero.chip": "🏖️ 一起去淨灘",
+        "hero.subtitle": "2026 NMDC 團隊淨灘",
+        "announce.head": "白沙屯淨灘團・特別公告",
+        "announce.title": "歡迎白沙屯淨灘團！",
+        "announce.body": "感謝白沙屯淨灘團一起加入這次的淨灘活動 💚\n\n• 本團席次與 NMDC 共用 200 人總額，白沙屯保留名額為 60 人，**先報先得**。\n• 報名截止前我們會另行寄出集合地點與交通資訊。\n• 有任何問題，請聯繫窗口：Vicky 0970-002-367 / MJ 0970-002-503。",
+        "hero.title1": "來 淨 灘",
+        "hero.title2": "吧！",
+        "hero.tagline": "帶著公司的心，走一趟海的現場。",
+        "hero.ctaPrimary": "立刻報名",
+        "hero.ctaSecondary": "看注意事項",
+
+        "info.when.label": "時 間",
+        "info.when.big": "6 / 18 · 6 / 25 · 6 / 28",
+        "info.when.sub": "2026 · 09:00 – 12:00 · （日期待確認）",
+        "info.where.label": "地 點",
+        "info.where.big": "苗栗苑裡沙灘",
+        "info.where.sub": "苑港漁業公園 · 苗栗縣苑裡鎮西部濱海快速公路 360 號",
+        "info.where.mapUrl": DEFAULT_MAP_URL,
+        "info.who.label": "人 數 & 分 組",
+        "info.who.big": "200",
+        "info.who.unit": "人",
+        "info.who.sub": "分 20 組 · 每組 10 人",
+        "info.contact.label": "聯絡窗口",
+        "info.contact.line1Label": "Vicky",
+        "info.contact.line1Val": "0970-002-367",
+        "info.contact.line2Label": "MJ",
+        "info.contact.line2Val": "0970-002-503",
+
+        "status.tag": "⏰ 截止",
+        "status.head": "報名倒數",
+        "status.sub": "趁還有位子，快填！",
+        "status.slots": "名額進度",
+        "status.filled": "已報名",
+        "status.days": "DAYS",
+        "status.hrs": "HRS",
+        "status.min": "MIN",
+        "status.sec": "SEC",
+        "status.left": "席還在",
+        "status.expired": "報名已截止",
+        "status.full": "名額已滿",
+
+        "schedule.tag": "🕐 流程",
+        "schedule.head": "活動流程",
+        "schedule.sub": "當天我們會這樣過～",
+        "schedule.0.time": "08:30", "schedule.0.text": "集合報到・領裝備",
+        "schedule.1.time": "09:00", "schedule.1.text": "開場、分組、安全宣導",
+        "schedule.2.time": "09:15", "schedule.2.text": "淨灘行動開始 🧤",
+        "schedule.3.time": "11:00", "schedule.3.text": "廢棄物分類・稱重 ♻️",
+        "schedule.4.time": "11:30", "schedule.4.text": "集合、團體合照 📸",
+        "schedule.5.time": "12:00", "schedule.5.text": "活動結束，平安回家 👋",
+
+        "notes.tag": "⚠️ 重要",
+        "notes.head": "注意事項",
+        "notes.sub": "出門前看一下，安全第一！",
+        "note.0": "穿舒適便利的衣服，自己帶毛巾跟水，多補水。",
+        "note.1": "戴手套防止割傷，穿包覆性好的鞋子。",
+        "note.2": "建議長褲或薄長袖 + 帽子，防曬又保護。",
+        "note.3": "隨時帶水壺補水，不要亂丟垃圾。",
+        "note.4": "活動中不要奔跑，隨時注意手腳安全。",
+        "note.5": "東西卡在沙裡不要硬挖，找隨隊人員幫忙。",
+        "note.6": "注意螺類、針具、玻璃和銳利物，拾取小心。",
+        "note.7": "搬海漂垃圾注意重量跟平衡，留意漲退潮。",
+        "note.8": "不要踩踏海灘植物和沙丘植栽。",
+        "note.9": "注意避免傷害海灘生物，像寄居蟹、海星。",
+        "note.10": "戶外很曬，做好防曬（防曬乳、太陽眼鏡、帽子、防曬衣）。",
+        "note.11": "自行評估身體狀況再參加，不舒服立刻告知隨隊人員。",
+        "note.12": "頭暈、中暑、體力不支立刻停止並休息。",
+
+        "risk.head": "風險告知",
+        "risk.body": "本活動為戶外活動，請依自身身體狀況斟酌參加。若有心臟病、高血壓、氣喘、癲癇、腸胃疾病、懷孕、曬傷過敏或皮膚易過敏者請勿報名。若活動當日遇天候突變（暴雨、雷擊、強風），主辦單位有權暫停、取消或更動活動。",
+
+        "form.tag": "🏖️ SIGN UP",
+        "form.head": "來報名吧！",
+        "form.sub": "填一下，我們活動前一週寄行前通知給你。",
+        "field.name.label": "姓名", "field.name.sub": "", "field.name.ph": "你的全名",
+        "field.company.label": "公司", "field.company.sub": "", "field.company.ph": "你所屬的公司",
+        "field.title.label": "職稱", "field.title.sub": "", "field.title.ph": "例：環安工程師",
+        "field.phone.label": "電話", "field.phone.sub": "", "field.phone.ph": "0912345678",
+        "field.email.label": "電子信箱", "field.email.sub": "", "field.email.ph": "you@company.com",
+        "field.blood.label": "血型", "field.blood.sub": "", "field.blood.ph": "請選擇血型",
+        "section.basic.head": "📋 基本資訊", "section.basic.sub": "來個自我介紹吧～",
+        "section.diet.head": "🍽️ 飲食習慣", "section.diet.sub": "餐點會依此安排",
+        "diet.option.meat": "葷食",
+        "diet.option.veg": "素食",
+        "diet.option.halal": "Halal 清真食物",
+        "diet.option.other": "其他",
+        "diet.other.ph": "請說明你的飲食需求…",
+        "diet.same.label": "攜眷飲食與我相同",
+        "form.section.tag.basic": "BASIC",
+        "form.section.tag.diet": "MEAL",
+        "form.section.tag.emergency": "EMERGENCY",
+        "form.totalSeats": "📊 本次報名共佔 {{n}} 席（本人 1 + 攜眷 {{c}}）",
+        "companion.toggle.label": "攜眷一起參加？",
+        "companion.toggle.sub": "可帶家人朋友",
+        "companion.yes": "是",
+        "companion.no": "否",
+        "companion.count.label": "攜眷人數",
+        "companion.count.sub": "",
+        "companion.heading": "攜眷 #{{n}}",
+        "companion.name.label": "姓名",
+        "companion.name.ph": "攜眷姓名",
+        "companion.blood.label": "血型",
+        "companion.diet.label": "飲食",
+        "emergency.head": "🚨 緊急聯絡資訊",
+        "emergency.sub": "活動當天若有突發狀況，我們會聯絡這位人選。",
+        "field.emName.label": "緊急聯絡人姓名", "field.emName.sub": "", "field.emName.ph": "例：王小明（與你的關係）",
+        "field.emPhone.label": "緊急聯絡電話", "field.emPhone.sub": "", "field.emPhone.ph": "0912345678",
+        "form.agree": "我已經確認本活動的注意事項和風險告知，沒問題！",
+        "form.submit": "送出報名 🌊",
+        "form.submitting": "送出中…",
+
+        "err.required": "這欄不能空著喔",
+        "err.email": "信箱格式不對，要有 @ 跟網域（例：name@example.com）",
+        "err.phone": "電話只能填純數字，8~15 碼（不要加 - 或 +）",
+        "err.agree": "先勾選同意才可以送出哦",
+        "err.network": "連線失敗，檢查網路再試一次",
+        "err.config": "活動資訊載入失敗，等一下再試",
+        "err.server": "伺服器忙線中，請稍後再試",
+        "err.full": "名額已滿，謝謝你的關注！",
+        "err.deadline": "報名已經截止囉",
+        "err.duplicate": "這個信箱已經報過名了",
+        "err.notEnough": "名額不足，目前剩 {{r}} 席，本次需要 {{n}} 席。",
+        "err.fixN": "還有 {{n}} 個欄位要填，請檢查紅框位置喔！",
+        "err.generic": "送出失敗，請稍後再試",
+
+        "ok.head": "報名成功！🎉",
+        "ok.sub": "我們收到你的報名了，確認信已經寄出，記得收信箱。",
+        "ok.conf": "報名序號",
+        "ok.name": "姓名",
+        "ok.again": "再報一位",
+
+        "closed.deadline.title": "報名已截止",
+        "closed.deadline.sub": "想候補？聯絡主辦窗口。",
+        "closed.full.title": "名額已滿！",
+        "closed.full.sub": "200 席全滿，謝謝大家熱情支持。",
+
+        "footer.contactHead": "聯絡窗口",
+        "footer.contactLine1.label": "Vicky",
+        "footer.contactLine1.val": "0970-002-367",
+        "footer.contactLine2.label": "MJ",
+        "footer.contactLine2.val": "0970-002-503",
+        "footer.orgHead": "主辦單位",
+        "footer.orgName": "樂趣遊股份有限公司 Ubuntu Co., Ltd.",
+        "footer.orgAddr": "台北市中山區南京東路二段 8 號 6 樓",
+        "footer.orgPhone": "(02) 7713-6733",
+        "footer.orgTax": "統編 82985531",
+        "footer.copy": "© 2026 NMDC Energy · Built with 💚 on the shore",
+        "footer.poweredBy": "Powered by Google Sheets",
+
+        "email.subject": "🌊 2026 NMDC 團隊淨灘｜報名確認 {{confirmationNumber}}",
+        "email.body": DEFAULT_EMAIL_BODY_ZH
+      },
+      en: {
+        "header.tag": "BEACH CLEANUP 2026",
+        "hero.chip": "🏖️ LET'S CLEAN THE BEACH",
+        "hero.subtitle": "2026 NMDC Team Beach Cleanup",
+        "announce.head": "Baishatun Cleanup Team · Special Notice",
+        "announce.title": "Welcome, Baishatun Cleanup Team!",
+        "announce.body": "Thanks for joining our 2026 beach cleanup 💚\n\n• Your team shares the 200-seat pool with NMDC; up to 60 seats are reserved for Baishatun on a first-come, first-served basis.\n• A pre-event briefing with meeting point and transport details will be sent before the deadline.\n• Questions? Contact Vicky 0970-002-367 / MJ 0970-002-503.",
+        "hero.title1": "CLEAN",
+        "hero.title2": "THE BEACH!",
+        "hero.tagline": "Bring the team to the shore.",
+        "hero.ctaPrimary": "Sign me up",
+        "hero.ctaSecondary": "See the notes",
+
+        "info.when.label": "WHEN",
+        "info.when.big": "Jun 18 · 25 · 28",
+        "info.when.sub": "2026 · 09:00 – 12:00 · (dates TBC)",
+        "info.where.label": "WHERE",
+        "info.where.big": "Yuanli Beach, Miaoli",
+        "info.where.sub": "Yuangang Fishing Park · No.360, W. Coast Expwy, Yuanli",
+        "info.where.mapUrl": DEFAULT_MAP_URL,
+        "info.who.label": "PEOPLE & TEAMS",
+        "info.who.big": "200",
+        "info.who.unit": "people",
+        "info.who.sub": "20 teams · 10 per team",
+        "info.contact.label": "CONTACT",
+        "info.contact.line1Label": "Vicky",
+        "info.contact.line1Val": "0970-002-367",
+        "info.contact.line2Label": "MJ",
+        "info.contact.line2Val": "0970-002-503",
+
+        "status.tag": "⏰ Closes",
+        "status.head": "Countdown to close",
+        "status.sub": "Spots going fast — grab yours!",
+        "status.slots": "Registrations",
+        "status.filled": "signed up",
+        "status.days": "DAYS",
+        "status.hrs": "HRS",
+        "status.min": "MIN",
+        "status.sec": "SEC",
+        "status.left": "spots left",
+        "status.expired": "Registration closed",
+        "status.full": "Fully booked",
+
+        "schedule.tag": "🕐 AGENDA",
+        "schedule.head": "Run of show",
+        "schedule.sub": "Here's how the day goes~",
+        "schedule.0.time": "08:30", "schedule.0.text": "Check-in · Gear pickup",
+        "schedule.1.time": "09:00", "schedule.1.text": "Kickoff, team assignments, safety brief",
+        "schedule.2.time": "09:15", "schedule.2.text": "Cleanup begins 🧤",
+        "schedule.3.time": "11:00", "schedule.3.text": "Sort & weigh debris ♻️",
+        "schedule.4.time": "11:30", "schedule.4.text": "Group photo 📸",
+        "schedule.5.time": "12:00", "schedule.5.text": "Wrap up — safe travels 👋",
+
+        "notes.tag": "⚠️ IMPORTANT",
+        "notes.head": "What to know",
+        "notes.sub": "Read before you head out — safety first!",
+        "note.0": "Wear comfy clothes. Bring your own towel & water — stay hydrated.",
+        "note.1": "Gloves prevent cuts. Wear closed, beach-friendly shoes.",
+        "note.2": "Long pants / thin long sleeves + hat. Sun + coverage.",
+        "note.3": "Keep a water bottle close. Don't litter.",
+        "note.4": "Don't run during the activity — watch your step.",
+        "note.5": "Don't dig out buried items alone — call the team lead.",
+        "note.6": "Watch for shells, needles, glass & sharp items.",
+        "note.7": "Mind the weight, balance & incoming tide when moving debris.",
+        "note.8": "Avoid trampling beach plants and dune vegetation.",
+        "note.9": "Don't disturb wildlife — hermit crabs, starfish, etc.",
+        "note.10": "Sun's strong — sunscreen, shades, hat, sun-protective clothing.",
+        "note.11": "Assess your condition. Feel off? Tell the support team.",
+        "note.12": "Dizziness, heat, fatigue — stop and rest immediately.",
+
+        "risk.head": "Risk Notice",
+        "risk.body": "This is an outdoor activity — check your own condition first. Do NOT register if you have heart disease, hypertension, asthma, epilepsy, gastrointestinal conditions, pregnancy, sunburn allergy, or sensitive skin. In severe weather, organizers may suspend, cancel, or modify the activity.",
+
+        "form.tag": "🏖️ SIGN UP",
+        "form.head": "Let's go — sign up!",
+        "form.sub": "Fill it in and we'll send a briefing one week before.",
+        "field.name.label": "Name", "field.name.sub": "", "field.name.ph": "Your full name",
+        "field.company.label": "Company", "field.company.sub": "", "field.company.ph": "Your company",
+        "field.title.label": "Job Title", "field.title.sub": "", "field.title.ph": "e.g. EHS Engineer",
+        "field.phone.label": "Phone", "field.phone.sub": "", "field.phone.ph": "0912345678",
+        "field.email.label": "Email", "field.email.sub": "", "field.email.ph": "you@company.com",
+        "field.blood.label": "Blood Type", "field.blood.sub": "", "field.blood.ph": "Select your blood type",
+        "section.basic.head": "📋 Basic Info", "section.basic.sub": "Tell us about yourself",
+        "section.diet.head": "🍽️ Dietary Preference", "section.diet.sub": "Meals will follow your selection",
+        "diet.option.meat": "Regular",
+        "diet.option.veg": "Vegetarian",
+        "diet.option.halal": "Halal",
+        "diet.option.other": "Other",
+        "diet.other.ph": "Please describe your dietary needs…",
+        "diet.same.label": "Companions same dietary preference as me",
+        "form.section.tag.basic": "BASIC",
+        "form.section.tag.diet": "MEAL",
+        "form.section.tag.emergency": "EMERGENCY",
+        "form.totalSeats": "📊 {{n}} seat(s) total ({{c}} companion(s) + you)",
+        "companion.toggle.label": "Bringing companions?",
+        "companion.toggle.sub": "Family or friends",
+        "companion.yes": "Yes",
+        "companion.no": "No",
+        "companion.count.label": "Number of Companions",
+        "companion.count.sub": "",
+        "companion.heading": "Companion #{{n}}",
+        "companion.name.label": "Name",
+        "companion.name.ph": "Companion's full name",
+        "companion.blood.label": "Blood Type",
+        "companion.diet.label": "Diet",
+        "emergency.head": "🚨 Emergency Contact Info",
+        "emergency.sub": "Who should we call if anything happens during the event.",
+        "field.emName.label": "Emergency Contact Name", "field.emName.sub": "", "field.emName.ph": "e.g. Jane Doe (relationship)",
+        "field.emPhone.label": "Emergency Phone", "field.emPhone.sub": "", "field.emPhone.ph": "0912345678",
+        "form.agree": "I've read the event notes and risk notice — all good!",
+        "form.submit": "Count me in 🌊",
+        "form.submitting": "Submitting…",
+
+        "err.required": "Don't leave this blank",
+        "err.email": "Invalid email — must have @ and a domain (e.g. name@example.com)",
+        "err.phone": "Phone must be 8–15 digits only (no dashes or symbols)",
+        "err.agree": "Tick the box first!",
+        "err.network": "Connection failed — check your network",
+        "err.config": "Can't load event info, try again later",
+        "err.server": "Server busy, try again later",
+        "err.full": "Fully booked — thanks!",
+        "err.deadline": "Registration has closed",
+        "err.duplicate": "This email is already registered",
+        "err.notEnough": "Not enough slots — only {{r}} left, you need {{n}}.",
+        "err.fixN": "{{n}} field(s) still need filling — please check the red boxes!",
+        "err.generic": "Failed to submit, try again later",
+
+        "ok.head": "You're in! 🎉",
+        "ok.sub": "Got your registration — a confirmation is on its way to your inbox.",
+        "ok.conf": "Conf #",
+        "ok.name": "Name",
+        "ok.again": "Register another",
+
+        "closed.deadline.title": "Registration closed",
+        "closed.deadline.sub": "For waitlist, contact the organizer.",
+        "closed.full.title": "Fully booked!",
+        "closed.full.sub": "All 200 spots taken — thanks for the love.",
+
+        "footer.contactHead": "CONTACT",
+        "footer.contactLine1.label": "Vicky",
+        "footer.contactLine1.val": "0970-002-367",
+        "footer.contactLine2.label": "MJ",
+        "footer.contactLine2.val": "0970-002-503",
+        "footer.orgHead": "Organized by",
+        "footer.orgName": "Ubuntu Co., Ltd. (LeBay)",
+        "footer.orgAddr": "6F, No.8 Sec.2 Nanjing E. Rd., Zhongshan, Taipei",
+        "footer.orgPhone": "(02) 7713-6733",
+        "footer.orgTax": "Tax ID 82985531",
+        "footer.copy": "© 2026 NMDC Energy · Built with 💚 on the shore",
+        "footer.poweredBy": "Powered by Google Sheets",
+
+        "email.subject": "🌊 2026 NMDC Beach Cleanup · Registration {{confirmationNumber}}",
+        "email.body": DEFAULT_EMAIL_BODY_EN
+      }
+    };
+
+    // Display / layout settings (admin only; stored in Content sheet like text)
+    // Values are always strings. Booleans use "true"/"false". Numbers stored as strings.
+    const DISPLAY_DEFAULTS = {
+      "display.showCountdown": "true",
+      "display.sectionOrder": "info,status,schedule,form,notes",
+      "config.maxSlots": "200",
+      "config.maxSlotsBaishatun": "60"
+    };
+
+    // SCHEDULE_COUNT kept for legacy fallback only — the live schedule is now fully dynamic.
+    const SCHEDULE_LEGACY_MAX = 20;
+
+    // Parse schedule items for a given lang. Priority:
+    // 1. JSON array in `${lang}.schedule.items`
+    // 2. Legacy schedule.N.time / schedule.N.text keys (up to SCHEDULE_LEGACY_MAX)
+    function parseScheduleItems(lang, edits, serverContent){
+      const key = `${lang}.schedule.items`;
+      const raw = edits[key] !== undefined ? edits[key] : serverContent[key];
+      if(raw){
+        try{
+          const arr = JSON.parse(raw);
+          if(Array.isArray(arr)){
+            return arr.map(x => ({ time: String(x.time || ""), text: String(x.text || "") }));
+          }
+        } catch(_){}
+      }
+      // Legacy fallback
+      const items = [];
+      for(let i = 0; i < SCHEDULE_LEGACY_MAX; i++){
+        const tKey = `${lang}.schedule.${i}.time`;
+        const xKey = `${lang}.schedule.${i}.text`;
+        const time = edits[tKey] !== undefined ? edits[tKey]
+          : (serverContent[tKey] !== undefined ? serverContent[tKey] : (DEFAULTS[lang] && DEFAULTS[lang][`schedule.${i}.time`]) || "");
+        const text = edits[xKey] !== undefined ? edits[xKey]
+          : (serverContent[xKey] !== undefined ? serverContent[xKey] : (DEFAULTS[lang] && DEFAULTS[lang][`schedule.${i}.text`]) || "");
+        if(time || text){ items.push({ time, text }); }
+      }
+      return items;
+    }
+
+    const SECTIONS = [
+      { id:"header", label:"標頭 Header", keys:["header.tag"] },
+      { id:"hero", label:"首頁 Hero", keys:["hero.chip","hero.subtitle","hero.title1","hero.title2","hero.tagline","hero.ctaPrimary","hero.ctaSecondary"] },
+      { id:"announce", label:"📣 白沙屯公告 Baishatun Announcement (僅在 ?team=baishatun 顯示)", keys:[
+        "announce.head","announce.title","announce.body"
+      ], multi:["announce.body"] },
+      { id:"info", label:"活動資訊 Event Info", keys:[
+        "info.when.label","info.when.big","info.when.sub",
+        "info.where.label","info.where.big","info.where.sub","info.where.mapUrl",
+        "info.who.label","info.who.big","info.who.unit","info.who.sub",
+        "info.contact.label",
+        "info.contact.line1Label","info.contact.line1Val",
+        "info.contact.line2Label","info.contact.line2Val"
+      ]},
+      { id:"status", label:"倒數 & 名額 Status", keys:[
+        "status.tag","status.head","status.sub","status.slots","status.filled",
+        "status.days","status.hrs","status.min","status.sec",
+        "status.left","status.expired","status.full"
+      ]},
+      { id:"schedule", label:"活動流程 Schedule", keys:["schedule.tag","schedule.head","schedule.sub"], customEditor:"schedule" },
+      { id:"notes", label:"注意事項 Notes", keys:[
+        "notes.tag","notes.head","notes.sub",
+        "note.0","note.1","note.2","note.3","note.4","note.5","note.6",
+        "note.7","note.8","note.9","note.10","note.11","note.12"
+      ]},
+      { id:"risk", label:"風險告知 Risk", keys:["risk.head","risk.body"], multi:["risk.body"] },
+      { id:"form", label:"報名表 Form", keys:[
+        "form.tag","form.head","form.sub",
+        "section.basic.head","section.basic.sub",
+        "field.name.label","field.name.sub","field.name.ph",
+        "field.company.label","field.company.sub","field.company.ph",
+        "field.title.label","field.title.sub","field.title.ph",
+        "field.phone.label","field.phone.sub","field.phone.ph",
+        "field.email.label","field.email.sub","field.email.ph",
+        "field.blood.label","field.blood.sub","field.blood.ph",
+        "companion.toggle.label","companion.toggle.sub","companion.yes","companion.no",
+        "companion.count.label","companion.count.sub",
+        "companion.heading","companion.name.label","companion.name.ph",
+        "companion.blood.label","companion.diet.label",
+        "section.diet.head","section.diet.sub",
+        "diet.option.meat","diet.option.veg","diet.option.halal","diet.option.other",
+        "diet.other.ph","diet.same.label",
+        "form.section.tag.basic","form.section.tag.diet","form.section.tag.emergency",
+        "form.totalSeats",
+        "emergency.head","emergency.sub",
+        "field.emName.label","field.emName.sub","field.emName.ph",
+        "field.emPhone.label","field.emPhone.sub","field.emPhone.ph",
+        "form.agree","form.submit","form.submitting"
+      ], multi:["emergency.sub","section.basic.sub","section.diet.sub"] },
+      { id:"err", label:"錯誤訊息 Error Messages", keys:[
+        "err.required","err.email","err.phone","err.agree",
+        "err.network","err.config","err.server",
+        "err.full","err.deadline","err.duplicate","err.notEnough","err.fixN","err.generic"
+      ]},
+      { id:"ok", label:"成功畫面 Success", keys:["ok.head","ok.sub","ok.conf","ok.name","ok.again"], multi:["ok.sub"] },
+      { id:"closed", label:"關閉畫面 Closed States", keys:[
+        "closed.deadline.title","closed.deadline.sub",
+        "closed.full.title","closed.full.sub"
+      ]},
+      { id:"footer", label:"頁尾 Footer", keys:[
+        "footer.contactHead",
+        "footer.contactLine1.label","footer.contactLine1.val",
+        "footer.contactLine2.label","footer.contactLine2.val",
+        "footer.orgHead","footer.orgName","footer.orgAddr",
+        "footer.orgPhone","footer.orgTax",
+        "footer.copy","footer.poweredBy"
+      ]}
+    ];
+
+    // Ordered sections available for reordering
+    const ORDERABLE_SECTIONS = [
+      { id:"info",     label:"🎪 活動資訊 Event Info" },
+      { id:"status",   label:"⏰ 報名倒數 Countdown" },
+      { id:"schedule", label:"🕐 活動流程 Schedule" },
+      { id:"form",     label:"📝 報名表 Form" },
+      { id:"notes",    label:"⚠️ 注意事項 Notes" }
+    ];
+
+    const NOTE_EMOJIS = ["👕","🧤","👒","💧","🚶","⚠️","🔪","🌊","🌱","🦀","☀️","🩺","🛑"];
+
+    const EMAIL_TOKENS = [
+      { key:"{{name}}", label:"姓名 / Name" },
+      { key:"{{company}}", label:"公司 / Company" },
+      { key:"{{title}}", label:"職稱 / Title" },
+      { key:"{{email}}", label:"信箱 / Email" },
+      { key:"{{phone}}", label:"電話 / Phone" },
+      { key:"{{blood}}", label:"血型 / Blood" },
+      { key:"{{diet}}", label:"飲食 / Diet" },
+      { key:"{{emName}}", label:"緊急聯絡人 / Em. Name" },
+      { key:"{{emPhone}}", label:"緊急電話 / Em. Phone" },
+      { key:"{{companionCount}}", label:"攜眷數 / Companion Count" },
+      { key:"{{companionNames}}", label:"攜眷姓名 / Companion Names" },
+      { key:"{{companionList}}", label:"攜眷詳細 / Companion List(HTML)" },
+      { key:"{{totalSeats}}", label:"總席次 / Total Seats" },
+      { key:"{{confirmationNumber}}", label:"報名序號 / Conf #" },
+      { key:"{{serial}}", label:"流水號 / Serial" },
+      { key:"{{eventName}}", label:"活動名稱 / Event" }
+    ];
+
+    // ====================================================================
+    // XHR helpers
+    // ====================================================================
+    function xhrGet(url){
+      return new Promise((res, rej) => {
+        const x = new XMLHttpRequest();
+        x.open("GET", url, true);
+        x.onload = () => {
+          if(x.status >= 200 && x.status < 300){
+            try{ res(JSON.parse(x.responseText)); } catch(e){ rej(e); }
+          } else rej(new Error("HTTP " + x.status));
+        };
+        x.onerror = () => rej(new Error("Network"));
+        x.ontimeout = () => rej(new Error("Timeout"));
+        x.timeout = 20000;
+        x.send();
+      });
+    }
+    function xhrPost(url, data, timeout){
+      timeout = timeout || 25000;
+      return new Promise((res, rej) => {
+        const x = new XMLHttpRequest();
+        x.open("POST", url, true);
+        x.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+        x.onload = () => {
+          if(x.status >= 200 && x.status < 300){
+            try{ res(JSON.parse(x.responseText)); } catch(e){ rej(e); }
+          } else rej(new Error("HTTP " + x.status));
+        };
+        x.onerror = () => rej(new Error("Network"));
+        x.ontimeout = () => rej(new Error("Timeout"));
+        x.timeout = timeout;
+        x.send(JSON.stringify(data));
+      });
+    }
+    // Email: local@domain.tld — local part 1+ chars, domain has at least one dot,
+    // last segment (TLD) ≥ 2 letters. Disallow consecutive dots and leading/trailing dots.
+    const emailRegex = /^[^\s@.](?:[^\s@]*[^\s@.])?@[^\s@.]+(?:\.[^\s@.]+)*\.[a-zA-Z]{2,}$/;
+    // Phone: digits only, 8-15 chars (covers Taiwan mobile/landline + intl ranges)
+    const phoneRegex = /^\d{8,15}$/;
+    const pad = n => String(n).padStart(2, "0");
+    function formatDeadline(iso, lang){
+      try{
+        const d = new Date(iso);
+        return new Intl.DateTimeFormat(lang === "zh" ? "zh-TW" : "en-US",
+          { year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" }).format(d);
+      } catch{ return iso; }
+    }
+    function formatTs(iso){
+      try{
+        const d = new Date(iso);
+        return d.toLocaleString("zh-TW", { month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+      } catch{ return String(iso); }
+    }
+
+    // ====================================================================
+    // Decorations
+    // ====================================================================
+    function Sun({ size=160 }){
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <g className="spin-slow">
+            {Array.from({length:12}).map((_,i) => (
+              <rect key={i} x="98" y="5" width="4" height="25" rx="2"
+                fill="var(--sun-deep)"
+                transform={`rotate(${i*30} 100 100)`}/>
+            ))}
+          </g>
+          <circle cx="100" cy="100" r="52" fill="var(--sun)" stroke="var(--ink)" strokeWidth="3"/>
+          <circle cx="85" cy="92" r="4" fill="var(--ink)"/>
+          <circle cx="115" cy="92" r="4" fill="var(--ink)"/>
+          <path d="M82 112 Q100 128 118 112" stroke="var(--ink)" strokeWidth="3" fill="none" strokeLinecap="round"/>
+          <circle cx="78" cy="110" r="4" fill="var(--coral)" opacity="0.8"/>
+          <circle cx="122" cy="110" r="4" fill="var(--coral)" opacity="0.8"/>
+        </svg>
+      );
+    }
+    function Wave({ color="var(--nmdc-navy)", flip=false, className="" }){
+      return (
+        <svg className={`block w-full ${flip?"rotate-180":""} ${className}`} viewBox="0 0 1200 80" preserveAspectRatio="none">
+          <path d="M0,40 C150,80 300,10 450,40 C600,70 750,10 900,40 C1050,70 1200,20 1200,40 L1200,80 L0,80 Z" fill={color}/>
+        </svg>
+      );
+    }
+    // Beach doodles — scattered emojis that float around
+    function BeachDoodles({ items }){
+      // items: [{emoji, left, top, size, rot, delay, anim}]
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
+          {items.map((it, i) => (
+            <div key={i} className={"beach-doodle " + (it.anim || "float")}
+              style={{
+                left:it.left, top:it.top,
+                fontSize:it.size || "32px",
+                transform:`rotate(${it.rot || 0}deg)`,
+                animationDelay:`${it.delay || 0}s`,
+                animationDuration:`${it.dur || 4}s`
+              }}>
+              {it.emoji}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    function Confetti(){
+      const shapes = [
+        { left:"5%",  top:"15%", color:"var(--sun)",   rot:"-15deg", shape:"square" },
+        { left:"92%", top:"12%", color:"var(--coral)", rot:"25deg",  shape:"triangle" },
+        { left:"88%", top:"45%", color:"var(--sky)",   rot:"10deg",  shape:"circle" },
+        { left:"4%",  top:"60%", color:"var(--nmdc-green)", rot:"-10deg", shape:"square" },
+        { left:"10%", top:"90%", color:"var(--coral)", rot:"30deg",  shape:"circle" },
+        { left:"94%", top:"85%", color:"var(--sun)",   rot:"-20deg", shape:"triangle" }
+      ];
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
+          {shapes.map((s,i) => (
+            <div key={i} className="absolute float" style={{left:s.left, top:s.top, transform:`rotate(${s.rot})`, animationDelay:`${i*0.6}s`}}>
+              {s.shape === "square" && <div style={{width:16,height:16,background:s.color,border:"2.5px solid var(--ink)",borderRadius:4}}/>}
+              {s.shape === "triangle" && <div style={{width:0,height:0,borderLeft:"10px solid transparent",borderRight:"10px solid transparent",borderBottom:`18px solid ${s.color}`}}/>}
+              {s.shape === "circle" && <div style={{width:18,height:18,background:s.color,border:"2.5px solid var(--ink)",borderRadius:"50%"}}/>}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // ====================================================================
+    // Rich Text Editor
+    // ====================================================================
+    const RICH_FONTS = [
+      { label:"預設 Default", val:"" },
+      { label:"黑體 Sans", val:"'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif" },
+      { label:"明體 Serif", val:"'Noto Serif TC', 'PMingLiU', '新細明體', Georgia, serif" },
+      { label:"楷體 Kai",  val:"'DFKai-SB', '標楷體', 'BiauKai', serif" },
+      { label:"圓體 Round", val:"'Noto Sans CJK TC', 'LiHei Pro', 'PingFang TC', sans-serif" },
+      { label:"等寬 Mono", val:"'Courier New', Consolas, monospace" }
+    ];
+    const RICH_SIZES = [
+      { label:"小 Small", val:"2" },
+      { label:"一般 Normal", val:"3" },
+      { label:"中 Medium", val:"4" },
+      { label:"大 Large", val:"5" },
+      { label:"特大 XL", val:"6" },
+      { label:"超大 Huge", val:"7" }
+    ];
+    const RICH_COLORS = [
+      "#0A2340", "#4A5E7A", "#9B9B9B", "#000000",
+      "#00B050", "#009043", "#2AA0D6", "#6DC8E8",
+      "#E85533", "#FF6B4A", "#F5A623", "#FFCB47",
+      "#7B2D8E", "#C91B6C", "#ffffff"
+    ];
+
+    function RichEditor({ value, onChange, dirty }){
+      const ref = useRef(null);
+      const [showColorPalette, setShowColorPalette] = useState(false);
+      useEffect(() => {
+        if(!ref.current) return;
+        if(document.activeElement === ref.current) return;
+        if(ref.current.innerHTML !== value) ref.current.innerHTML = value || "";
+      }, [value]);
+
+      const exec = (cmd, arg) => {
+        ref.current && ref.current.focus();
+        document.execCommand(cmd, false, arg);
+        if(ref.current) onChange(ref.current.innerHTML);
+      };
+      const insertToken = (tok) => {
+        ref.current && ref.current.focus();
+        document.execCommand("insertText", false, tok);
+        if(ref.current) onChange(ref.current.innerHTML);
+      };
+      const applyColor = (c) => {
+        setShowColorPalette(false);
+        exec("foreColor", c);
+      };
+      const applyFont = (f) => {
+        if(!f) return;
+        exec("fontName", f);
+      };
+      const applySize = (s) => {
+        if(!s) return;
+        exec("fontSize", s);
+      };
+
+      return (
+        <div>
+          <div className="rich-toolbar">
+            {/* Font family */}
+            <select className="rich-select" title="字體 Font family" defaultValue="" onChange={e => { applyFont(e.target.value); e.target.value = ""; }}>
+              <option value="">🔤 字體</option>
+              {RICH_FONTS.map(f => <option key={f.label} value={f.val} style={{fontFamily:f.val || 'inherit'}}>{f.label}</option>)}
+            </select>
+            {/* Font size */}
+            <select className="rich-select" title="字級 Size" defaultValue="" onChange={e => { applySize(e.target.value); e.target.value = ""; }}>
+              <option value="">📏 字級</option>
+              {RICH_SIZES.map(s => <option key={s.val} value={s.val}>{s.label}</option>)}
+            </select>
+            <button type="button" className="rich-btn" onClick={() => exec("bold")}><b>B</b></button>
+            <button type="button" className="rich-btn" onClick={() => exec("italic")}><i>I</i></button>
+            <button type="button" className="rich-btn" onClick={() => exec("underline")}><u>U</u></button>
+            {/* Color picker */}
+            <div style={{position:"relative"}}>
+              <button type="button" className="rich-btn" onClick={() => setShowColorPalette(v => !v)} title="文字顏色 Color">🎨</button>
+              {showColorPalette && (
+                <div className="rich-palette" onMouseLeave={() => setShowColorPalette(false)}>
+                  {RICH_COLORS.map(c => (
+                    <button key={c} type="button" className="rich-swatch" style={{background:c}} onClick={() => applyColor(c)} title={c}/>
+                  ))}
+                  <button type="button" className="rich-btn" style={{width:"100%", marginTop:4}} onClick={() => { setShowColorPalette(false); exec("removeFormat"); }}>✕ 清除</button>
+                </div>
+              )}
+            </div>
+            <button type="button" className="rich-btn" onClick={() => exec("insertUnorderedList")}>•</button>
+            <button type="button" className="rich-btn" onClick={() => exec("insertOrderedList")}>1.</button>
+            <button type="button" className="rich-btn" onClick={() => { const url = window.prompt("Link URL:"); if(url) exec("createLink", url); }}>🔗</button>
+            <button type="button" className="rich-btn" onClick={() => exec("unlink")}>⌀</button>
+            <button type="button" className="rich-btn" onClick={() => exec("formatBlock", "<h2>")}>H2</button>
+            <button type="button" className="rich-btn" onClick={() => exec("formatBlock", "<p>")}>¶</button>
+            <button type="button" className="rich-btn" onClick={() => exec("removeFormat")} title="清除格式">✕Fmt</button>
+          </div>
+          <div
+            ref={ref}
+            contentEditable
+            suppressContentEditableWarning
+            className={"rich-editor " + (dirty ? "dirty" : "")}
+            onInput={() => ref.current && onChange(ref.current.innerHTML)}
+            onBlur={() => ref.current && onChange(ref.current.innerHTML)}
+          />
+          <div className="mt-2 text-xs text-[color:var(--ink-soft)]">
+            <div className="font-bold mb-1">🏷️ 可插入的標籤 / Placeholders：</div>
+            <div>{EMAIL_TOKENS.map(t => <span key={t.key} className="token-chip" onClick={() => insertToken(t.key)} title={t.label}>{t.key}</span>)}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // ====================================================================
+    // Edit Panel
+    // ====================================================================
+    function EditPanel({ open, onClose, lang, setLang, edits, setEdits, serverContent, onSave, saving, dirtyCount, editPassword, registered, onDataChanged }){
+      const [tab, setTab] = useState("text");
+      return (
+        <>
+          <div className={"edit-backdrop " + (open ? "open" : "")} onClick={onClose}/>
+          <aside className={"edit-drawer " + (open ? "open" : "")} role="dialog" aria-label="Edit content">
+            <div className="edit-drawer-head">
+              <div>
+                <div className="font-display text-xl">⚙️ 管理面板 / Admin</div>
+                <div className="text-xs opacity-70 mt-0.5">
+                  {dirtyCount > 0 ? `${dirtyCount} 個未儲存 / unsaved` : "即時同步 / live"}
+                </div>
+              </div>
+              <button onClick={onClose} className="btn-outline px-3 py-1 text-sm" style={{background:"var(--sun)"}}>✕</button>
+            </div>
+            <div className="edit-tabs">
+              <div className={"edit-tab " + (tab === "text" ? "active" : "")} onClick={() => setTab("text")}>📝 文字</div>
+              <div className={"edit-tab " + (tab === "email" ? "active" : "")} onClick={() => setTab("email")}>✉️ 確認信</div>
+              <div className={"edit-tab " + (tab === "reg" ? "active" : "")} onClick={() => setTab("reg")}>👥 名單</div>
+              <div className={"edit-tab " + (tab === "blast" ? "active" : "")} onClick={() => setTab("blast")}>📢 群發</div>
+            </div>
+
+            {tab === "text" && <TextTab lang={lang} setLang={setLang} edits={edits} setEdits={setEdits} serverContent={serverContent} registered={registered}/>}
+            {tab === "email" && <EmailTab lang={lang} setLang={setLang} edits={edits} setEdits={setEdits} serverContent={serverContent}/>}
+            {tab === "reg" && <RegTab editPassword={editPassword} registered={registered} onDataChanged={onDataChanged}/>}
+            {tab === "blast" && <BlastTab editPassword={editPassword} registered={registered}/>}
+
+            {(tab === "text" || tab === "email") && (
+              <div className="edit-drawer-foot">
+                <button onClick={onSave} disabled={dirtyCount === 0 || saving} className="btn-chunk flex-1 px-4 py-3 text-sm">
+                  {saving ? "儲存中…" : `💾 儲存${dirtyCount > 0 ? ` (${dirtyCount})` : ""}`}
+                </button>
+                <button onClick={() => setEdits({})} disabled={dirtyCount === 0 || saving} className="btn-outline px-4 py-3 text-sm">↺ 還原</button>
+              </div>
+            )}
+          </aside>
+        </>
+      );
+    }
+
+    // Helpers for display settings (not lang-specific)
+    function getDisplay(key, edits, serverContent){
+      if(edits[key] !== undefined) return edits[key];
+      if(serverContent[key] !== undefined) return serverContent[key];
+      return DISPLAY_DEFAULTS[key] ?? "";
+    }
+
+    // ---- Tab 1: Text ----
+    function TextTab({ lang, setLang, edits, setEdits, serverContent, registered }){
+      const [openSections, setOpenSections] = useState({ layout:true, hero:false });
+      const [search, setSearch] = useState("");
+
+      function valueOf(key){
+        const editKey = `${lang}.${key}`;
+        if(edits[editKey] !== undefined) return edits[editKey];
+        if(serverContent[editKey] !== undefined) return serverContent[editKey];
+        return DEFAULTS[lang][key] ?? "";
+      }
+      function isDirty(key){ return edits[`${lang}.${key}`] !== undefined; }
+      function updateEdit(key, val){
+        const editKey = `${lang}.${key}`;
+        const committed = serverContent[editKey] !== undefined ? serverContent[editKey] : (DEFAULTS[lang][key] ?? "");
+        setEdits(prev => {
+          const next = { ...prev };
+          if(val === committed) delete next[editKey];
+          else next[editKey] = val;
+          return next;
+        });
+      }
+      function resetKey(key){
+        setEdits(prev => { const next = { ...prev }; delete next[`${lang}.${key}`]; return next; });
+      }
+
+      const filteredSections = useMemo(() => {
+        if(!search.trim()) return SECTIONS;
+        const q = search.trim().toLowerCase();
+        return SECTIONS.map(s => ({
+          ...s,
+          keys: s.keys.filter(k => k.toLowerCase().includes(q) || valueOf(k).toLowerCase().includes(q))
+        })).filter(s => s.keys.length > 0);
+      // eslint-disable-next-line
+      }, [search, edits, lang, serverContent]);
+
+      useEffect(() => {
+        if(search.trim()){
+          const all = {}; filteredSections.forEach(s => { all[s.id] = true; });
+          setOpenSections(prev => ({ ...prev, ...all }));
+        }
+      // eslint-disable-next-line
+      }, [search]);
+
+      return (
+        <div className="edit-drawer-body">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="text-xs font-bold text-[color:var(--ink-soft)] tracking-wider uppercase shrink-0">Lang</span>
+            <button className={"lang-pill " + (lang === "zh" ? "active" : "")} onClick={() => setLang("zh")}>中文</button>
+            <button className={"lang-pill " + (lang === "en" ? "active" : "")} onClick={() => setLang("en")}>English</button>
+          </div>
+          <input type="text" placeholder="🔍 搜尋欄位或文字 / Search..." value={search} onChange={e => setSearch(e.target.value)} className="edit-input mb-4"/>
+
+          {/* Special: Layout controls (not language-specific) */}
+          <LayoutSection open={openSections.layout} onToggle={() => setOpenSections(s => ({ ...s, layout: !s.layout }))}
+            edits={edits} setEdits={setEdits} serverContent={serverContent}/>
+
+          {/* Special: Slot limit controls (not language-specific, applies to GAS backend) */}
+          <SlotsSection open={openSections.slots} onToggle={() => setOpenSections(s => ({ ...s, slots: !s.slots }))}
+            edits={edits} setEdits={setEdits} serverContent={serverContent} registered={registered}/>
+
+          {filteredSections.map(sec => (
+            <div key={sec.id} className="edit-section">
+              <div className="edit-section-head" onClick={() => setOpenSections(s => ({ ...s, [sec.id]: !s[sec.id] }))}>
+                <span>{sec.label} <span className="opacity-50 font-normal">({sec.keys.length})</span></span>
+                <span>{openSections[sec.id] ? "▾" : "▸"}</span>
+              </div>
+              {openSections[sec.id] && (
+                <div className="edit-section-body">
+                  {sec.keys.map(k => {
+                    const multi = (sec.multi || []).includes(k);
+                    const dirty = isDirty(k);
+                    return (
+                      <div key={k} className="edit-row">
+                        <div className="flex items-center justify-between">
+                          <div className="edit-key">{k}</div>
+                          {dirty && <button onClick={() => resetKey(k)} className="text-[10px] font-bold text-[color:var(--coral-deep)] hover:underline">↺ reset</button>}
+                        </div>
+                        {multi ? (
+                          <textarea rows="4" value={valueOf(k)} onChange={e => updateEdit(k, e.target.value)} className={"edit-input " + (dirty ? "dirty" : "")}/>
+                        ) : (
+                          <input type="text" value={valueOf(k)} onChange={e => updateEdit(k, e.target.value)} className={"edit-input " + (dirty ? "dirty" : "")}/>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {sec.customEditor === "schedule" && (
+                    <ScheduleEditor lang={lang} edits={edits} setEdits={setEdits} serverContent={serverContent}/>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // ScheduleEditor — dynamic add/remove/reorder for schedule items
+    function ScheduleEditor({ lang, edits, setEdits, serverContent }){
+      const itemsKey = `${lang}.schedule.items`;
+      const items = parseScheduleItems(lang, edits, serverContent);
+      const isDirty = edits[itemsKey] !== undefined;
+
+      function saveItems(newItems){
+        // Strip fully empty items at the end (keep middle empties in case user is typing)
+        while(newItems.length > 0 && !newItems[newItems.length-1].time && !newItems[newItems.length-1].text){
+          newItems.pop();
+        }
+        setEdits(prev => ({ ...prev, [itemsKey]: JSON.stringify(newItems) }));
+      }
+      function updateItem(idx, field, val){
+        const next = [...items];
+        if(!next[idx]) next[idx] = { time:"", text:"" };
+        next[idx] = { ...next[idx], [field]: val };
+        // Don't trim here — user might still be typing
+        setEdits(prev => ({ ...prev, [itemsKey]: JSON.stringify(next) }));
+      }
+      function addItem(){
+        // Guess next time based on last entry
+        let nextTime = "09:00";
+        if(items.length > 0){
+          const lastTime = items[items.length-1].time;
+          const m = lastTime && lastTime.match(/^(\d{1,2}):(\d{2})$/);
+          if(m){
+            const h = parseInt(m[1], 10);
+            const mm = parseInt(m[2], 10);
+            const totalMin = Math.min(23*60 + 59, h*60 + mm + 30);  // +30 min
+            nextTime = String(Math.floor(totalMin/60)).padStart(2,"0") + ":" + String(totalMin%60).padStart(2,"0");
+          }
+        }
+        saveItems([...items, { time: nextTime, text: "" }]);
+      }
+      function removeItem(idx){
+        if(!window.confirm(`確定刪除 #${idx+1} 「${items[idx].time} ${items[idx].text || ""}」？`)) return;
+        const next = items.filter((_, i) => i !== idx);
+        saveItems(next);
+      }
+      function moveItem(idx, dir){
+        const target = idx + dir;
+        if(target < 0 || target >= items.length) return;
+        const next = [...items];
+        [next[idx], next[target]] = [next[target], next[idx]];
+        saveItems(next);
+      }
+      function resetItems(){
+        setEdits(prev => { const n = { ...prev }; delete n[itemsKey]; return n; });
+      }
+
+      return (
+        <div className="edit-row">
+          <div className="flex items-center justify-between mb-2">
+            <div className="edit-key">📋 流程項目 / schedule items ({items.length}) {isDirty && <span className="text-[color:var(--coral-deep)] ml-1">● 有變更</span>}</div>
+            {isDirty && <button onClick={resetItems} className="text-[10px] font-bold text-[color:var(--coral-deep)] hover:underline">↺ reset</button>}
+          </div>
+          <div className="text-[11px] text-[color:var(--ink-soft)] mb-3 leading-relaxed">
+            💡 可自由新增、刪除、調整順序。中文 / English 各自獨立一份 — 切換語言會看到不同內容。
+          </div>
+
+          {items.length === 0 && (
+            <div className="text-center text-[color:var(--ink-soft)] text-xs font-medium py-4">
+              — 還沒有任何流程項目 —
+            </div>
+          )}
+
+          {items.map((item, i) => (
+            <div key={i} className="sched-edit-card">
+              <div className="sched-edit-head">
+                <span className="sched-edit-num">{i+1}</span>
+                <span className="text-xs font-bold text-[color:var(--ink-soft)] uppercase tracking-wider">Step {i+1}</span>
+                <div className="sched-edit-actions">
+                  <button type="button" className="sched-edit-act" onClick={() => moveItem(i, -1)} disabled={i === 0} title="上移">▲</button>
+                  <button type="button" className="sched-edit-act" onClick={() => moveItem(i, 1)} disabled={i === items.length - 1} title="下移">▼</button>
+                  <button type="button" className="sched-edit-act danger" onClick={() => removeItem(i)} title="刪除">🗑️</button>
+                </div>
+              </div>
+              <div className="sched-edit-body">
+                <input type="text" value={item.time} onChange={e => updateItem(i, "time", e.target.value)} placeholder="08:30" className="sched-edit-time"/>
+                <input type="text" value={item.text} onChange={e => updateItem(i, "text", e.target.value)} placeholder={lang === "zh" ? "活動項目..." : "Activity..."} className="sched-edit-text"/>
+              </div>
+            </div>
+          ))}
+
+          <button type="button" className="sched-add-btn" onClick={addItem}>
+            ➕ 新增項目 / Add step
+          </button>
+        </div>
+      );
+    }
+
+    function LayoutSection({ open, onToggle, edits, setEdits, serverContent }){
+      const showCountdownKey = "display.showCountdown";
+      const sectionOrderKey = "display.sectionOrder";
+
+      const showCountdown = getDisplay(showCountdownKey, edits, serverContent) === "true";
+      const currentOrderStr = getDisplay(sectionOrderKey, edits, serverContent);
+      const currentOrder = currentOrderStr.split(",").filter(Boolean);
+      // Ensure all orderable sections included (add any missing to end)
+      const orderedIds = [...currentOrder];
+      ORDERABLE_SECTIONS.forEach(s => { if(!orderedIds.includes(s.id)) orderedIds.push(s.id); });
+      // Filter out unknowns
+      const finalOrder = orderedIds.filter(id => ORDERABLE_SECTIONS.some(s => s.id === id));
+
+      function setDisplay(key, val){
+        const defaultVal = DISPLAY_DEFAULTS[key];
+        const committed = serverContent[key] !== undefined ? serverContent[key] : defaultVal;
+        setEdits(prev => {
+          const next = { ...prev };
+          if(val === committed) delete next[key];
+          else next[key] = val;
+          return next;
+        });
+      }
+      function toggleCountdown(){
+        setDisplay(showCountdownKey, showCountdown ? "false" : "true");
+      }
+      function move(idx, dir){
+        const newOrder = [...finalOrder];
+        const target = idx + dir;
+        if(target < 0 || target >= newOrder.length) return;
+        [newOrder[idx], newOrder[target]] = [newOrder[target], newOrder[idx]];
+        setDisplay(sectionOrderKey, newOrder.join(","));
+      }
+      function resetOrder(){
+        setDisplay(sectionOrderKey, DISPLAY_DEFAULTS[sectionOrderKey]);
+      }
+
+      const countdownDirty = edits[showCountdownKey] !== undefined;
+      const orderDirty = edits[sectionOrderKey] !== undefined;
+
+      return (
+        <div className="edit-section special">
+          <div className="edit-section-head" onClick={onToggle}>
+            <span>🎨 版面設定 Layout {(countdownDirty || orderDirty) && <span className="text-[color:var(--coral-deep)]">●</span>}</span>
+            <span>{open ? "▾" : "▸"}</span>
+          </div>
+          {open && (
+            <div className="edit-section-body">
+              <div className="edit-row">
+                <div className={"toggle " + (showCountdown ? "on" : "")} onClick={toggleCountdown}>
+                  <div className="toggle-sw"/>
+                  <div>
+                    <div>⏰ 顯示報名倒數區 Show countdown</div>
+                    <div className="text-xs text-[color:var(--ink-soft)] font-normal">包含倒數計時 + 名額進度條</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="edit-row">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="edit-key">📐 區塊順序 Section order</div>
+                  {orderDirty && <button onClick={resetOrder} className="text-[10px] font-bold text-[color:var(--coral-deep)] hover:underline">↺ 還原順序</button>}
+                </div>
+                {finalOrder.map((id, idx) => {
+                  const sec = ORDERABLE_SECTIONS.find(s => s.id === id);
+                  if(!sec) return null;
+                  return (
+                    <div key={id} className="reorder-item">
+                      <span className="reorder-handle">☰</span>
+                      <span className="flex-1">{sec.label}</span>
+                      <div className="reorder-btns">
+                        <button className="reorder-btn" onClick={() => move(idx, -1)} disabled={idx === 0}>▲</button>
+                        <button className="reorder-btn" onClick={() => move(idx, 1)} disabled={idx === finalOrder.length - 1}>▼</button>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="text-xs text-[color:var(--ink-soft)] mt-2">⚡ 順序改動會同時套用到中／英版網站。</div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ---- Slots Section (admin only, controls GAS slot limits) ----
+    function SlotsSection({ open, onToggle, edits, setEdits, serverContent, registered }){
+      const maxKey  = "config.maxSlots";
+      const maxBKey = "config.maxSlotsBaishatun";
+
+      const maxVal  = getDisplay(maxKey,  edits, serverContent);
+      const maxBVal = getDisplay(maxBKey, edits, serverContent);
+
+      function setVal(key, val){
+        const defaultVal = DISPLAY_DEFAULTS[key];
+        const committed = serverContent[key] !== undefined ? serverContent[key] : defaultVal;
+        setEdits(prev => {
+          const next = { ...prev };
+          if(String(val) === String(committed)) delete next[key];
+          else next[key] = String(val);
+          return next;
+        });
+      }
+      function reset(key){
+        setEdits(prev => { const n = { ...prev }; delete n[key]; return n; });
+      }
+      function sanitize(v){
+        const n = parseInt(v, 10);
+        return Number.isFinite(n) && n > 0 ? String(n) : "";
+      }
+
+      const maxDirty  = edits[maxKey]  !== undefined;
+      const maxBDirty = edits[maxBKey] !== undefined;
+
+      const maxNum  = parseInt(maxVal,  10) || 0;
+      const maxBNum = parseInt(maxBVal, 10) || 0;
+      const warn    = maxBNum > maxNum;
+
+      return (
+        <div className="edit-section special">
+          <div className="edit-section-head" onClick={onToggle}>
+            <span>🎟️ 名額設定 Slot Limits {(maxDirty || maxBDirty) && <span className="text-[color:var(--coral-deep)]">●</span>}</span>
+            <span>{open ? "▾" : "▸"}</span>
+          </div>
+          {open && (
+            <div className="edit-section-body">
+
+              <div className="edit-row">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="edit-key">📊 總名額上限 Total Cap</div>
+                  {maxDirty && <button onClick={() => reset(maxKey)} className="text-[10px] font-bold text-[color:var(--coral-deep)] hover:underline">↺ reset</button>}
+                </div>
+                <input
+                  type="number" min="1" step="1"
+                  value={maxVal}
+                  onChange={e => setVal(maxKey, sanitize(e.target.value) || e.target.value)}
+                  onBlur={e => setVal(maxKey, sanitize(e.target.value) || DISPLAY_DEFAULTS[maxKey])}
+                  className={"edit-input " + (maxDirty ? "dirty" : "")}
+                />
+                <div className="text-xs text-[color:var(--ink-soft)] mt-1">
+                  目前已報名 <strong>{registered || 0}</strong> 人 → 還能再收 <strong>{Math.max(0, maxNum - (registered || 0))}</strong> 人
+                </div>
+              </div>
+
+              <div className="edit-row">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="edit-key">🌊 白沙屯子上限 Baishatun Sub-cap</div>
+                  {maxBDirty && <button onClick={() => reset(maxBKey)} className="text-[10px] font-bold text-[color:var(--coral-deep)] hover:underline">↺ reset</button>}
+                </div>
+                <input
+                  type="number" min="1" step="1"
+                  value={maxBVal}
+                  onChange={e => setVal(maxBKey, sanitize(e.target.value) || e.target.value)}
+                  onBlur={e => setVal(maxBKey, sanitize(e.target.value) || DISPLAY_DEFAULTS[maxBKey])}
+                  className={"edit-input " + (maxBDirty ? "dirty" : "")}
+                />
+                <div className="text-xs text-[color:var(--ink-soft)] mt-1">
+                  公司欄含「白沙屯」三個字的報名才會套這個上限。
+                </div>
+              </div>
+
+              {warn && (
+                <div className="p-3 rounded-xl border-2 border-[color:var(--coral)] bg-[color:var(--coral)]/10 text-xs font-bold text-[color:var(--coral-deep)]">
+                  ⚠️ 白沙屯子上限 ({maxBNum}) 超過總名額 ({maxNum})。建議白沙屯子上限 ≤ 總名額。
+                </div>
+              )}
+
+              <div className="text-xs text-[color:var(--ink-soft)] mt-2 leading-relaxed">
+                💡 改完按上方「💾 儲存」，<strong>不需要重新部署 GAS</strong>。<br/>
+                💡 如果欄位空白，會自動套用程式預設值（總 200 / 白沙屯 60）。
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ---- Tab 2: Email template ----
+    function EmailTab({ lang, setLang, edits, setEdits, serverContent }){
+      function valueOf(key){
+        const editKey = `${lang}.${key}`;
+        if(edits[editKey] !== undefined) return edits[editKey];
+        if(serverContent[editKey] !== undefined) return serverContent[editKey];
+        return DEFAULTS[lang][key] ?? "";
+      }
+      function isDirty(key){ return edits[`${lang}.${key}`] !== undefined; }
+      function updateEdit(key, val){
+        const editKey = `${lang}.${key}`;
+        const committed = serverContent[editKey] !== undefined ? serverContent[editKey] : (DEFAULTS[lang][key] ?? "");
+        setEdits(prev => { const next = { ...prev };
+          if(val === committed) delete next[editKey]; else next[editKey] = val;
+          return next;
+        });
+      }
+
+      return (
+        <div className="edit-drawer-body">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="text-xs font-bold text-[color:var(--ink-soft)] tracking-wider uppercase shrink-0">Lang</span>
+            <button className={"lang-pill " + (lang === "zh" ? "active" : "")} onClick={() => setLang("zh")}>中文</button>
+            <button className={"lang-pill " + (lang === "en" ? "active" : "")} onClick={() => setLang("en")}>English</button>
+          </div>
+
+          <div className="p-3 rounded-xl bg-[color:var(--cream-warm)] border-2 border-[color:var(--ink)] text-sm font-medium mb-4">
+            💌 <strong>確認信樣板</strong>：報名成功後系統會自動寄這封信。<code className="bg-white px-1 rounded">{'{{name}}'}</code> 之類會自動填入個人資料。
+          </div>
+
+          <div className="edit-row mb-4">
+            <div className="flex items-center justify-between">
+              <div className="edit-key">📧 主旨 / Subject ({lang})</div>
+              {isDirty("email.subject") && <span className="text-[10px] font-bold text-[color:var(--nmdc-green-dark)]">● dirty</span>}
+            </div>
+            <input type="text" value={valueOf("email.subject")} onChange={e => updateEdit("email.subject", e.target.value)} className={"edit-input " + (isDirty("email.subject") ? "dirty" : "")}/>
+          </div>
+
+          <div className="edit-row">
+            <div className="flex items-center justify-between mb-2">
+              <div className="edit-key">📝 內文 / Body ({lang})</div>
+              {isDirty("email.body") && <span className="text-[10px] font-bold text-[color:var(--nmdc-green-dark)]">● dirty</span>}
+            </div>
+            <RichEditor value={valueOf("email.body")} onChange={v => updateEdit("email.body", v)} dirty={isDirty("email.body")}/>
+          </div>
+        </div>
+      );
+    }
+
+    // ---- Tab 3: Registrations ----
+    function RegTab({ editPassword, registered, onDataChanged }){
+      const [list, setList] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [err, setErr] = useState("");
+      const [filter, setFilter] = useState("");
+      const [langFilter, setLangFilter] = useState("all");  // "all" | "zh" | "en"
+
+      async function load(){
+        setLoading(true); setErr("");
+        try{
+          const res = await xhrPost(GAS_URL, { action:"listRegistrations", password:editPassword });
+          if(res.success){ setList(res.list || []); }
+          else { setErr("讀取失敗：" + (res.error || "未知")); setList([]); }
+        } catch(e){ setErr("連線失敗"); setList([]); }
+        finally{ setLoading(false); }
+      }
+      useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
+
+      async function del(serial, name){
+        if(!window.confirm(`確定要刪除 #${serial} ${name}？這不可復原。`)) return;
+        try{
+          const res = await xhrPost(GAS_URL, { action:"deleteRegistration", password:editPassword, serial });
+          if(res.success){
+            setList(prev => prev.filter(r => r.serial !== serial));
+            onDataChanged && onDataChanged();
+          } else { window.alert("刪除失敗：" + (res.error || "未知")); }
+        } catch(e){ window.alert("連線失敗"); }
+      }
+      function exportCsv(){
+        if(!list || list.length === 0) return;
+        const headers = ["Serial","Name","Company","Title","Phone","Email","Blood","Diet","EmergencyName","EmergencyPhone","CompanionCount","CompanionDetails","FormLanguage","LangCode","Timestamp"];
+        const rows = [];
+        list.forEach(r => {
+          // Main row
+          const compDetail = (r.companions || []).map((c, i) => `#${i+1} ${c.name||""} (${c.blood||""}/${c.diet||""})`).join(" | ");
+          rows.push([r.serial, r.name, r.company, r.title, r.phone, r.email, r.blood || "", r.diet || "", r.emName || "", r.emPhone || "", r.companionCount || 0, compDetail, r.langLabel || (r.lang === "en" ? "🇬🇧 English" : "🇹🇼 中文"), r.lang, r.timestamp]);
+          // One row per companion (flattened — easier for grouping)
+          (r.companions || []).forEach((c, i) => {
+            rows.push([`${r.serial}-${i+1}`, c.name || "", r.company, "(攜眷 / companion of " + r.name + ")", r.phone, r.email, c.blood || "", c.diet || "", r.emName || "", r.emPhone || "", "", "", r.langLabel || (r.lang === "en" ? "🇬🇧 English" : "🇹🇼 中文"), r.lang, r.timestamp]);
+          });
+        });
+        const csv = [headers, ...rows].map(r => r.map(v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`).join(",")).join("\n");
+        const blob = new Blob(["\ufeff" + csv], { type:"text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url;
+        a.download = `nmdc-registrations-${new Date().toISOString().slice(0,10)}.csv`;
+        a.click(); URL.revokeObjectURL(url);
+      }
+      const filtered = useMemo(() => {
+        if(!list) return [];
+        let arr = list;
+        if(langFilter !== "all"){
+          arr = arr.filter(r => r.lang === langFilter);
+        }
+        if(filter.trim()){
+          const q = filter.trim().toLowerCase();
+          arr = arr.filter(r => {
+            const compNames = (r.companions || []).map(c => c.name || "").join(" ");
+            return [r.name, r.company, r.title, r.email, r.phone, r.serial, r.emName, r.emPhone, compNames].some(v => String(v || "").toLowerCase().includes(q));
+          });
+        }
+        return arr;
+      }, [list, filter, langFilter]);
+
+      // Counts per language for the filter buttons
+      const langCounts = useMemo(() => {
+        if(!list) return { zh:0, en:0 };
+        return list.reduce((acc, r) => {
+          if(r.lang === "en") acc.en++; else acc.zh++;
+          return acc;
+        }, { zh:0, en:0 });
+      }, [list]);
+
+      // Total seats taken (main + companions)
+      const totalSeats = useMemo(() => {
+        if(!list) return 0;
+        return list.reduce((s, r) => s + 1 + (r.companionCount || 0), 0);
+      }, [list]);
+
+      return (
+        <div className="edit-drawer-body">
+          <div className="flex items-center justify-between mb-3 gap-2">
+            <div>
+              <div className="font-display text-xl">👥 {list ? list.length : "—"} 筆 / 共 {totalSeats} 席</div>
+              <div className="text-xs text-[color:var(--ink-soft)]">Registrations · Total seats incl. companions</div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={load} disabled={loading} className="btn-outline px-3 py-1 text-xs">{loading ? "…" : "🔄 更新"}</button>
+              <button onClick={exportCsv} disabled={!list || list.length === 0} className="btn-outline px-3 py-1 text-xs">📥 CSV</button>
+            </div>
+          </div>
+
+          {/* Language filter pills */}
+          {list && list.length > 0 && (
+            <div className="flex gap-2 mb-3 flex-wrap">
+              <button onClick={() => setLangFilter("all")} className={"lang-pill " + (langFilter === "all" ? "active" : "")}>
+                👥 全部 ({list.length})
+              </button>
+              <button onClick={() => setLangFilter("zh")} className={"lang-pill " + (langFilter === "zh" ? "active" : "")}>
+                🇹🇼 中文 ({langCounts.zh})
+              </button>
+              <button onClick={() => setLangFilter("en")} className={"lang-pill " + (langFilter === "en" ? "active" : "")}>
+                🇬🇧 English ({langCounts.en})
+              </button>
+            </div>
+          )}
+
+          <input type="text" placeholder="🔍 搜尋姓名 / 公司 / 信箱 / 攜眷…" value={filter} onChange={e => setFilter(e.target.value)} className="edit-input mb-3"/>
+
+          {err && (<div className="p-3 rounded-xl bg-[color:var(--coral)] text-white font-bold text-sm border-2 border-[color:var(--ink)] mb-3">❗ {err}</div>)}
+          {loading && <div className="text-center py-10 text-[color:var(--ink-soft)] font-bold">載入中…</div>}
+          {!loading && list && list.length === 0 && (<div className="text-center py-10"><div className="text-5xl mb-2">🏖️</div><div className="font-bold text-[color:var(--ink-soft)]">還沒有人報名</div></div>)}
+          {!loading && list && list.length > 0 && filtered.length === 0 && (<div className="text-center py-6 text-[color:var(--ink-soft)] text-sm font-medium">沒有符合條件的人</div>)}
+
+          {!loading && filtered.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="reg-table">
+                <thead><tr><th>#</th><th>姓名 / 血型 / 飲食</th><th>公司 / 職稱 / 介面</th><th>聯絡</th><th>🚨 緊急聯絡</th><th>👨‍👩‍👧 攜眷</th><th></th></tr></thead>
+                <tbody>
+                  {filtered.map(r => (
+                    <tr key={r.serial}>
+                      <td className="reg-serial">{pad(r.serial)}</td>
+                      <td>
+                        <div className="font-bold">{r.name}</div>
+                        <div className="reg-small">{formatTs(r.timestamp)}</div>
+                        {r.blood && <div className="reg-small" style={{color:"var(--coral-deep)", fontWeight:700, marginTop:2}}>🩸 {r.blood}</div>}
+                        {r.diet && <div className="reg-small" style={{color:"var(--nmdc-green-dark)", fontWeight:700, marginTop:2}}>🍽️ {r.diet}</div>}
+                      </td>
+                      <td>
+                        <div>{r.company}</div>
+                        <div className="reg-small">{r.title}</div>
+                        <div style={{marginTop:4}}>
+                          <span className={"reg-lang-badge " + r.lang}>{r.lang === "en" ? "🇬🇧 EN" : "🇹🇼 中"}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="reg-small">{r.phone}</div>
+                        <div><a href={`mailto:${r.email}`} className="text-[color:var(--nmdc-green-dark)] underline text-xs">{r.email}</a></div>
+                      </td>
+                      <td style={{background:"#FFF0EC"}}>
+                        <div className="font-bold text-[color:var(--coral-deep)]" style={{fontSize:12}}>{r.emName || "—"}</div>
+                        <div className="reg-small">{r.emPhone ? <a href={`tel:${r.emPhone.replace(/\D/g,"")}`} className="text-[color:var(--coral-deep)]">{r.emPhone}</a> : "—"}</div>
+                      </td>
+                      <td style={{background:r.companionCount > 0 ? "#FFF7E6" : ""}}>
+                        {r.companionCount > 0 ? (
+                          <>
+                            <div className="font-bold text-[color:var(--sun-deep)]" style={{fontSize:12}}>+{r.companionCount} 位</div>
+                            {(r.companions || []).map((c, i) => (
+                              <div key={i} className="reg-small" style={{marginTop:2}}>
+                                {i+1}. {c.name}{c.blood ? ` 🩸${c.blood}` : ""}{c.diet ? ` 🍽️${c.diet}` : ""}
+                              </div>
+                            ))}
+                          </>
+                        ) : <div className="reg-small">—</div>}
+                      </td>
+                      <td><button onClick={() => del(r.serial, r.name)} className="btn-danger text-[11px] px-2 py-1">🗑</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ---- Tab 4: Blast ----
+    function BlastTab({ editPassword, registered }){
+      const [subject, setSubject] = useState("");
+      const [body, setBody] = useState("<p>嗨 {{name}}，</p><p></p><p>— NMDC Energy</p>");
+      const [sending, setSending] = useState(false);
+      const [result, setResult] = useState(null);
+      const [mode, setMode] = useState("all");  // "all" | "range"
+      const [fromSerial, setFromSerial] = useState(1);
+      const [toSerial, setToSerial] = useState(Math.min(100, registered || 100));
+
+      // When registered count changes and user hasn't touched the "to" field, auto-fit
+      useEffect(() => {
+        if(registered && toSerial > registered) setToSerial(registered);
+      }, [registered]);
+
+      const total = registered || 0;
+      const from = Math.max(1, parseInt(fromSerial, 10) || 1);
+      const to = Math.max(from, Math.min(total, parseInt(toSerial, 10) || total));
+      const willSend = mode === "all" ? total : Math.max(0, to - from + 1);
+
+      async function send(){
+        if(!subject.trim()){ window.alert("請填主旨"); return; }
+        if(!body.trim() || body === "<p></p>" || body === "<br>"){ window.alert("請填內文"); return; }
+        if(willSend === 0){ window.alert("沒有人符合這個範圍"); return; }
+
+        const rangeMsg = mode === "all"
+          ? `全部 ${total} 位報名者`
+          : `報名序號 #${from} – #${to}（共 ${willSend} 位）`;
+
+        if(!window.confirm(`確定要寄給 ${rangeMsg}？\n這動作無法復原，且會消耗 Gmail 每日配額（個人 100/天、Workspace 1500/天）。`)) return;
+        if(!window.confirm("再確認一次 — 真的要寄出嗎？")) return;
+
+        setSending(true); setResult(null);
+        try{
+          const payload = { action:"sendBlast", password:editPassword, subject, body };
+          if(mode === "range"){
+            payload.fromSerial = from;
+            payload.toSerial = to;
+          }
+          const res = await xhrPost(GAS_URL, payload, 180000);
+          if(res.success){
+            setResult({ ok:true, msg:`寄出 ${res.sent} 封${res.failed ? `、失敗 ${res.failed} 封` : ""}${res.skipped ? `、略過 ${res.skipped} 筆（沒有 email）` : ""}` });
+          } else {
+            setResult({ ok:false, msg:"寄信失敗：" + (res.error || "未知") });
+          }
+        } catch(e){
+          setResult({ ok:false, msg:"連線失敗或逾時（量大的時候正常）" });
+        } finally { setSending(false); }
+      }
+
+      return (
+        <div className="edit-drawer-body">
+          <div className="p-3 rounded-xl bg-[color:var(--cream-warm)] border-2 border-[color:var(--ink)] text-sm font-medium mb-4">
+            📢 <strong>群發</strong>（目前報名 {total} 人）。可用 <code className="bg-white px-1 rounded">{'{{name}}'}</code> 等標籤自動填入每個人的資料。
+          </div>
+
+          {/* Mode toggle */}
+          <div className="mb-3">
+            <div className="edit-key mb-2">📬 寄給誰</div>
+            <div className="flex gap-2 flex-wrap mb-3">
+              <button type="button" onClick={() => setMode("all")} className={"lang-pill " + (mode === "all" ? "active" : "")}>
+                👥 全部 {total > 0 && `(${total})`}
+              </button>
+              <button type="button" onClick={() => setMode("range")} className={"lang-pill " + (mode === "range" ? "active" : "")}>
+                🎯 指定範圍
+              </button>
+            </div>
+
+            {mode === "range" && (
+              <div className="p-3 rounded-xl bg-white border-2 border-[color:var(--ink)]">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-bold">從 #</span>
+                  <input type="number" min="1" max={total || 999} value={fromSerial} onChange={e => setFromSerial(e.target.value)} className="edit-input" style={{width:"80px"}}/>
+                  <span className="text-sm font-bold">到 #</span>
+                  <input type="number" min="1" max={total || 999} value={toSerial} onChange={e => setToSerial(e.target.value)} className="edit-input" style={{width:"80px"}}/>
+                </div>
+                <div className="mt-2 text-xs text-[color:var(--ink-soft)] font-medium">
+                  👉 會寄給報名序號 <strong>#{from}</strong> 到 <strong>#{to}</strong>，共 <strong className="text-[color:var(--nmdc-green-dark)]">{willSend}</strong> 位
+                </div>
+                <div className="mt-2 flex gap-2 flex-wrap">
+                  <button type="button" onClick={() => { setFromSerial(1); setToSerial(Math.min(100, total)); }} className="btn-outline text-[11px] px-2 py-1">前 100 位</button>
+                  <button type="button" onClick={() => { setFromSerial(101); setToSerial(Math.min(200, total)); }} className="btn-outline text-[11px] px-2 py-1">101–200</button>
+                  <button type="button" onClick={() => { setFromSerial(1); setToSerial(Math.min(50, total)); }} className="btn-outline text-[11px] px-2 py-1">前 50 位</button>
+                </div>
+                <div className="mt-2 text-[11px] text-[color:var(--ink-soft)]">
+                  💡 個人 Gmail 每天只能寄 100 封。200 人要群發的話可以分兩天：<br/>
+                  · Day 1 選 <strong>#1–#100</strong>｜Day 2 選 <strong>#101–#200</strong>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mb-3">
+            <div className="edit-key mb-1">主旨 Subject</div>
+            <input type="text" value={subject} onChange={e => setSubject(e.target.value)} placeholder="例：2026 NMDC 淨灘｜行前通知" className="edit-input"/>
+          </div>
+          <div className="mb-4">
+            <div className="edit-key mb-1">內文 Body</div>
+            <RichEditor value={body} onChange={setBody} dirty={false}/>
+          </div>
+          {result && (<div className={"p-3 rounded-xl font-bold text-sm border-2 border-[color:var(--ink)] mb-3 " + (result.ok ? "bg-[color:var(--nmdc-green)] text-white" : "bg-[color:var(--coral)] text-white")}>{result.ok ? "✅" : "❗"} {result.msg}</div>)}
+          <button onClick={send} disabled={sending || !total || willSend === 0} className="btn-chunk w-full px-5 py-4 text-base">
+            {sending ? "寄送中，請稍候…" : (mode === "all" ? `📤 寄給全部 ${total} 人` : `📤 寄給 #${from}–#${to}（${willSend} 人）`)}
+          </button>
+        </div>
+      );
+    }
+
+    // ====================================================================
+    // Public Sections
+    // ====================================================================
+
+    // Announcement banner — only shown on ?team=baishatun
+    // Editable in admin under section "📣 白沙屯公告"
+    function AnnouncementBanner({ t }){
+      if(!IS_BAISHATUN) return null;
+      const head = t("announce.head");
+      const title = t("announce.title");
+      const body = t("announce.body");
+      // Render body with line breaks + simple **bold** support
+      function renderBody(text){
+        const parts = String(text || "").split(/\n/);
+        return parts.map((line, i) => {
+          // Convert **bold** to <strong>
+          const segs = [];
+          let last = 0;
+          const re = /\*\*([^*]+)\*\*/g;
+          let m;
+          while((m = re.exec(line)) !== null){
+            if(m.index > last) segs.push(line.slice(last, m.index));
+            segs.push(<strong key={"b"+i+"-"+m.index} className="text-[color:var(--coral-deep)]">{m[1]}</strong>);
+            last = m.index + m[0].length;
+          }
+          if(last < line.length) segs.push(line.slice(last));
+          return (
+            <p key={i} className={line.trim() === "" ? "h-2" : "leading-relaxed"}>
+              {segs.length ? segs : (line || "\u00A0")}
+            </p>
+          );
+        });
+      }
+      return (
+        <section className="bg-[color:var(--sun)] border-b-4 border-[color:var(--ink)] relative overflow-hidden">
+          <div className="absolute inset-0 bg-dots opacity-30 pointer-events-none"></div>
+          <div className="max-w-5xl mx-auto px-5 md:px-8 py-6 md:py-8 relative z-10">
+            <div className="flex items-start gap-4 md:gap-5">
+              <div className="text-4xl md:text-5xl shrink-0 leading-none">📣</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs md:text-sm font-bold tracking-widest uppercase text-[color:var(--coral-deep)] mb-1">
+                  {head}
+                </div>
+                <h2 className="font-display text-2xl md:text-4xl text-[color:var(--ink)] mb-3 leading-tight">
+                  {title}
+                </h2>
+                <div className="text-sm md:text-base text-[color:var(--ink)] space-y-1">
+                  {renderBody(body)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Header({ lang, setLang, onEdit, editMode, t }){
+      return (
+        <header className="sticky top-0 z-40 bg-[color:var(--cream)] border-b-2 border-[color:var(--ink)]">
+          <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-4 md:gap-6">
+              <img src={NMDC_LOGO} alt="NMDC Energy" className="h-10 md:h-14 w-auto"/>
+              <div className="h-10 md:h-12 w-px bg-[color:var(--ink)] opacity-30"/>
+              <img src={TPC_LOGO} alt="台灣電力公司 Taiwan Power Company" className="h-12 md:h-16 w-auto"/>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {!IS_BAISHATUN && (
+                <button onClick={() => setLang(lang === "zh" ? "en" : "zh")} className="btn-outline px-3 md:px-4 py-1.5 text-xs md:text-sm">
+                  🌐 {lang === "zh" ? "EN" : "中"}
+                </button>
+              )}
+              {editMode && (<button onClick={onEdit} className="btn-chunk px-3 md:px-4 py-1.5 text-xs md:text-sm">⚙️</button>)}
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    function Hero({ t, editMode }){
+      const clickGuard = editMode ? (e) => e.preventDefault() : undefined;
+      // On mobile, all doodles move to edges/corners so they don't overlap text
+      const doodles = [
+        { emoji:"🌊", left:"2%",  top:"4%",  size:"32px", rot:-10, delay:0.2, anim:"float" },
+        { emoji:"🐚", left:"92%", top:"4%",  size:"36px", rot:15,  delay:0.8, anim:"sway" },
+        { emoji:"🦀", left:"90%", top:"92%", size:"38px", rot:-5,  delay:1.2, anim:"wiggle" },
+        { emoji:"⛱️", left:"2%",  top:"90%", size:"40px", rot:8,   delay:0.4, anim:"sway", dur:6 },
+        { emoji:"🌴", left:"95%", top:"48%", size:"36px", rot:-12, delay:1.5, anim:"sway", dur:7 },
+        { emoji:"🐠", left:"3%",  top:"52%", size:"32px", rot:18,  delay:0.6, anim:"float" }
+      ];
+      return (
+        <section className="relative py-12 md:py-24 bg-paper overflow-hidden">
+          <Confetti/>
+          <BeachDoodles items={doodles}/>
+          <div className="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-[1fr_auto] gap-10 items-center relative z-10">
+            <div>
+              <div className="tag mb-4 md:mb-6 bounce-in">{t("hero.chip")}</div>
+              <div className="text-xl md:text-3xl font-bold text-[color:var(--nmdc-green)] mb-3 bounce-in flex flex-wrap items-center gap-2 md:gap-3" style={{animationDelay:"80ms"}}>
+                <span>{t("hero.subtitle")}</span>
+                {IS_BAISHATUN && (
+                  <span className="inline-flex items-center gap-1 text-sm md:text-base bg-[color:var(--coral)] text-white px-3 py-1 rounded-full border-2 border-[color:var(--ink)]" style={{boxShadow:"3px 3px 0 var(--ink)"}}>
+                    🌊 白沙屯淨灘團
+                  </span>
+                )}
+              </div>
+              <h1 className="font-display text-[3rem] sm:text-[4rem] md:text-[8rem] leading-[0.95] md:leading-[0.9] tracking-tight mb-4 bounce-in" style={{animationDelay:"160ms"}}>
+                <span className="block">{t("hero.title1")}</span>
+                <span className="inline-block text-[color:var(--nmdc-green)] wiggle">{t("hero.title2")}</span>
+              </h1>
+              <p className="text-base md:text-2xl text-[color:var(--ink-soft)] font-medium max-w-lg bounce-in" style={{animationDelay:"240ms"}}>
+                {t("hero.tagline")}
+              </p>
+              <div className="mt-6 md:mt-8 flex flex-wrap gap-3 bounce-in" style={{animationDelay:"320ms"}}>
+                <a href="#register" onClick={clickGuard} className="btn-chunk px-6 md:px-8 py-3 md:py-4 text-base md:text-lg inline-flex items-center gap-2">
+                  {t("hero.ctaPrimary")} <span className="text-xl">→</span>
+                </a>
+                <a href="#notes" onClick={clickGuard} className="btn-outline px-5 md:px-6 py-3 md:py-4 text-sm md:text-base">
+                  {t("hero.ctaSecondary")}
+                </a>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <Sun size={240}/>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // INFO cards — 2x2 layout: When | Where / People+Teams | Contact
+    function InfoStickers({ t, editMode }){
+      const mapUrl = t("info.where.mapUrl") || DEFAULT_MAP_URL;
+      function openMap(e){
+        if(editMode){ e.preventDefault(); return; }
+        window.open(mapUrl, "_blank", "noopener");
+      }
+      return (
+        <section className="py-16 md:py-24 relative">
+          <BeachDoodles items={[
+            { emoji:"🫧", left:"4%",  top:"12%", size:"32px", delay:0 },
+            { emoji:"🐚", left:"92%", top:"68%", size:"36px", rot:-10, delay:1.2, anim:"sway" }
+          ]}/>
+          <div className="max-w-5xl mx-auto px-4 md:px-8 relative">
+            <div className="grid md:grid-cols-2 gap-7 md:gap-10">
+
+              {/* When */}
+              <div className="sticker sticker-sun p-7 md:p-10 bounce-in" style={{ transform:"rotate(-1deg)" }}>
+                <div className="flex items-start gap-5">
+                  <div className="text-5xl md:text-6xl shrink-0">📅</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm md:text-base font-extrabold tracking-[0.22em] opacity-80 mb-2">{t("info.when.label")}</div>
+                    <div className="font-display text-3xl md:text-4xl leading-tight mb-2">{t("info.when.big")}</div>
+                    <div className="text-base md:text-lg font-medium opacity-85 leading-snug">{t("info.when.sub")}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Where — clickable Google Maps */}
+              <a href={mapUrl} target="_blank" rel="noopener" onClick={openMap}
+                 className="sticker sticker-sky sticker-clickable p-7 md:p-10 bounce-in block no-underline text-[color:var(--ink)]"
+                 style={{ transform:"rotate(0.8deg)", animationDelay:"90ms" }}>
+                <div className="flex items-start gap-5">
+                  <div className="text-5xl md:text-6xl shrink-0">📍</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm md:text-base font-extrabold tracking-[0.22em] opacity-80 mb-2 flex items-center gap-2">
+                      {t("info.where.label")}
+                      <span className="text-[10px] font-bold bg-white text-[color:var(--ink)] px-2 py-0.5 rounded-full border border-[color:var(--ink)]">🗺️ MAP</span>
+                    </div>
+                    <div className="font-display text-3xl md:text-4xl leading-tight mb-2">{t("info.where.big")}</div>
+                    <div className="text-base md:text-lg font-medium opacity-85 leading-snug">{t("info.where.sub")}</div>
+                  </div>
+                </div>
+              </a>
+
+              {/* People & Teams (combined) */}
+              <div className="sticker sticker-green p-7 md:p-10 bounce-in" style={{ transform:"rotate(-0.8deg)", animationDelay:"180ms" }}>
+                <div className="flex items-start gap-5">
+                  <div className="text-5xl md:text-6xl shrink-0">👥</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm md:text-base font-extrabold tracking-[0.22em] opacity-85 mb-2">{t("info.who.label")}</div>
+                    <div className="font-num text-7xl md:text-[7rem] leading-none mb-2 flex items-baseline gap-2">
+                      {t("info.who.big")}
+                      <span className="text-xl md:text-2xl font-sans font-bold opacity-90">{t("info.who.unit")}</span>
+                    </div>
+                    <div className="text-base md:text-lg font-medium opacity-90 leading-snug">{t("info.who.sub")}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact */}
+              <div className="sticker sticker-coral p-7 md:p-10 bounce-in" style={{ transform:"rotate(1deg)", animationDelay:"270ms" }}>
+                <div className="flex items-start gap-5">
+                  <div className="text-5xl md:text-6xl shrink-0">📞</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm md:text-base font-extrabold tracking-[0.22em] opacity-85 mb-3">{t("info.contact.label")}</div>
+                    <div className="space-y-1.5">
+                      <div className="font-display text-2xl md:text-3xl leading-tight">
+                        <span className="opacity-75 mr-2 font-sans text-base">{t("info.contact.line1Label")}</span>
+                        <a href={`tel:${t("info.contact.line1Val").replace(/\D/g,"")}`} onClick={editMode ? (e)=>e.preventDefault() : undefined} className="underline decoration-white/30 decoration-2 underline-offset-4">{t("info.contact.line1Val")}</a>
+                      </div>
+                      <div className="font-display text-2xl md:text-3xl leading-tight">
+                        <span className="opacity-75 mr-2 font-sans text-base">{t("info.contact.line2Label")}</span>
+                        <a href={`tel:${t("info.contact.line2Val").replace(/\D/g,"")}`} onClick={editMode ? (e)=>e.preventDefault() : undefined} className="underline decoration-white/30 decoration-2 underline-offset-4">{t("info.contact.line2Val")}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Countdown({ deadline, t }){
+      const [now, setNow] = useState(Date.now());
+      useEffect(() => {
+        const id = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(id);
+      }, []);
+      if(!deadline) return null;
+      const diff = new Date(deadline).getTime() - now;
+      if(diff <= 0) return <div className="font-display text-4xl text-[color:var(--coral)]">{t("status.expired")}</div>;
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const sec = Math.floor((diff % 60000) / 1000);
+      const Cell = ({ v, label, pulse=false }) => (
+        <div className="flex-1 text-center">
+          <div className={`font-num text-5xl md:text-7xl leading-none text-[color:var(--ink)] ${pulse ? "count-bounce" : ""}`}>{pad(v)}</div>
+          <div className="text-[11px] md:text-sm font-extrabold tracking-[0.2em] mt-2 text-[color:var(--ink-soft)]">{label}</div>
+        </div>
+      );
+      return (
+        <div className="bg-white border-[3px] border-[color:var(--ink)] rounded-3xl p-5 md:p-7 flex items-start gap-2" style={{boxShadow:"6px 6px 0 var(--ink)"}}>
+          <Cell v={d} label={t("status.days")}/>
+          <div className="font-num text-4xl md:text-6xl text-[color:var(--sand-deep)]">:</div>
+          <Cell v={h} label={t("status.hrs")}/>
+          <div className="font-num text-4xl md:text-6xl text-[color:var(--sand-deep)]">:</div>
+          <Cell v={m} label={t("status.min")}/>
+          <div className="font-num text-4xl md:text-6xl text-[color:var(--sand-deep)]">:</div>
+          <Cell v={sec} label={t("status.sec")} pulse/>
+        </div>
+      );
+    }
+
+    function SlotsBar({ registered, total, t }){
+      const pct = total > 0 ? Math.min(100, (registered / total) * 100) : 0;
+      const remaining = Math.max(0, total - registered);
+      const isFull = remaining === 0;
+      return (
+        <div className="bg-white border-[3px] border-[color:var(--ink)] rounded-3xl p-5 md:p-7" style={{boxShadow:"6px 6px 0 var(--ink)"}}>
+          <div className="flex items-baseline justify-between mb-3">
+            <div className="text-sm font-extrabold tracking-[0.2em] text-[color:var(--ink-soft)]">{t("status.slots")}</div>
+            <div className="font-num text-xl text-[color:var(--ink)] tabular-nums">
+              {registered} <span className="text-[color:var(--ink-soft)] text-sm font-sans font-bold">/ {total}</span>
+            </div>
+          </div>
+          <div className="relative h-10 bg-[color:var(--sand)] border-2 border-[color:var(--ink)] rounded-full overflow-hidden">
+            <div className="h-full transition-all duration-700 ease-out"
+              style={{ width: pct + "%",
+                background: isFull ? "linear-gradient(90deg, var(--coral), var(--coral-deep))" : "linear-gradient(90deg, var(--nmdc-green-light), var(--nmdc-green))" }}/>
+            <div className="absolute top-1/2 -translate-y-1/2 text-2xl transition-all duration-700 ease-out" style={{ left: `calc(${pct}% - 14px)` }}>
+              {isFull ? "🎉" : "🏃"}
+            </div>
+          </div>
+          <div className="mt-4 flex items-baseline gap-2">
+            {isFull ? (
+              <div className="font-display text-4xl text-[color:var(--coral-deep)]">{t("status.full")}</div>
+            ) : (
+              <>
+                <div className="font-num text-5xl md:text-6xl text-[color:var(--nmdc-green)] leading-none">{remaining}</div>
+                <div className="text-lg md:text-xl font-bold text-[color:var(--ink-soft)]">{t("status.left")}</div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function StatusSection({ config, t, lang }){
+      return (
+        <section className="relative py-16 md:py-20 bg-[color:var(--sun)] border-y-[3px] border-[color:var(--ink)] overflow-hidden">
+          <div className="absolute inset-0 bg-dots opacity-50"/>
+          <div className="max-w-6xl mx-auto px-4 md:px-8 relative">
+            <div className="text-center mb-10">
+              <div className="inline-block tag bg-white mb-3">{t("status.tag")}</div>
+              <h2 className="font-display text-4xl md:text-6xl mb-2">{t("status.head")}</h2>
+              {config && <div className="text-base font-bold text-[color:var(--ink-soft)]">{t("status.sub")} · {formatDeadline(config.deadline, lang)}</div>}
+            </div>
+            {config ? (
+              <div className="grid md:grid-cols-2 gap-6">
+                <Countdown deadline={config.deadline} t={t}/>
+                <SlotsBar
+                  registered={IS_BAISHATUN ? (config.baishatunRegistered ?? 0) : config.registered}
+                  total={IS_BAISHATUN ? (config.maxSlotsBaishatun ?? 60) : (config.maxSlots ?? config.total)}
+                  t={t}/>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="h-48 bg-white/50 rounded-3xl border-[3px] border-[color:var(--ink)]"/>
+                <div className="h-48 bg-white/50 rounded-3xl border-[3px] border-[color:var(--ink)]"/>
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    // Schedule section — timeline of the day
+    function Schedule({ t, lang, edits, serverContent }){
+      const items = parseScheduleItems(lang, edits, serverContent);
+      return (
+        <section className="py-16 md:py-24 bg-[color:var(--cream-warm)] relative overflow-hidden">
+          <BeachDoodles items={[
+            { emoji:"🧤", left:"3%",  top:"8%",  size:"36px", rot:-10, delay:0.2, anim:"wiggle" },
+            { emoji:"🗑️", left:"92%", top:"80%", size:"40px", rot:10,  delay:1.0, anim:"float" }
+          ]}/>
+          <div className="max-w-4xl mx-auto px-4 md:px-8 relative">
+            <div className="text-center mb-10">
+              <div className="inline-block tag bg-[color:var(--nmdc-green)] text-white border-[color:var(--ink)] mb-3">{t("schedule.tag")}</div>
+              <h2 className="font-display text-4xl md:text-6xl mb-3"><span className="wavy">{t("schedule.head")}</span></h2>
+              <p className="text-lg font-medium text-[color:var(--ink-soft)]">{t("schedule.sub")}</p>
+            </div>
+            {items.length === 0 ? (
+              <div className="text-center text-[color:var(--ink-soft)] text-sm font-medium py-8">— 尚未設定流程 / No schedule yet —</div>
+            ) : (
+              <div className="space-y-3 md:space-y-4">
+                {items.map((item, i) => (
+                  (!item.time && !item.text) ? null : (
+                    <div key={i} className="sched-row bounce-in" style={{animationDelay:`${i*60}ms`}}>
+                      <div className="sched-time">{item.time}</div>
+                      <div className="sched-text">{item.text}</div>
+                    </div>
+                  )
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    function Notes({ t }){
+      return (
+        <section id="notes" className="py-16 md:py-24 bg-[color:var(--cream-warm)] relative overflow-hidden">
+          <BeachDoodles items={[
+            { emoji:"🏖️", left:"2%",  top:"6%",  size:"40px", rot:-12, delay:0.3, anim:"sway", dur:5 },
+            { emoji:"♻️", left:"92%", top:"70%", size:"42px", rot:10,  delay:1.1, anim:"float" }
+          ]}/>
+          <div className="max-w-4xl mx-auto px-4 md:px-8 relative">
+            <div className="text-center mb-10">
+              <div className="inline-block tag bg-[color:var(--coral)] text-white mb-3 border-[color:var(--ink)]">{t("notes.tag")}</div>
+              <h2 className="font-display text-4xl md:text-6xl mb-3"><span className="wavy">{t("notes.head")}</span></h2>
+              <p className="text-lg font-medium text-[color:var(--ink-soft)]">{t("notes.sub")}</p>
+            </div>
+            <div className="space-y-3 md:space-y-4">
+              {NOTE_EMOJIS.map((emoji, i) => (
+                <div key={i} className="ticket flex items-start gap-4 bounce-in" style={{ animationDelay: `${i*40}ms` }}>
+                  <div className="flex items-center gap-3 shrink-0" style={{width:"44px"}}>
+                    <span className="font-num text-xl text-[color:var(--nmdc-green)] tabular-nums">{pad(i+1)}</span>
+                  </div>
+                  <div className="text-3xl shrink-0" style={{width:"36px"}}>{emoji}</div>
+                  <p className="text-base md:text-lg font-medium leading-relaxed pt-1">{t(`note.${i}`)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Field({ id, label, sub, value, onChange, onBlur, error, type="text", placeholder, autoComplete, inputMode, options }){
+      const isSelect = type === "select" && Array.isArray(options);
+      return (
+        <div>
+          <label htmlFor={id} className="block mb-2">
+            <span className="font-display text-xl md:text-2xl text-[color:var(--ink)]">{label}</span>
+            <span className="ml-2 text-sm font-bold tracking-wider text-[color:var(--ink-soft)] uppercase">{sub}</span>
+          </label>
+          {isSelect ? (
+            <select id={id} value={value} onChange={onChange} onBlur={onBlur} className={`field w-full px-4 py-3.5 text-lg ${error ? "err" : ""}`} style={{appearance:"none", backgroundImage:"url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230A2340'><path d='M7 10l5 5 5-5z'/></svg>\")", backgroundRepeat:"no-repeat", backgroundPosition:"right 12px center", paddingRight:"40px"}}>
+              <option value="">{placeholder}</option>
+              {options.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          ) : (
+            <input id={id} type={type} value={value} onChange={onChange} onBlur={onBlur} placeholder={placeholder} autoComplete={autoComplete} inputMode={inputMode} className={`field w-full px-4 py-3.5 text-lg ${error ? "err" : ""}`}/>
+          )}
+          {error && <div className="field-error-msg"><span>❗</span>{error}</div>}
+        </div>
+      );
+    }
+
+    const BLOOD_TYPES = ["A", "B", "AB", "O", "RH-", "不確定 / Unknown"];
+
+    function RegistrationForm({ t, lang, onSuccess, configRemaining }){
+      const blank = {
+        name:"", company: IS_BAISHATUN ? "白沙屯淨灘團" : "", title:"", phone:"", email:"", blood:"",
+        emName:"", emPhone:"",
+        diet:"", dietOther:"",
+        bringCompanions:"",  // "" | "yes" | "no"
+        companionCount:1,
+        sameDiet:true,
+        companions:[]   // array of { name, blood, diet, dietOther }
+      };
+      const [form, setForm] = useState(blank);
+      const [errors, setErrors] = useState({});
+      const [agreed, setAgreed] = useState(false);
+      const [submitting, setSubmitting] = useState(false);
+      const [submitError, setSubmitError] = useState("");
+
+      const set = k => e => {
+        let v = e.target.value;
+        // Phone fields: allow only digits (auto-strip dashes / spaces / symbols on type or paste)
+        if(k === "phone" || k === "emPhone"){
+          v = v.replace(/\D/g, "");
+        }
+        // Email: lower-case + strip whitespace as user types
+        if(k === "email"){
+          v = v.replace(/\s/g, "");
+        }
+        setForm(f => ({...f, [k]: v}));
+        if(errors[k]) setErrors(er => ({...er, [k]:""}));
+        if(submitError) setSubmitError("");
+      };
+      const setCompanion = (idx, k, v) => {
+        setForm(f => {
+          const next = [...f.companions];
+          while(next.length <= idx) next.push({ name:"", blood:"", diet:"", dietOther:"" });
+          next[idx] = { ...next[idx], [k]: v };
+          return { ...f, companions: next };
+        });
+        if(submitError) setSubmitError("");
+      };
+
+      // When "yes" is chosen, ensure companions array length matches count
+      useEffect(() => {
+        if(form.bringCompanions !== "yes") return;
+        setForm(f => {
+          const target = Math.max(1, Math.min(5, parseInt(f.companionCount, 10) || 1));
+          const next = [...f.companions];
+          while(next.length < target) next.push({ name:"", blood:"", diet:"", dietOther:"" });
+          while(next.length > target) next.pop();
+          return { ...f, companions: next };
+        });
+      }, [form.companionCount, form.bringCompanions]);
+
+      // The "main field" set we always validate
+      const mainFields = ["name","company","title","phone","email","blood","emName","emPhone"];
+
+      const validateField = (k) => {
+        const v = String(form[k] || "").trim();
+        if(!v) return t("err.required");
+        if(k === "email" && !emailRegex.test(v)) return t("err.email");
+        if((k === "phone" || k === "emPhone") && !phoneRegex.test(v)) return t("err.phone");
+        return "";
+      };
+
+      const validate = (k) => validateField(k);
+
+      // Total seats this submission will occupy
+      const totalSeats = 1 + (form.bringCompanions === "yes" ? form.companions.length : 0);
+
+      async function handleSubmit(e){
+        e && e.preventDefault();
+        setSubmitError("");
+
+        // Gather all errors in one pass so user sees all problems at once
+        const allErr = {};
+        mainFields.forEach(k => { const er = validateField(k); if(er) allErr[k] = er; });
+        if(!form.diet) allErr.diet = t("err.required");
+        if(form.diet === "other" && !form.dietOther.trim()) allErr.dietOther = t("err.required");
+        if(!form.bringCompanions) allErr.bringCompanions = t("err.required");
+        if(form.bringCompanions === "yes"){
+          form.companions.forEach((c, i) => {
+            if(!c.name.trim())      allErr[`c${i}_name`] = t("err.required");
+            if(!c.blood)            allErr[`c${i}_blood`] = t("err.required");
+            if(!form.sameDiet){
+              if(!c.diet)                                     allErr[`c${i}_diet`] = t("err.required");
+              if(c.diet === "other" && !c.dietOther.trim())   allErr[`c${i}_dietOther`] = t("err.required");
+            }
+          });
+        }
+        const agreeOk = agreed;
+        setErrors({ ...allErr, _agree: agreeOk ? "" : "1" });
+
+        const missingCount = Object.keys(allErr).length;
+
+        if(missingCount > 0 || !agreeOk){
+          // Compose a single summary at the top
+          if(missingCount > 0 && !agreeOk){
+            setSubmitError(t("err.fixN").replace("{{n}}", String(missingCount)) + " " + t("err.agree"));
+          } else if(missingCount > 0){
+            setSubmitError(t("err.fixN").replace("{{n}}", String(missingCount)));
+          } else {
+            setSubmitError(t("err.agree"));
+          }
+          setTimeout(() => {
+            const firstErrEl = document.querySelector(".field.err, .yn-group.err, .diet-grid.err, .final-agree-check.err, .form-err-hint");
+            if(firstErrEl){
+              firstErrEl.scrollIntoView({ behavior:"smooth", block:"center" });
+              // Flash + shake the first error to grab attention
+              firstErrEl.classList.remove("flash-error");
+              // Force reflow so animation can replay if user submits multiple times
+              void firstErrEl.offsetWidth;
+              firstErrEl.classList.add("flash-error");
+              setTimeout(() => firstErrEl.classList.remove("flash-error"), 2500);
+              // Focus the input itself (if it's a field) so they can start typing
+              if(firstErrEl.matches(".field")){
+                try{ firstErrEl.focus({ preventScroll:true }); } catch(_){}
+              } else {
+                const inner = firstErrEl.querySelector(".field");
+                if(inner) try{ inner.focus({ preventScroll:true }); } catch(_){}
+              }
+            }
+            // Tab-title nudge — useful if user switched tabs while filling
+            const totalIssues = missingCount + (agreeOk ? 0 : 1);
+            if(totalIssues > 0 && !document.hidden){
+              const original = document.title;
+              const flashTitle = lang === "en" ? `(${totalIssues}) Form incomplete!` : `(${totalIssues}) 表格未完成！`;
+              document.title = flashTitle;
+              setTimeout(() => { document.title = original; }, 5000);
+            }
+          }, 50);
+          return;
+        }
+
+        // Pre-flight check that there's enough room for everyone
+        if(typeof configRemaining === "number" && totalSeats > configRemaining){
+          setSubmitError(t("err.notEnough").replace("{{r}}", String(configRemaining)).replace("{{n}}", String(totalSeats)));
+          return;
+        }
+
+        setSubmitting(true);
+        try{
+          // Resolve diet to a clean string
+          const dietFinal = form.diet === "other" ? `其他: ${form.dietOther.trim()}` : form.diet;
+
+          // Build companions payload
+          const companions = form.bringCompanions === "yes" ? form.companions.map(c => ({
+            name: c.name.trim(),
+            blood: c.blood,
+            diet: form.sameDiet
+              ? dietFinal
+              : (c.diet === "other" ? `其他: ${c.dietOther.trim()}` : c.diet)
+          })) : [];
+
+          const payload = {
+            name: form.name.trim(),
+            company: form.company.trim(),
+            title: form.title.trim(),
+            phone: form.phone.trim(),
+            email: form.email.trim().toLowerCase(),
+            blood: form.blood.trim(),
+            emName: form.emName.trim(),
+            emPhone: form.emPhone.trim(),
+            diet: dietFinal,
+            companions: companions,
+            companionCount: companions.length,
+            lang
+          };
+          const res = await xhrPost(GAS_URL, payload);
+          if(res.success){ onSuccess(res); }
+          else {
+            const map = { FULL:t("err.full"), DEADLINE_PASSED:t("err.deadline"), DUPLICATE_EMAIL:t("err.duplicate"), INVALID_EMAIL:t("err.email"), MISSING_FIELD:t("err.required"), SERVER_ERROR:t("err.server") };
+            setSubmitError(map[res.error] || t("err.generic"));
+          }
+        } catch(err){ setSubmitError(t("err.network")); }
+        finally { setSubmitting(false); }
+      }
+
+      const dietOpts = [
+        { val:"meat",  label: t("diet.option.meat") },
+        { val:"veg",   label: t("diet.option.veg") },
+        { val:"halal", label: t("diet.option.halal") },
+        { val:"other", label: t("diet.option.other") }
+      ];
+
+      return (
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
+
+          {/* === SECTION 1: Basic Info === */}
+          <div className="form-section basic">
+            <div className="form-section-head"><span className="form-section-tag">📋 {t("form.section.tag.basic")}</span></div>
+            <div className="form-section-title">{t("section.basic.head")}</div>
+            <div className="form-section-sub">{t("section.basic.sub")}</div>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              <Field id="f-name"    label={t("field.name.label")}    sub={t("field.name.sub")}    value={form.name}    onChange={set("name")}    onBlur={()=>setErrors(e=>({...e,name:validateField("name")}))}       error={errors.name}    placeholder={t("field.name.ph")}    autoComplete="name"/>
+              <Field id="f-company" label={t("field.company.label")} sub={t("field.company.sub")} value={form.company} onChange={set("company")} onBlur={()=>setErrors(e=>({...e,company:validateField("company")}))} error={errors.company} placeholder={t("field.company.ph")} autoComplete="organization"/>
+              <Field id="f-title"   label={t("field.title.label")}   sub={t("field.title.sub")}   value={form.title}   onChange={set("title")}   onBlur={()=>setErrors(e=>({...e,title:validateField("title")}))}     error={errors.title}   placeholder={t("field.title.ph")}   autoComplete="organization-title"/>
+              <Field id="f-phone"   label={t("field.phone.label")}   sub={t("field.phone.sub")}   value={form.phone}   onChange={set("phone")}   onBlur={()=>setErrors(e=>({...e,phone:validateField("phone")}))}     error={errors.phone}   placeholder={t("field.phone.ph")}   autoComplete="tel" inputMode="numeric" type="tel"/>
+              <Field id="f-email"   label={t("field.email.label")}   sub={t("field.email.sub")}   value={form.email}   onChange={set("email")}   onBlur={()=>setErrors(e=>({...e,email:validateField("email")}))}     error={errors.email}   placeholder={t("field.email.ph")}   autoComplete="email" inputMode="email" type="email"/>
+              <Field id="f-blood"   label={t("field.blood.label")}   sub={t("field.blood.sub")}   value={form.blood}   onChange={set("blood")}   onBlur={()=>setErrors(e=>({...e,blood:validateField("blood")}))}     error={errors.blood}   placeholder={t("field.blood.ph")}   type="select" options={BLOOD_TYPES}/>
+            </div>
+
+            {/* Companion toggle */}
+            <div className="mt-6 pt-5 border-t-2 border-dashed border-[color:var(--ink)] border-opacity-25">
+              <label className="block mb-3">
+                <span className="font-display text-xl md:text-2xl text-[color:var(--ink)]">👨‍👩‍👧 {t("companion.toggle.label")}</span>
+                <span className="ml-2 text-sm font-bold tracking-wider text-[color:var(--ink-soft)] uppercase">{t("companion.toggle.sub")}</span>
+              </label>
+              <div className={"yn-group " + (errors.bringCompanions ? "err" : "")}>
+                <button type="button" className={"yn-btn yes " + (form.bringCompanions === "yes" ? "active" : "")} onClick={() => { setForm(f => ({...f, bringCompanions:"yes"})); if(errors.bringCompanions) setErrors(er => ({...er, bringCompanions:""})); }}>
+                  ✅ {t("companion.yes")}
+                </button>
+                <button type="button" className={"yn-btn no " + (form.bringCompanions === "no" ? "active" : "")} onClick={() => { setForm(f => ({...f, bringCompanions:"no", companions:[]})); if(errors.bringCompanions) setErrors(er => ({...er, bringCompanions:""})); }}>
+                  ❌ {t("companion.no")}
+                </button>
+              </div>
+              {errors.bringCompanions && <div className="field-error-msg"><span>❗</span>{errors.bringCompanions}</div>}
+
+              {form.bringCompanions === "yes" && (
+                <div className="mt-5">
+                  <Field id="f-cc" label={t("companion.count.label")} sub={t("companion.count.sub")}
+                    value={form.companionCount}
+                    onChange={(e) => setForm(f => ({...f, companionCount: parseInt(e.target.value, 10) || 1}))}
+                    type="select" options={["1","2","3","4","5"]}
+                    placeholder=""/>
+
+                  {form.companions.map((c, i) => (
+                    <div key={i} className="companion-card">
+                      <div className="companion-card-head">
+                        <span className="companion-card-num">{i+1}</span>
+                        <span>{t("companion.heading").replace("{{n}}", String(i+1))}</span>
+                      </div>
+                      <div className="companion-grid">
+                        <Field id={`f-c${i}-name`} label={t("companion.name.label")} sub={"#"+(i+1)}
+                          value={c.name}
+                          onChange={(e) => { setCompanion(i, "name", e.target.value); if(errors[`c${i}_name`]) setErrors(er => ({...er, [`c${i}_name`]:""})); }}
+                          error={errors[`c${i}_name`]}
+                          placeholder={t("companion.name.ph")}/>
+                        <Field id={`f-c${i}-blood`} label={t("companion.blood.label")} sub={t("field.blood.sub")}
+                          value={c.blood}
+                          onChange={(e) => { setCompanion(i, "blood", e.target.value); if(errors[`c${i}_blood`]) setErrors(er => ({...er, [`c${i}_blood`]:""})); }}
+                          error={errors[`c${i}_blood`]}
+                          type="select" options={BLOOD_TYPES}
+                          placeholder={t("field.blood.ph")}/>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* === SECTION 2: Diet === */}
+          <div className="form-section diet">
+            <div className="form-section-head"><span className="form-section-tag">🍽️ {t("form.section.tag.diet")}</span></div>
+            <div className="form-section-title">{t("section.diet.head")}</div>
+            <div className="form-section-sub">{t("section.diet.sub")}</div>
+            <div className={"diet-grid " + (errors.diet ? "err" : "")}>
+              {dietOpts.map(opt => (
+                <label key={opt.val} className={"diet-opt " + (form.diet === opt.val ? "active" : "")}>
+                  <input type="radio" name="diet" value={opt.val} checked={form.diet === opt.val}
+                    onChange={() => { setForm(f => ({...f, diet: opt.val})); if(errors.diet) setErrors(er => ({...er, diet:""})); }}/>
+                  <span>{opt.label}</span>
+                </label>
+              ))}
+            </div>
+            {form.diet === "other" && (
+              <input type="text" placeholder={t("diet.other.ph")} value={form.dietOther} onChange={(e) => { setForm(f => ({...f, dietOther: e.target.value})); if(errors.dietOther) setErrors(er => ({...er, dietOther:""})); }} className="diet-other-input"/>
+            )}
+            {errors.diet && <div className="field-error-msg"><span>❗</span>{errors.diet}</div>}
+            {errors.dietOther && <div className="field-error-msg"><span>❗</span>{errors.dietOther}</div>}
+
+            {form.bringCompanions === "yes" && form.companions.length > 0 && (
+              <>
+                <label className="same-diet-row">
+                  <input type="checkbox" className="chk" checked={form.sameDiet} onChange={(e) => setForm(f => ({...f, sameDiet: e.target.checked}))}/>
+                  <span className="text-base font-bold leading-relaxed">{t("diet.same.label")}</span>
+                </label>
+                {!form.sameDiet && (
+                  <div className="companion-diet-list">
+                    {form.companions.map((c, i) => {
+                      const companionName = c.name.trim() || `${t("companion.heading").replace("{{n}}", String(i+1))}`;
+                      return (
+                        <div key={i} className="companion-diet-row">
+                          <div className="companion-diet-name">
+                            <span className="companion-card-num">{i+1}</span>
+                            <span>{companionName}</span>
+                          </div>
+                          <div className="diet-grid compact">
+                            {dietOpts.map(opt => (
+                              <label key={opt.val} className={"diet-opt " + (c.diet === opt.val ? "active" : "")}>
+                                <input type="radio" name={`c${i}-diet`} value={opt.val} checked={c.diet === opt.val}
+                                  onChange={() => { setCompanion(i, "diet", opt.val); if(errors[`c${i}_diet`]) setErrors(er => ({...er, [`c${i}_diet`]:""})); }}/>
+                                <span>{opt.label}</span>
+                              </label>
+                            ))}
+                          </div>
+                          {c.diet === "other" && (
+                            <input type="text" placeholder={t("diet.other.ph")} value={c.dietOther} onChange={(e) => { setCompanion(i, "dietOther", e.target.value); if(errors[`c${i}_dietOther`]) setErrors(er => ({...er, [`c${i}_dietOther`]:""})); }} className="diet-other-input"/>
+                          )}
+                          {errors[`c${i}_diet`] && <div className="field-error-msg"><span>❗</span>{errors[`c${i}_diet`]}</div>}
+                          {errors[`c${i}_dietOther`] && <div className="field-error-msg"><span>❗</span>{errors[`c${i}_dietOther`]}</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* === SECTION 3: Emergency === */}
+          <div className="em-block">
+            <div className="em-head"><span className="em-tag">⚠️ {t("form.section.tag.emergency")}</span></div>
+            <div className="em-title">{t("emergency.head")}</div>
+            <div className="em-sub">{t("emergency.sub")}</div>
+            <div className="grid md:grid-cols-2 gap-5">
+              <Field id="f-emName"  label={t("field.emName.label")}  sub={t("field.emName.sub")}  value={form.emName}  onChange={set("emName")}  onBlur={()=>setErrors(e=>({...e,emName:validateField("emName")}))}   error={errors.emName}  placeholder={t("field.emName.ph")}  autoComplete="name"/>
+              <Field id="f-emPhone" label={t("field.emPhone.label")} sub={t("field.emPhone.sub")} value={form.emPhone} onChange={set("emPhone")} onBlur={()=>setErrors(e=>({...e,emPhone:validateField("emPhone")}))} error={errors.emPhone} placeholder={t("field.emPhone.ph")} autoComplete="tel" inputMode="numeric" type="tel"/>
+            </div>
+          </div>
+
+          {/* Total seats hint */}
+          {totalSeats > 1 && (
+            <div className="p-3 rounded-xl bg-[color:var(--cream-warm)] border-2 border-[color:var(--ink)] text-sm font-bold text-center">
+              {t("form.totalSeats").replace("{{n}}", String(totalSeats)).replace("{{c}}", String(totalSeats - 1))}
+            </div>
+          )}
+
+          {/* === FINAL STEP: Risk Notice + Agreement (red-themed, must acknowledge) === */}
+          <div className="final-agree">
+            <div className="final-agree-head">
+              <span className="em-tag" style={{background:"var(--coral-deep)"}}>⚠️ 送出前請先閱讀 / Before You Submit</span>
+            </div>
+            <div className="final-agree-title">🚨 {t("risk.head")}</div>
+            <p className="final-agree-body whitespace-pre-line">{t("risk.body")}</p>
+
+            <label className={"final-agree-check " + (agreed ? "checked" : "") + (errors._agree ? " err" : "")}>
+              <input type="checkbox" className="chk" checked={agreed} onChange={e=>{
+                setAgreed(e.target.checked);
+                if(submitError) setSubmitError("");
+                if(errors._agree) setErrors(er => ({...er, _agree:""}));
+              }}/>
+              <span className="text-base md:text-lg font-bold leading-relaxed">{t("form.agree")}</span>
+            </label>
+          </div>
+
+          {submitError && (<div className="p-4 rounded-xl bg-[color:var(--coral)] text-white font-bold border-[3px] border-[color:var(--ink)] bounce-in" style={{boxShadow:"4px 4px 0 var(--ink)"}}>❗ {submitError}</div>)}
+          <button type="submit" disabled={submitting || !agreed} className="btn-chunk w-full md:w-auto px-10 py-5 text-xl min-w-[260px] inline-flex items-center justify-center gap-2" title={!agreed ? "請先勾選同意 / Please tick the box first" : ""}>
+            {submitting ? (<><svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".3"/><path d="M12 2 A10 10 0 0 1 22 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>{t("form.submitting")}</>) : ( t("form.submit") )}
+          </button>
+          {!agreed && !submitting && (
+            <div className="text-center text-sm font-bold text-[color:var(--coral-deep)] -mt-2">👆 請先勾選同意風險告知才能送出 / Check the box above to enable submission</div>
+          )}
+        </form>
+      );
+    }
+
+    function SuccessCard({ data, t, onAgain }){
+      return (
+        <div className="relative p-8 md:p-12 rounded-2xl bg-[color:var(--nmdc-green)] text-white border-[3px] border-[color:var(--ink)] overflow-hidden bounce-in" style={{boxShadow:"8px 8px 0 var(--ink)"}}>
+          <Confetti/>
+          <div className="relative z-10">
+            <div className="text-6xl mb-4">🎉</div>
+            <h3 className="font-display text-4xl md:text-6xl mb-3">{t("ok.head")}</h3>
+            <p className="text-lg md:text-xl mb-8 max-w-md font-medium whitespace-pre-line">{t("ok.sub")}</p>
+            <div className="grid grid-cols-2 gap-6 max-w-md mb-8 pt-5 border-t-2 border-white/30">
+              <div>
+                <div className="text-xs font-extrabold tracking-[0.2em] opacity-80 mb-1">{t("ok.conf")}</div>
+                <div className="font-num text-3xl tabular-nums">{data.confirmationNumber}</div>
+              </div>
+              <div>
+                <div className="text-xs font-extrabold tracking-[0.2em] opacity-80 mb-1">{t("ok.name")}</div>
+                <div className="font-display text-2xl">{data.name}</div>
+              </div>
+            </div>
+            <button onClick={onAgain} className="bg-white text-[color:var(--ink)] font-bold border-[2.5px] border-[color:var(--ink)] px-5 py-2.5 rounded-full text-sm transition-all hover:bg-[color:var(--sun)]" style={{boxShadow:"3px 3px 0 var(--ink)"}}>
+              + {t("ok.again")}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function ClosedCard({ kind, t }){
+      const title = kind === "full" ? t("closed.full.title") : t("closed.deadline.title");
+      const sub = kind === "full" ? t("closed.full.sub") : t("closed.deadline.sub");
+      const emoji = kind === "full" ? "🙇" : "⏰";
+      return (
+        <div className="p-8 md:p-12 rounded-2xl bg-[color:var(--ink)] text-[color:var(--cream)] border-[3px] border-[color:var(--ink)] text-center" style={{boxShadow:"8px 8px 0 var(--nmdc-green)"}}>
+          <div className="text-6xl mb-4">{emoji}</div>
+          <h3 className="font-display text-3xl md:text-5xl mb-3">{title}</h3>
+          <p className="text-lg md:text-xl opacity-90 max-w-md mx-auto">{sub}</p>
+        </div>
+      );
+    }
+
+    function FormSection({ config, configError, isOpen, isFull, isExpired, t, lang, success, onSuccess, onAgain }){
+      return (
+        <section id="register" className="py-16 md:py-24 bg-paper relative overflow-hidden">
+          <BeachDoodles items={[
+            { emoji:"🌊", left:"4%",  top:"20%", size:"34px", delay:0.2, anim:"float" },
+            { emoji:"🏊", left:"88%", top:"75%", size:"40px", rot:10,  delay:1.0, anim:"sway" }
+          ]}/>
+          <div className="max-w-3xl mx-auto px-4 md:px-8 relative">
+            <div className="text-center mb-10">
+              <div className="inline-block tag bg-[color:var(--nmdc-green)] text-white border-[color:var(--ink)] mb-3">{t("form.tag")}</div>
+              <h2 className="font-display text-4xl md:text-6xl mb-3"><span className="wavy-coral">{t("form.head")}</span></h2>
+              <p className="text-lg font-medium text-[color:var(--ink-soft)]">{t("form.sub")}</p>
+            </div>
+            <div className="sticker p-6 md:p-10" style={{boxShadow:"10px 10px 0 var(--ink)"}}>
+              {success ? (
+                <SuccessCard data={success} t={t} onAgain={onAgain}/>
+              ) : configError ? (
+                <div className="p-5 rounded-xl bg-[color:var(--coral)] text-white font-bold border-[3px] border-[color:var(--ink)]">⚠ {configError}</div>
+              ) : !config ? (
+                <div className="space-y-4">
+                  <div className="h-16 rounded-xl bg-[color:var(--cream-warm)] animate-pulse"/>
+                  <div className="h-16 rounded-xl bg-[color:var(--cream-warm)] animate-pulse"/>
+                  <div className="h-16 rounded-xl bg-[color:var(--cream-warm)] animate-pulse"/>
+                </div>
+              ) : isExpired ? (
+                <ClosedCard kind="deadline" t={t}/>
+              ) : isFull ? (
+                <ClosedCard kind="full" t={t}/>
+              ) : isOpen ? (
+                <RegistrationForm t={t} lang={lang} onSuccess={onSuccess} configRemaining={config ? config.remaining : null}/>
+              ) : (
+                <ClosedCard kind="deadline" t={t}/>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Footer — 2 columns: Contact + Organizer
+    function Footer({ t, onEnterEdit }){
+      const phone1 = t("footer.contactLine1.val");
+      const phone2 = t("footer.contactLine2.val");
+      return (
+        <footer className="bg-[color:var(--nmdc-navy)] text-[color:var(--cream)] relative overflow-hidden">
+          <Wave color="var(--nmdc-navy)" flip className="-mb-1"/>
+          <div className="max-w-6xl mx-auto px-4 md:px-8 py-14 md:py-16 relative">
+            <div className="grid md:grid-cols-2 gap-10 mb-10">
+              <div>
+                <div className="text-sm font-extrabold tracking-[0.2em] opacity-70 mb-4">{t("footer.contactHead")}</div>
+                <div className="space-y-3 font-medium text-lg">
+                  <div>
+                    <span className="opacity-60 mr-2">{t("footer.contactLine1.label")}</span>
+                    <a href={`tel:${phone1.replace(/\D/g,"")}`} className="hover:text-[color:var(--nmdc-green-light)] transition">{phone1}</a>
+                  </div>
+                  <div>
+                    <span className="opacity-60 mr-2">{t("footer.contactLine2.label")}</span>
+                    <a href={`tel:${phone2.replace(/\D/g,"")}`} className="hover:text-[color:var(--nmdc-green-light)] transition">{phone2}</a>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold tracking-[0.2em] opacity-70 mb-4">{t("footer.orgHead")}</div>
+                <div className="text-base leading-relaxed">
+                  <div className="font-bold text-lg">{t("footer.orgName")}</div>
+                  <div className="opacity-75 mt-1">{t("footer.orgAddr")}</div>
+                  <div className="opacity-75 mt-1">{t("footer.orgPhone")} · {t("footer.orgTax")}</div>
+                </div>
+              </div>
+            </div>
+            <div className="pt-6 border-t border-white/15 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-sm opacity-60">
+              <div>{t("footer.copy")}</div>
+              <div className="flex items-center gap-3">
+                <span>{t("footer.poweredBy")}</span>
+                <button onClick={onEnterEdit} title="Admin edit" className="opacity-40 hover:opacity-100 transition" style={{padding:"2px 6px"}}>⚙️</button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    // ====================================================================
+    // Main App
+    // ====================================================================
+    // ====================================================================
+    // Language Picker — first-visit modal
+    // ====================================================================
+    function LanguagePicker({ onPick, onClose }){
+      // Close on Escape
+      useEffect(() => {
+        const handler = (e) => { if(e.key === "Escape") onClose(); };
+        window.addEventListener("keydown", handler);
+        // Prevent body scroll
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+          window.removeEventListener("keydown", handler);
+          document.body.style.overflow = prev;
+        };
+      }, [onClose]);
+
+      return (
+        <div className="lang-picker-backdrop" onClick={(e) => { if(e.target === e.currentTarget) onClose(); }}>
+          <div className="lang-picker-card">
+            <button className="lang-picker-close" onClick={onClose} title="Close">✕</button>
+            <div className="lang-picker-emojis">🏖️ 🌊 🐚</div>
+            <div className="lang-picker-title">
+              Welcome!
+              <div className="block text-[color:var(--nmdc-green)]" style={{fontSize:"0.62em", marginTop:"6px"}}>歡迎參加 NMDC 淨灘活動 💚</div>
+            </div>
+
+            <div className="lang-picker-slogan">
+              <div className="slogan-zh">「我們的工程在海上，我們的心也在海邊」</div>
+              <div className="slogan-en">We work on the sea — and we care for the shore</div>
+            </div>
+
+            <div className="lang-picker-sub">請選擇語言開始填寫報名表<br/>Choose your language to continue</div>
+            <div className="lang-picker-grid">
+              <button className="lang-picker-btn zh" onClick={() => onPick("zh")}>
+                <div className="lang-picker-flag">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" width="60" height="40" style={{display:"block"}}>
+                    {/* Red field */}
+                    <rect width="60" height="40" fill="#FE0000"/>
+                    {/* Blue canton */}
+                    <rect width="30" height="20" fill="#000095"/>
+                    {/* White sun: 12 rays + center disk */}
+                    <g transform="translate(15 10)">
+                      {Array.from({length:12}).map((_, i) => (
+                        <polygon key={i} points="0,-7 1.55,-2.1 0,0 -1.55,-2.1" fill="#fff" transform={`rotate(${i*30})`}/>
+                      ))}
+                      <circle r="3" fill="#000095"/>
+                      <circle r="2.5" fill="#fff"/>
+                    </g>
+                  </svg>
+                </div>
+                <div className="lang-picker-name">中文</div>
+              </button>
+              <button className="lang-picker-btn en" onClick={() => onPick("en")}>
+                <div className="lang-picker-flag">🌍</div>
+                <div className="lang-picker-name">English</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function App(){
+      const [lang, setLang] = useState(() => {
+        // 白沙屯版鎖定中文
+        if(IS_BAISHATUN) return "zh";
+        try{ const saved = window.localStorage.getItem("nmdc_lang"); if(saved === "zh" || saved === "en") return saved; } catch(_){}
+        return "zh";
+      });
+      useEffect(() => { try{ if(!IS_BAISHATUN) window.localStorage.setItem("nmdc_lang", lang); } catch(_){}; }, [lang]);
+      useEffect(() => { document.documentElement.lang = lang === "zh" ? "zh-TW" : "en"; }, [lang]);
+
+      // Language picker — 白沙屯版不顯示，其他版面正常顯示
+      const [showLangPicker, setShowLangPicker] = useState(!IS_BAISHATUN);
+      function pickLang(chosen){
+        setLang(chosen);
+        setShowLangPicker(false);
+      }
+      function dismissLangPicker(){
+        setShowLangPicker(false);
+      }
+
+      const [config, setConfig] = useState(null);
+      const [configError, setConfigError] = useState("");
+      const [success, setSuccess] = useState(null);
+
+      const [serverContent, setServerContent] = useState({});
+      const [edits, setEdits] = useState({});
+      const [editMode, setEditMode] = useState(false);
+      const [panelOpen, setPanelOpen] = useState(false);
+      const [editPassword, setEditPassword] = useState("");
+      const [saving, setSaving] = useState(false);
+      const [toast, setToast] = useState(null);
+
+      const txt = useCallback((k) => {
+        const key = `${lang}.${k}`;
+        if(edits[key] !== undefined) return edits[key];
+        if(serverContent[key] !== undefined) return serverContent[key];
+        return DEFAULTS[lang]?.[k] ?? `[${k}]`;
+      }, [lang, edits, serverContent]);
+
+      async function loadConfig(){
+        setConfigError("");
+        try{
+          const data = await xhrGet(GAS_URL + "?team=" + encodeURIComponent(TEAM));
+          setConfig(data);
+          if(data.content && typeof data.content === "object"){ setServerContent(data.content); }
+        } catch(e){ setConfigError(DEFAULTS[lang]["err.config"] || "Can't load event info"); }
+      }
+      useEffect(() => {
+        if(!GAS_URL || GAS_URL.startsWith("PASTE_")){
+          setConfigError("GAS_URL not set — please paste your Web App URL in index.html");
+          return;
+        }
+        loadConfig();
+        const id = setInterval(loadConfig, 60000);
+        return () => clearInterval(id);
+      // eslint-disable-next-line
+      }, []);
+
+      const isOpen = config && config.open && config.remaining > 0 && new Date() < new Date(config.deadline);
+      const isFull = config && config.remaining === 0;
+      const isExpired = config && new Date() >= new Date(config.deadline);
+
+      function handleSuccess(res){
+        setSuccess(res);
+        setTimeout(() => { const el = document.getElementById("register"); if(el) el.scrollIntoView({ behavior:"smooth", block:"start" }); }, 50);
+        setTimeout(loadConfig, 500);
+      }
+      function handleAgain(){ setSuccess(null); }
+      function showToast(msg, kind="ok"){ setToast({ msg, kind }); setTimeout(() => setToast(null), 3500); }
+
+      function enterEditMode(){
+        if(editMode){ setPanelOpen(true); return; }
+        const pw = window.prompt("管理密碼 / Admin password:");
+        if(!pw) return;
+        setEditPassword(pw); setEditMode(true); setPanelOpen(true);
+      }
+      function exitEditMode(){
+        if(Object.keys(edits).length > 0){
+          if(!window.confirm("還有未儲存的變更，確定離開？ / Unsaved changes — exit anyway?")) return;
+          setEdits({});
+        }
+        setEditMode(false); setPanelOpen(false); setEditPassword("");
+      }
+
+      async function handleSave(){
+        if(saving) return;
+        if(Object.keys(edits).length === 0) return;
+        setSaving(true);
+        try{
+          const res = await xhrPost(GAS_URL, { action:"saveContent", password:editPassword, edits });
+          if(res.success){
+            setServerContent(prev => ({ ...prev, ...edits }));
+            setEdits({});
+            showToast(`💾 已儲存 ${res.saved} 筆 / Saved`);
+          } else if(res.error === "INVALID_PASSWORD"){
+            showToast("密碼錯誤 / Wrong password", "err");
+            setEditPassword(""); setEditMode(false); setPanelOpen(false);
+          } else { showToast("儲存失敗 / Save failed: " + (res.error || ""), "err"); }
+        } catch(e){ showToast("連線失敗 / Connection failed", "err"); }
+        finally { setSaving(false); }
+      }
+
+      const dirtyCount = Object.keys(edits).length;
+
+      // Display settings
+      const showCountdown = getDisplay("display.showCountdown", edits, serverContent) === "true";
+      const sectionOrderStr = getDisplay("display.sectionOrder", edits, serverContent);
+      const sectionOrder = sectionOrderStr.split(",").map(s => s.trim()).filter(Boolean);
+      // ensure any missing orderable sections are appended
+      ORDERABLE_SECTIONS.forEach(s => { if(!sectionOrder.includes(s.id)) sectionOrder.push(s.id); });
+
+      function renderSection(id){
+        if(id === "info") return <InfoStickers key="info" t={txt} editMode={editMode}/>;
+        if(id === "status"){
+          if(!showCountdown) return null;
+          return <StatusSection key="status" config={config} t={txt} lang={lang}/>;
+        }
+        if(id === "schedule") return <Schedule key="schedule" t={txt} lang={lang} edits={edits} serverContent={serverContent}/>;
+        if(id === "form") return <FormSection key="form" config={config} configError={configError} isOpen={isOpen} isFull={isFull} isExpired={isExpired} t={txt} lang={lang} success={success} onSuccess={handleSuccess} onAgain={handleAgain}/>;
+        if(id === "notes") return <Notes key="notes" t={txt}/>;
+        return null;
+      }
+
+      return (
+        <div className="min-h-screen">
+          {showLangPicker && <LanguagePicker onPick={pickLang} onClose={dismissLangPicker}/>}
+          {editMode && (<div className="edit-badge">⚙️ ADMIN MODE{dirtyCount > 0 && ` · ${dirtyCount} UNSAVED`}</div>)}
+          <Header lang={lang} setLang={setLang} onEdit={() => setPanelOpen(true)} editMode={editMode} t={txt}/>
+          <AnnouncementBanner t={txt}/>
+          <Hero t={txt} editMode={editMode}/>
+          {sectionOrder.map(id => renderSection(id))}
+          <Footer t={txt} onEnterEdit={enterEditMode}/>
+
+          <EditPanel
+            open={panelOpen}
+            onClose={() => setPanelOpen(false)}
+            lang={lang} setLang={setLang}
+            edits={edits} setEdits={setEdits}
+            serverContent={serverContent}
+            onSave={handleSave} saving={saving}
+            dirtyCount={dirtyCount}
+            editPassword={editPassword}
+            registered={config ? config.registered : 0}
+            onDataChanged={loadConfig}/>
+
+          {editMode && (
+            <div style={{position:"fixed", bottom:16, right:16, zIndex:45, display:"flex", gap:8, flexDirection:"column"}}>
+              <button onClick={() => setPanelOpen(true)} className="btn-chunk px-4 py-2 text-sm">⚙️ {dirtyCount > 0 ? `Admin (${dirtyCount})` : "Admin"}</button>
+              <button onClick={exitEditMode} className="btn-outline px-4 py-2 text-sm">🚪 Exit</button>
+            </div>
+          )}
+          {toast && (<div className={"toast " + (toast.kind === "err" ? "err" : "")}>{toast.msg}</div>)}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>
