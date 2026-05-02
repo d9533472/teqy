@@ -930,6 +930,332 @@
     background: var(--temple-red);
   }
 
+  /* === Nav auth circle button === */
+  .nav-auth-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(184,134,11,0.4);
+    background: rgba(255,255,255,0.6);
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.25s;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .nav-auth-btn:hover {
+    border-color: var(--temple-red);
+    color: var(--temple-red);
+    background: var(--paper-warm);
+    transform: scale(1.05);
+  }
+  .nav-auth-avatar {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 500; font-size: 16px;
+    border-radius: 50%;
+    margin: -1px;  /* compensate border */
+  }
+  .nav-auth-btn:hover .nav-auth-avatar {
+    background: var(--temple-red-deep);
+  }
+
+  /* Mobile auth (in side panel) */
+  .mobile-nav-auth {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: 'Noto Serif TC', serif;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+  }
+  .mobile-nav-auth-avatar {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  /* === Auth Drawer === */
+  .auth-drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.5);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .auth-drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .auth-drawer {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 420px;
+    max-width: 100vw;
+    background: var(--paper-warm);
+    box-shadow: -16px 0 40px -8px rgba(26,20,16,0.2);
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(184,134,11,0.25);
+  }
+  .auth-drawer.open { transform: translateX(0); }
+  @media (max-width: 480px) {
+    .auth-drawer { width: 100vw; }
+  }
+
+  .auth-drawer-head {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(184,134,11,0.18);
+    background: var(--paper-warm);
+  }
+  .auth-drawer-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.25rem; font-weight: 500;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+  .auth-drawer-close {
+    width: 32px; height: 32px;
+    background: transparent; border: none;
+    border-radius: 50%;
+    color: var(--ink-mute); cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+  }
+  .auth-drawer-close:hover { background: rgba(168,56,56,0.08); color: var(--temple-red); }
+
+  .auth-drawer-body {
+    flex: 1; overflow-y: auto;
+    padding: 24px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* === Drawer Forms === */
+  .drawer-form { display: flex; flex-direction: column; gap: 4px; }
+  .drawer-label {
+    font-size: 13px; color: var(--ink-light);
+    margin-top: 12px; margin-bottom: 6px;
+    letter-spacing: 0.05em;
+    font-family: 'Noto Serif TC', serif;
+  }
+  .drawer-form input[type="text"],
+  .drawer-form input[type="email"],
+  .drawer-form input[type="password"],
+  .drawer-form select,
+  .drawer-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--paper);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+  .drawer-form input:focus,
+  .drawer-form select:focus,
+  .drawer-form textarea:focus {
+    outline: none;
+    border-color: var(--temple-red);
+  }
+  .drawer-radio-row { display: flex; gap: 10px; margin-bottom: 4px; }
+  .drawer-radio {
+    flex: 1;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: var(--paper);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  .drawer-radio.checked {
+    background: rgba(139,36,33,0.05);
+    border-color: var(--temple-red);
+    color: var(--temple-red);
+  }
+  .drawer-radio input { margin: 0; }
+  .drawer-btn-primary {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    border: none;
+    border-radius: 4px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .drawer-btn-primary:hover:not(:disabled) { background: var(--temple-red-deep); }
+  .drawer-btn-primary:disabled { opacity: 0.6; cursor: wait; }
+  .drawer-form-links {
+    display: flex; justify-content: space-between;
+    margin-top: 16px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .drawer-link {
+    background: transparent; border: none;
+    color: var(--temple-red);
+    font-family: inherit; font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .drawer-link:hover { color: var(--temple-red-deep); }
+  .drawer-msg {
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin: 8px 0;
+    line-height: 1.5;
+  }
+  .drawer-msg-success { background: rgba(74,124,79,0.1); color: #2d5530; border: 1px solid rgba(74,124,79,0.3); }
+  .drawer-msg-error { background: rgba(168,56,56,0.1); color: var(--temple-red); border: 1px solid rgba(168,56,56,0.3); }
+  .drawer-help-text {
+    font-size: 12px; color: var(--ink-mute);
+    line-height: 1.6;
+    margin: 12px 0;
+    padding: 10px 14px;
+    background: var(--paper);
+    border-left: 3px solid rgba(184,134,11,0.4);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* Member center */
+  .drawer-profile-card {
+    text-align: center;
+    padding: 24px 20px;
+    background: var(--paper);
+    border: 1px solid rgba(184,134,11,0.18);
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+  .drawer-avatar-large {
+    width: 72px; height: 72px;
+    margin: 0 auto 12px;
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 32px; font-weight: 500;
+    box-shadow: 0 4px 14px -4px rgba(94,23,20,0.3);
+  }
+  .drawer-profile-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .drawer-profile-role {
+    display: flex; gap: 6px; justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .drawer-profile-tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    background: rgba(184,134,11,0.15);
+    color: var(--temple-red);
+    border-radius: 999px;
+  }
+  .drawer-profile-meta {
+    font-size: 13px; color: var(--ink-light);
+    margin-top: 4px;
+  }
+  .drawer-menu-list {
+    display: flex; flex-direction: column;
+    gap: 4px;
+  }
+  .drawer-menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: var(--paper);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    text-align: left;
+    width: 100%;
+  }
+  .drawer-menu-item:hover {
+    border-color: var(--temple-red);
+    background: var(--paper-warm);
+  }
+  .drawer-menu-item span:nth-child(2) { flex: 1; }
+  .drawer-menu-icon { font-size: 20px; flex-shrink: 0; }
+  .drawer-menu-chev {
+    color: var(--ink-mute);
+    font-size: 18px;
+  }
+  .drawer-menu-item-danger { color: var(--temple-red); border-color: rgba(168,56,56,0.25); }
+  .drawer-menu-item-danger:hover { background: rgba(168,56,56,0.05); }
+
+  /* My threads list */
+  .drawer-thread-list {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .drawer-thread-item {
+    display: block;
+    padding: 12px 14px;
+    background: var(--paper);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+  .drawer-thread-item:hover {
+    border-color: var(--temple-red);
+    transform: translateX(-2px);
+  }
+  .drawer-thread-cat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .drawer-thread-flag {
+    font-size: 11px; color: var(--ink-mute);
+  }
+  .drawer-thread-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink);
+    margin: 6px 0 4px;
+    line-height: 1.4;
+  }
+  .drawer-thread-meta {
+    font-size: 11px; color: var(--ink-mute);
+  }
+
   /* Forum section */
   .forum-section { background: linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%); min-height: 60vh; }
 
@@ -4191,6 +4517,554 @@ function AlbumsSection({ data, anchorId }) {
 }
 
 
+// ============================================================
+// AuthDrawer — slide-in panel for login/register/member-center
+// Triggered from Nav avatar button
+// ============================================================
+function AuthDrawer({ open, onClose }) {
+  const { user } = useContext(UserCtx);
+  const [view, setView] = useState('login'); // login | register | profile | password | mythreads
+  const drawerRef = useRef(null);
+
+  // Reset view when drawer opens
+  useEffect(() => {
+    if (open) setView(user ? 'menu' : 'login');
+  }, [open, user]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  // Lock body scroll when open
+  useEffect(() => {
+    if (open) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+
+  return (
+    <>
+      <div className={`auth-drawer-overlay ${open ? 'open' : ''}`} onClick={onClose}></div>
+      <aside ref={drawerRef} className={`auth-drawer ${open ? 'open' : ''}`}>
+        <div className="auth-drawer-head">
+          <h3 className="auth-drawer-title">
+            {!user && view === 'login' && '會員登入'}
+            {!user && view === 'register' && '註冊新帳號'}
+            {!user && view === 'forgot' && '忘記密碼'}
+            {user && view === 'menu' && '會員中心'}
+            {user && view === 'profile' && '修改基本資料'}
+            {user && view === 'password' && '修改密碼'}
+            {user && view === 'mythreads' && '我發過的文章'}
+          </h3>
+          <button className="auth-drawer-close" onClick={onClose} aria-label="關閉">✕</button>
+        </div>
+
+        <div className="auth-drawer-body">
+          {!user && view === 'login' && (
+            <DrawerLoginForm onSwitchRegister={() => setView('register')} onSwitchForgot={() => setView('forgot')} onSuccess={onClose} />
+          )}
+          {!user && view === 'register' && (
+            <DrawerRegisterForm onSwitchLogin={() => setView('login')} onSuccess={onClose} />
+          )}
+          {!user && view === 'forgot' && (
+            <DrawerForgotForm onBack={() => setView('login')} />
+          )}
+          {user && view === 'menu' && (
+            <DrawerMemberMenu onNav={setView} onClose={onClose} />
+          )}
+          {user && view === 'profile' && (
+            <DrawerEditProfile onBack={() => setView('menu')} />
+          )}
+          {user && view === 'password' && (
+            <DrawerChangePassword onBack={() => setView('menu')} />
+          )}
+          {user && view === 'mythreads' && (
+            <DrawerMyThreads onBack={() => setView('menu')} onClose={onClose} />
+          )}
+        </div>
+      </aside>
+    </>
+  );
+}
+
+// ====== Drawer: Login Form ======
+function DrawerLoginForm({ onSwitchRegister, onSwitchForgot, onSuccess }) {
+  const { login } = useContext(UserCtx);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    if (!email || !password) { setMsg({ type: 'error', text: '請填寫信箱與密碼' }); return; }
+    setBusy(true); setMsg(null);
+    try {
+      const r = await gasPost({ action: 'userLogin', email, password });
+      if (r.ok) {
+        login(r.user, r.token);
+        setMsg({ type: 'success', text: `${r.user.nickname} 道親,登入成功 🪷` });
+        setTimeout(() => onSuccess(), 800);
+      } else {
+        const errors = {
+          invalid_credentials: '帳號或密碼錯誤',
+          missing_credentials: '請填寫信箱與密碼',
+          blocked: '此帳號已被停用',
+          not_verified: '此信箱尚未完成驗證,請至信箱收信'
+        };
+        setMsg({ type: 'error', text: errors[r.error] || ('登入失敗: ' + r.error) });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗,請稍後再試' });
+    }
+    setBusy(false);
+  };
+
+  return (
+    <form onSubmit={submit} className="drawer-form">
+      {msg && <div className={`drawer-msg drawer-msg-${msg.type}`}>{msg.text}</div>}
+      <label className="drawer-label">電子信箱</label>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+      <label className="drawer-label">密碼</label>
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+      <button type="submit" className="drawer-btn-primary" disabled={busy}>{busy ? '登入中⋯' : '登入'}</button>
+      <div className="drawer-form-links">
+        <button type="button" className="drawer-link" onClick={onSwitchForgot}>忘記密碼?</button>
+        <button type="button" className="drawer-link" onClick={onSwitchRegister}>還沒帳號?註冊</button>
+      </div>
+    </form>
+  );
+}
+
+// ====== Drawer: Register Form ======
+function DrawerRegisterForm({ onSwitchLogin, onSuccess }) {
+  const { login } = useContext(UserCtx);
+  const [config, setConfig] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [country, setCountry] = useState('台灣');
+  const [region, setRegion] = useState('');
+  const [customRegion, setCustomRegion] = useState('');
+  const [gender, setGender] = useState('');
+  const [job, setJob] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  useEffect(() => {
+    gasPost({ action: 'userGetConfig' }).then(r => {
+      if (r.ok) setConfig(r.config);
+    });
+  }, []);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    if (password !== confirmPw) { setMsg({ type: 'error', text: '兩次密碼輸入不同' }); return; }
+    if (password.length < 6) { setMsg({ type: 'error', text: '密碼至少 6 碼' }); return; }
+    if (!nickname.trim()) { setMsg({ type: 'error', text: '請填寫稱呼' }); return; }
+    if (!gender) { setMsg({ type: 'error', text: '請選擇性別' }); return; }
+    if (!job) { setMsg({ type: 'error', text: '請選擇天職' }); return; }
+    if (country === '台灣' && !region) { setMsg({ type: 'error', text: '請選擇區域' }); return; }
+    if (country === '台灣' && region === '其他' && !customRegion.trim()) { setMsg({ type: 'error', text: '請填寫您的區域' }); return; }
+
+    setBusy(true); setMsg(null);
+    try {
+      const r = await gasPost({
+        action: 'userRegister',
+        email, password, nickname,
+        country,
+        region: country === '台灣' ? region : '',
+        customRegion: (country === '台灣' && region === '其他') ? customRegion : '',
+        gender, job
+      });
+      if (r.ok) {
+        // Auto-login if token returned
+        if (r.token && r.user) {
+          login(r.user, r.token);
+          setMsg({ type: 'success', text: `歡迎 ${r.user.nickname} 道親!註冊成功 🪷` });
+          setTimeout(() => onSuccess(), 1200);
+        } else {
+          setMsg({ type: 'success', text: '註冊成功!請至您的信箱收驗證信。' });
+        }
+      } else {
+        const errors = {
+          email_exists: '此信箱已被註冊,請改用「登入」',
+          invalid_email: '信箱格式有誤',
+          password_too_short: '密碼至少 6 碼',
+          missing_nickname: '請填寫稱呼',
+          missing_country: '請選擇所在國家',
+          missing_gender: '請選擇性別',
+          missing_job: '請選擇天職'
+        };
+        setMsg({ type: 'error', text: errors[r.error] || ('註冊失敗: ' + r.error) });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗' });
+    }
+    setBusy(false);
+  };
+
+  return (
+    <form onSubmit={submit} className="drawer-form">
+      {msg && <div className={`drawer-msg drawer-msg-${msg.type}`}>{msg.text}</div>}
+      <label className="drawer-label">電子信箱 *</label>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+      <label className="drawer-label">密碼(至少 6 碼)*</label>
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} autoComplete="new-password" />
+      <label className="drawer-label">再次輸入密碼 *</label>
+      <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} required minLength={6} autoComplete="new-password" />
+      <label className="drawer-label">稱呼 *</label>
+      <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} required maxLength={30} placeholder="可填本名或法名" />
+
+      <label className="drawer-label">性別 *</label>
+      <div className="drawer-radio-row">
+        <label className={`drawer-radio ${gender === '乾道' ? 'checked' : ''}`}>
+          <input type="radio" name="gender" value="乾道" checked={gender === '乾道'} onChange={(e) => setGender(e.target.value)} />
+          <span>乾道(男)</span>
+        </label>
+        <label className={`drawer-radio ${gender === '坤道' ? 'checked' : ''}`}>
+          <input type="radio" name="gender" value="坤道" checked={gender === '坤道'} onChange={(e) => setGender(e.target.value)} />
+          <span>坤道(女)</span>
+        </label>
+      </div>
+
+      <label className="drawer-label">天職 *</label>
+      <select value={job} onChange={(e) => setJob(e.target.value)} required>
+        <option value="">請選擇⋯</option>
+        {(config?.jobs || ['點傳師', '講師', '壇主', '辦事人員', '清口人員', '道親']).map(j => (
+          <option key={j} value={j}>{j}</option>
+        ))}
+      </select>
+
+      <label className="drawer-label">所在國家 *</label>
+      <select value={country} onChange={(e) => { setCountry(e.target.value); setRegion(''); setCustomRegion(''); }} required>
+        {(config?.countries || ['台灣', '其他']).map(c => <option key={c} value={c}>{c}</option>)}
+      </select>
+
+      {country === '台灣' && (
+        <>
+          <label className="drawer-label">區域 *</label>
+          <select value={region} onChange={(e) => setRegion(e.target.value)} required>
+            <option value="">請選擇⋯</option>
+            {(config?.twRegions || []).map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+          {region === '其他' && (
+            <>
+              <label className="drawer-label">請填寫您的區域 *</label>
+              <input type="text" value={customRegion} onChange={(e) => setCustomRegion(e.target.value)} required placeholder="例:海外某某分壇" maxLength={30} />
+            </>
+          )}
+        </>
+      )}
+
+      <button type="submit" className="drawer-btn-primary" disabled={busy}>{busy ? '註冊中⋯' : '註冊'}</button>
+      <div className="drawer-form-links">
+        <button type="button" className="drawer-link" onClick={onSwitchLogin}>已有帳號?登入</button>
+      </div>
+    </form>
+  );
+}
+
+// ====== Drawer: Forgot Password ======
+function DrawerForgotForm({ onBack }) {
+  const [email, setEmail] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    setBusy(true); setMsg(null);
+    try {
+      const r = await gasPost({ action: 'userRequestPasswordReset', email });
+      if (r.ok) {
+        setMsg({ type: 'success', text: '若該信箱有註冊,重設信件已寄出。請至信箱收信。' });
+      } else {
+        setMsg({ type: 'error', text: '寄送失敗,請稍後再試' });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗' });
+    }
+    setBusy(false);
+  };
+
+  return (
+    <form onSubmit={submit} className="drawer-form">
+      {msg && <div className={`drawer-msg drawer-msg-${msg.type}`}>{msg.text}</div>}
+      <p className="drawer-help-text">輸入註冊時使用的電子信箱,我們會寄送重設密碼的連結。</p>
+      <label className="drawer-label">電子信箱</label>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <button type="submit" className="drawer-btn-primary" disabled={busy}>{busy ? '寄送中⋯' : '寄送重設信'}</button>
+      <button type="button" className="drawer-link" onClick={onBack}>← 返回登入</button>
+    </form>
+  );
+}
+
+// ====== Drawer: Member Menu ======
+function DrawerMemberMenu({ onNav, onClose }) {
+  const { user, logout } = useContext(UserCtx);
+  const handleLogout = async () => {
+    if (!confirm('確定要登出?')) return;
+    await logout();
+    onClose();
+  };
+  const regionDisplay = user.customRegion || user.region;
+  return (
+    <div className="drawer-member">
+      {/* Profile card */}
+      <div className="drawer-profile-card">
+        <div className="drawer-avatar-large">{(user.nickname || '?').slice(0, 1)}</div>
+        <div className="drawer-profile-name">{user.nickname}</div>
+        <div className="drawer-profile-role">
+          {user.gender && <span className="drawer-profile-tag">{user.gender}</span>}
+          {user.job && <span className="drawer-profile-tag">{user.job}</span>}
+        </div>
+        {regionDisplay && (
+          <div className="drawer-profile-meta">📍 {user.country}{regionDisplay !== user.country ? ` · ${regionDisplay}` : ''}</div>
+        )}
+        <div className="drawer-profile-meta" style={{ fontSize: 12, color: 'var(--ink-mute)' }}>{user.email}</div>
+      </div>
+
+      {/* Menu */}
+      <div className="drawer-menu-list">
+        <button className="drawer-menu-item" onClick={() => onNav('profile')}>
+          <span className="drawer-menu-icon">📝</span>
+          <span>修改基本資料</span>
+          <span className="drawer-menu-chev">›</span>
+        </button>
+        <button className="drawer-menu-item" onClick={() => onNav('password')}>
+          <span className="drawer-menu-icon">🔑</span>
+          <span>修改密碼</span>
+          <span className="drawer-menu-chev">›</span>
+        </button>
+        <button className="drawer-menu-item" onClick={() => onNav('mythreads')}>
+          <span className="drawer-menu-icon">📚</span>
+          <span>我發過的文章</span>
+          <span className="drawer-menu-chev">›</span>
+        </button>
+        <button className="drawer-menu-item drawer-menu-item-danger" onClick={handleLogout}>
+          <span className="drawer-menu-icon">↪</span>
+          <span>登出</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ====== Drawer: Edit Profile ======
+function DrawerEditProfile({ onBack }) {
+  const { user, refresh } = useContext(UserCtx);
+  const [config, setConfig] = useState(null);
+  const [nickname, setNickname] = useState(user.nickname || '');
+  const [gender, setGender] = useState(user.gender || '');
+  const [job, setJob] = useState(user.job || '');
+  const [country, setCountry] = useState(user.country || '台灣');
+  const [region, setRegion] = useState(user.region || '');
+  const [customRegion, setCustomRegion] = useState(user.customRegion || '');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  useEffect(() => {
+    gasPost({ action: 'userGetConfig' }).then(r => {
+      if (r.ok) setConfig(r.config);
+    });
+  }, []);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    if (!nickname.trim()) { setMsg({ type: 'error', text: '請填寫稱呼' }); return; }
+    if (country === '台灣' && region === '其他' && !customRegion.trim()) {
+      setMsg({ type: 'error', text: '請填寫您的區域' }); return;
+    }
+    setBusy(true); setMsg(null);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({
+        action: 'userUpdateProfile',
+        token,
+        patch: {
+          nickname, gender, job, country,
+          region: country === '台灣' ? region : '',
+          customRegion: (country === '台灣' && region === '其他') ? customRegion : ''
+        }
+      });
+      if (r.ok) {
+        setMsg({ type: 'success', text: '已更新 ✓' });
+        await refresh();
+        setTimeout(() => onBack(), 700);
+      } else {
+        setMsg({ type: 'error', text: '更新失敗: ' + (r.error || '') });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗' });
+    }
+    setBusy(false);
+  };
+
+  return (
+    <form onSubmit={submit} className="drawer-form">
+      <button type="button" className="drawer-link" onClick={onBack}>← 返回會員中心</button>
+      {msg && <div className={`drawer-msg drawer-msg-${msg.type}`}>{msg.text}</div>}
+
+      <label className="drawer-label">稱呼</label>
+      <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} required />
+
+      <label className="drawer-label">性別</label>
+      <div className="drawer-radio-row">
+        <label className={`drawer-radio ${gender === '乾道' ? 'checked' : ''}`}>
+          <input type="radio" value="乾道" checked={gender === '乾道'} onChange={(e) => setGender(e.target.value)} />
+          <span>乾道(男)</span>
+        </label>
+        <label className={`drawer-radio ${gender === '坤道' ? 'checked' : ''}`}>
+          <input type="radio" value="坤道" checked={gender === '坤道'} onChange={(e) => setGender(e.target.value)} />
+          <span>坤道(女)</span>
+        </label>
+      </div>
+
+      <label className="drawer-label">天職</label>
+      <select value={job} onChange={(e) => setJob(e.target.value)}>
+        {(config?.jobs || ['點傳師', '講師', '壇主', '辦事人員', '清口人員', '道親']).map(j => <option key={j} value={j}>{j}</option>)}
+      </select>
+
+      <label className="drawer-label">所在國家</label>
+      <select value={country} onChange={(e) => { setCountry(e.target.value); if (e.target.value !== '台灣') { setRegion(''); setCustomRegion(''); } }}>
+        {(config?.countries || ['台灣', '其他']).map(c => <option key={c} value={c}>{c}</option>)}
+      </select>
+
+      {country === '台灣' && (
+        <>
+          <label className="drawer-label">區域</label>
+          <select value={region} onChange={(e) => setRegion(e.target.value)}>
+            <option value="">請選擇⋯</option>
+            {(config?.twRegions || []).map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+          {region === '其他' && (
+            <>
+              <label className="drawer-label">請填寫您的區域</label>
+              <input type="text" value={customRegion} onChange={(e) => setCustomRegion(e.target.value)} required />
+            </>
+          )}
+        </>
+      )}
+
+      <p className="drawer-help-text">📧 信箱與密碼無法在此修改。請使用「修改密碼」功能變更密碼。</p>
+
+      <button type="submit" className="drawer-btn-primary" disabled={busy}>{busy ? '更新中⋯' : '儲存變更'}</button>
+    </form>
+  );
+}
+
+// ====== Drawer: Change Password ======
+function DrawerChangePassword({ onBack }) {
+  const { logout } = useContext(UserCtx);
+  const [oldPw, setOldPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    if (newPw !== confirmPw) { setMsg({ type: 'error', text: '兩次新密碼不一致' }); return; }
+    if (newPw.length < 6) { setMsg({ type: 'error', text: '密碼至少 6 碼' }); return; }
+    setBusy(true); setMsg(null);
+    try {
+      const token = localStorage.getItem('jc_user_token');
+      const r = await gasPost({
+        action: 'userUpdatePassword',
+        token, oldPassword: oldPw, newPassword: newPw
+      });
+      if (r.ok) {
+        setMsg({ type: 'success', text: '密碼已更新 ✓ 其他裝置已自動登出' });
+        setOldPw(''); setNewPw(''); setConfirmPw('');
+        setTimeout(() => onBack(), 1500);
+      } else {
+        const errors = {
+          wrong_old_password: '原密碼錯誤',
+          password_too_short: '新密碼至少 6 碼',
+          missing_passwords: '請填寫所有欄位',
+          invalid_session: '登入已過期,請重新登入'
+        };
+        setMsg({ type: 'error', text: errors[r.error] || ('更新失敗: ' + r.error) });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: '連線失敗' });
+    }
+    setBusy(false);
+  };
+
+  return (
+    <form onSubmit={submit} className="drawer-form">
+      <button type="button" className="drawer-link" onClick={onBack}>← 返回會員中心</button>
+      {msg && <div className={`drawer-msg drawer-msg-${msg.type}`}>{msg.text}</div>}
+      <label className="drawer-label">原密碼</label>
+      <input type="password" value={oldPw} onChange={(e) => setOldPw(e.target.value)} required autoComplete="current-password" />
+      <label className="drawer-label">新密碼(至少 6 碼)</label>
+      <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} required minLength={6} autoComplete="new-password" />
+      <label className="drawer-label">再次輸入新密碼</label>
+      <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} required minLength={6} autoComplete="new-password" />
+      <button type="submit" className="drawer-btn-primary" disabled={busy}>{busy ? '更新中⋯' : '更新密碼'}</button>
+    </form>
+  );
+}
+
+// ====== Drawer: My Threads ======
+function DrawerMyThreads({ onBack, onClose }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jc_user_token');
+    gasPost({ action: 'userMyThreads', token }).then(r => {
+      if (r.ok) setData({ threads: r.threads || [], categories: r.categories || [] });
+      else setError(r.error || '載入失敗');
+    }).catch(() => setError('連線失敗'));
+  }, []);
+
+  const catById = (id) => (data?.categories || []).find(c => c.id === id);
+
+  return (
+    <div>
+      <button type="button" className="drawer-link" onClick={onBack}>← 返回會員中心</button>
+      {error && <div className="drawer-msg drawer-msg-error">{error}</div>}
+      {!data && !error && <div style={{ textAlign: 'center', padding: 24, color: 'var(--ink-mute)' }}>載入中⋯</div>}
+      {data && data.threads.length === 0 && (
+        <div style={{ textAlign: 'center', padding: 32, color: 'var(--ink-mute)', fontStyle: 'italic' }}>
+          您還沒有發表過文章
+        </div>
+      )}
+      {data && data.threads.length > 0 && (
+        <div className="drawer-thread-list">
+          <div style={{ fontSize: 13, color: 'var(--ink-mute)', marginBottom: 10 }}>
+            共 {data.threads.length} 篇文章
+          </div>
+          {data.threads.map(t => {
+            const cat = catById(t.categoryId);
+            const updated = new Date(t.updatedAt || t.createdAt);
+            return (
+              <a key={t.id} className="drawer-thread-item" href={`#discussion?threadId=${t.id}`} onClick={onClose}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  {cat && <span className="drawer-thread-cat" style={{ background: (cat.color || '#999') + '22', color: cat.color || '#999' }}>{cat.icon} {cat.name}</span>}
+                  {t.pinned && <span className="drawer-thread-flag">📌 置頂</span>}
+                  {t.locked && <span className="drawer-thread-flag">🔒 鎖定</span>}
+                </div>
+                <div className="drawer-thread-title">{t.title}</div>
+                <div className="drawer-thread-meta">
+                  💬 {t.replyCount} · ❤ {t.likeCount} · {updated.getMonth() + 1}/{updated.getDate()}
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AuthSection({ data, anchorId }) {
   const { user, login, logout } = useContext(UserCtx);
   const [mode, setMode] = useState('login'); // login | register | forgot
@@ -6728,13 +7602,8 @@ function PageRenderer({ page }) {
 // Layout: Nav + Footer
 // ============================================================
 
-function Nav({ site, navigation, ctaButton, onMobileToggle }) {
+function Nav({ site, navigation, ctaButton, onMobileToggle, onOpenAuth }) {
   const { user } = useContext(UserCtx);
-  // Find an auth section's anchor in any page so we can link there
-  const authAnchor = useMemo(() => {
-    // Look up via ContentCtx not directly available here; just fallback to '#auth' which users can name their section
-    return '#auth';
-  }, []);
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-backdrop">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
@@ -6762,12 +7631,25 @@ function Nav({ site, navigation, ctaButton, onMobileToggle }) {
               <a key={item.id} href={navTargetUrl(item)} className="nav-link" target={item.type === 'external' ? '_blank' : '_self'}>{item.label}</a>
             )
           ))}
-          {user && (
-            <a href={authAnchor} className="nav-user-pill desktop-only" style={{ display: 'inline-flex' }}>
-              <span className="dot"></span>
-              <span>{user.nickname}{user.job ? ` ${user.job}` : ''}</span>
-            </a>
-          )}
+
+          {/* Auth circle button — sits BEFORE the CTA button as requested */}
+          <button
+            type="button"
+            onClick={onOpenAuth}
+            className="nav-auth-btn"
+            title={user ? `${user.nickname} (點擊開啟會員中心)` : '登入 / 註冊'}
+            aria-label={user ? '會員中心' : '登入'}
+          >
+            {user ? (
+              <span className="nav-auth-avatar">{(user.nickname || '?').slice(0, 1)}</span>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+              </svg>
+            )}
+          </button>
+
           {ctaButton && ctaButton.label && (
             <a href={ctaButton.url || '#'} target={ctaButton.url?.startsWith('http') ? '_blank' : '_self'} className="btn-primary px-6 py-2.5 text-sm">
               <span>{ctaButton.label}</span>
@@ -6784,10 +7666,15 @@ function Nav({ site, navigation, ctaButton, onMobileToggle }) {
   );
 }
 
-function MobileMenu({ open, onClose, navigation, ctaButton }) {
+function MobileMenu({ open, onClose, navigation, ctaButton, onOpenAuth }) {
+  const { user } = useContext(UserCtx);
   // Track which top-level items are expanded (accordion)
   const [expanded, setExpanded] = useState({});
   const toggle = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  const handleAuth = () => {
+    onClose();
+    setTimeout(() => onOpenAuth(), 200);  // wait for mobile menu to slide out
+  };
   return (
     <div className={`mobile-menu ${open ? 'open' : ''}`}>
       <button className="absolute top-6 right-6 p-2" onClick={onClose} aria-label="close">
@@ -6829,6 +7716,25 @@ function MobileMenu({ open, onClose, navigation, ctaButton }) {
             <a key={item.id} href={navTargetUrl(item)} target={item.type === 'external' ? '_blank' : '_self'} className="block" onClick={onClose}>{item.label}</a>
           );
         })}
+
+        {/* Auth button — circle avatar style */}
+        <button type="button" className="mobile-nav-auth" onClick={handleAuth}>
+          {user ? (
+            <>
+              <span className="mobile-nav-auth-avatar">{(user.nickname || '?').slice(0, 1)}</span>
+              <span style={{ fontSize: '1.4rem' }}>{user.nickname} 會員中心</span>
+            </>
+          ) : (
+            <>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+              </svg>
+              <span style={{ fontSize: '1.4rem' }}>登入 / 註冊</span>
+            </>
+          )}
+        </button>
+
         {ctaButton && ctaButton.label && (
           <a href={ctaButton.url || '#'} target={ctaButton.url?.startsWith('http') ? '_blank' : '_self'} className="btn-primary inline-block px-8 py-3 text-base mt-4">
             <span>{ctaButton.label}</span>
@@ -6905,6 +7811,7 @@ function App() {
   const [visits, setVisits] = useState(null);
   const [error, setError] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState(null);
   const route = useHashRoute();
   useReveal();
@@ -7036,8 +7943,9 @@ function App() {
     <ContentCtx.Provider value={{ albums: content.albums || [] }}>
     <UserCtx.Provider value={{ user, login: userLogin, logout: userLogout, refresh: refreshUser }}>
     <>
-      <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} />
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} />
+      <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} onOpenAuth={() => setAuthOpen(true)} />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onOpenAuth={() => setAuthOpen(true)} />
+      <AuthDrawer open={authOpen} onClose={() => setAuthOpen(false)} />
       <PageRenderer page={currentPage} />
       <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
       <ResetPasswordModal />

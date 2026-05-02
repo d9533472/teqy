@@ -3531,7 +3531,7 @@ function UsersManagerView({ password, showToast }) {
                     <tr>
                       <th>稱呼</th>
                       <th>信箱</th>
-                      <th>道號/天職</th>
+                      <th>性別/天職</th>
                       <th>地區</th>
                       <th>狀態</th>
                       <th>註冊</th>
@@ -3624,7 +3624,7 @@ function UserEditModal({ user, onClose, onSave, onDelete }) {
 
         <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
           <div className="text-xs mb-2" style={{ color: 'var(--ink-mute)' }}>
-            <div>性別 / 道號:{user.gender || '—'}</div>
+            <div>性別:{user.gender || '—'}</div>
             <div>天職:{user.job || '—'}</div>
             <div>地區:{user.country}{user.region ? ` · ${user.region}` : ''}</div>
             <div>註冊時間:{user.createdAt}</div>
@@ -3714,7 +3714,7 @@ function UserConfigEditor({ config, onSave }) {
               />
             </div>
           </div>
-          <label className="field-label mt-4">台灣縣市清單(每行一個)</label>
+          <label className="field-label mt-4">台灣區域(堂區)清單(每行一個,使用「其他」會讓使用者自填)</label>
           <textarea
             value={(draft.twRegions || []).join('\n')}
             onChange={(e) => updateList('twRegions', e.target.value)}
@@ -3732,7 +3732,7 @@ function UserConfigEditor({ config, onSave }) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 8 }}>
               <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{nickname}'}</code> 使用者稱呼</div>
               <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{email}'}</code> 註冊信箱</div>
-              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{gender}'}</code> 道號(乾道/坤道)</div>
+              <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{gender}'}</code> 性別(乾道/坤道)</div>
               <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{job}'}</code> 天職</div>
               <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{country}'}</code> 國家</div>
               <div><code style={{ background: 'var(--bg-card)', padding: '1px 6px', borderRadius: 3, color: 'var(--temple-red)' }}>{'{region}'}</code> 縣市</div>
@@ -5144,7 +5144,7 @@ function BroadcastComposeForm({ userConfig, password, showToast, onSent }) {
       <select value={audience} onChange={(e) => setAudience(e.target.value)}>
         <option value="all">全部會員(已驗證 + 未停用)</option>
         <option value="job">特定天職</option>
-        <option value="gender">特定道號(乾道/坤道)</option>
+        <option value="gender">特定性別(乾道/坤道)</option>
         <option value="country">特定國家</option>
       </select>
 
