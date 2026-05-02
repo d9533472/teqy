@@ -1809,6 +1809,326 @@
   }
 
   /* ============================================================ */
+  /* ALBUMS FEATURE — homepage widget for albums (4 layouts) */
+  /* ============================================================ */
+  .albums-feat-section {
+    background: linear-gradient(180deg, var(--paper) 0%, var(--paper-warm) 100%);
+    border-top: 1px solid rgba(184,134,11,0.12);
+    border-bottom: 1px solid rgba(184,134,11,0.12);
+  }
+  .albums-feat-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 16px;
+    margin-bottom: 36px;
+  }
+  .albums-feat-desc {
+    margin-top: 12px;
+    color: var(--ink-light);
+    max-width: 600px;
+    line-height: 1.7;
+  }
+  .albums-feat-more {
+    color: var(--temple-red); font-size: 14px;
+    text-decoration: none;
+    padding: 10px 22px;
+    border: 1px solid rgba(139,36,33,0.3);
+    border-radius: 999px;
+    transition: all 0.3s;
+    font-family: 'Noto Serif TC', serif;
+    letter-spacing: 0.05em;
+  }
+  .albums-feat-more:hover {
+    background: var(--temple-red); color: var(--paper-warm); border-color: var(--temple-red);
+  }
+  .albums-feat-empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--ink-mute);
+    background: var(--paper-warm);
+    border: 1px dashed rgba(184,134,11,0.3);
+    border-radius: 4px;
+    font-style: italic;
+  }
+
+  /* === Layout 1: Latest cards === */
+  .albums-feat-latest {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .albums-feat-card {
+    text-decoration: none; color: inherit;
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    display: flex; flex-direction: column;
+  }
+  .albums-feat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -16px rgba(94,23,20,0.2);
+    border-color: var(--gold);
+  }
+  .albums-feat-cover {
+    aspect-ratio: 4 / 3;
+    background-size: cover; background-position: center;
+    background-color: var(--paper-deep);
+    position: relative;
+  }
+  .albums-feat-year-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(26,20,16,0.7);
+    color: var(--paper-warm);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    backdrop-filter: blur(4px);
+  }
+  .albums-feat-meta { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .albums-feat-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.15rem; font-weight: 500;
+    color: var(--ink); line-height: 1.4;
+    margin: 0;
+  }
+  .albums-feat-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 13px;
+  }
+  .albums-feat-blurb {
+    font-size: 13px; color: var(--ink-light); line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  /* === Layout 2: Group by year === */
+  .albums-feat-by-year {
+    display: flex; flex-direction: column; gap: 40px;
+  }
+  .albums-feat-year-group {}
+  .albums-feat-year-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+  }
+  .albums-feat-year-title {
+    display: flex; align-items: baseline; gap: 14px;
+    margin: 0;
+  }
+  .albums-feat-year-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 500;
+    color: var(--temple-red);
+    letter-spacing: 0.05em;
+  }
+  .albums-feat-year-label {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    color: var(--ink-light);
+  }
+  .albums-feat-year-link {
+    color: var(--gold);
+    font-size: 13px;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Noto Serif TC', serif;
+  }
+  .albums-feat-year-link:hover {
+    color: var(--temple-red);
+    border-bottom-color: var(--temple-red);
+  }
+  .albums-feat-year-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+  }
+  .albums-feat-mini-card {
+    text-decoration: none; color: inherit;
+    transition: transform 0.3s;
+    display: block;
+  }
+  .albums-feat-mini-card:hover { transform: translateY(-2px); }
+  .albums-feat-mini-cover {
+    aspect-ratio: 1 / 1;
+    background-size: cover; background-position: center;
+    background-color: var(--paper-deep);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 12px -8px rgba(94,23,20,0.2);
+  }
+  .albums-feat-mini-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* === Layout 3: Timeline year cards === */
+  .albums-feat-timeline {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -20px;
+    padding: 0 20px 12px;
+  }
+  .albums-feat-timeline::-webkit-scrollbar { height: 6px; }
+  .albums-feat-timeline::-webkit-scrollbar-track { background: transparent; }
+  .albums-feat-timeline::-webkit-scrollbar-thumb {
+    background: rgba(184,134,11,0.25); border-radius: 4px;
+  }
+  .albums-feat-timeline-track {
+    display: flex; gap: 20px;
+    width: max-content;
+    padding: 4px 0;
+  }
+  .albums-feat-year-card {
+    width: 240px;
+    aspect-ratio: 3 / 4;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .albums-feat-year-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 24px 40px -16px rgba(94,23,20,0.3);
+  }
+  .albums-feat-year-card-cover {
+    width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    background-color: var(--paper-deep);
+    display: flex; align-items: flex-end;
+    position: relative;
+  }
+  .albums-feat-year-card-overlay {
+    width: 100%;
+    padding: 24px 20px;
+    background: linear-gradient(180deg, transparent 0%, rgba(26,20,16,0.85) 70%);
+    color: var(--paper-warm);
+    text-align: center;
+  }
+  .albums-feat-year-card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: var(--paper-warm);
+  }
+  .albums-feat-year-card-count {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+    color: rgba(245,239,228,0.85);
+  }
+
+  /* === Layout 4: Mosaic === */
+  .albums-feat-mosaic-wrap {}
+  .albums-feat-mosaic-tabs {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+    align-items: center;
+  }
+  .albums-feat-mosaic-tab {
+    padding: 6px 16px;
+    background: transparent;
+    border: 1px solid rgba(184,134,11,0.3);
+    color: var(--ink-light);
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+  .albums-feat-mosaic-tab:hover { border-color: var(--gold); color: var(--temple-red); }
+  .albums-feat-mosaic-tab.active {
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    border-color: var(--temple-red);
+  }
+  .albums-feat-mosaic-jump {
+    margin-left: auto;
+    color: var(--gold);
+    font-size: 13px;
+    text-decoration: none;
+    font-family: 'Noto Serif TC', serif;
+  }
+  .albums-feat-mosaic-jump:hover { color: var(--temple-red); }
+  .albums-feat-mosaic {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 140px;
+    gap: 8px;
+  }
+  .albums-feat-mosaic-tile {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--paper-warm);
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .albums-feat-mosaic-tile:hover { transform: scale(1.02); box-shadow: 0 12px 24px -10px rgba(94,23,20,0.3); }
+  /* Asymmetric sizing for variety */
+  .albums-feat-mosaic-tile-1 { grid-column: span 2; grid-row: span 2; }
+  .albums-feat-mosaic-tile-3 { grid-column: span 2; }
+  .albums-feat-mosaic-tile-5 { grid-row: span 2; }
+  .albums-feat-mosaic-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    background-color: var(--paper-deep);
+    transition: transform 0.6s;
+  }
+  .albums-feat-mosaic-tile:hover .albums-feat-mosaic-bg { transform: scale(1.06); }
+  .albums-feat-mosaic-cap {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 14px 16px;
+    background: linear-gradient(180deg, transparent 0%, rgba(26,20,16,0.85) 100%);
+    color: var(--paper-warm);
+  }
+  .albums-feat-mosaic-year {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+  }
+  .albums-feat-mosaic-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  @media (max-width: 768px) {
+    .albums-feat-mosaic {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 120px;
+    }
+    .albums-feat-mosaic-tile-1,
+    .albums-feat-mosaic-tile-3,
+    .albums-feat-mosaic-tile-5 {
+      grid-column: span 1; grid-row: span 1;
+    }
+    .albums-feat-mosaic-tile-1 { grid-column: span 2; grid-row: span 2; }
+  }
+
+  /* ============================================================ */
   /* CALENDAR SECTIONS */
   /* ============================================================ */
 
@@ -4294,6 +4614,227 @@ function MarqueeScroll({ items, data, anchorId, speedPxPerSec }) {
   );
 }
 
+// ============================================================
+// AlbumsFeatureSection — homepage widget for albums (4 layouts)
+// linkMode: query | hash | page  → controls how year-link URLs are built
+// linkBase: base URL of the full albums page
+// ============================================================
+function AlbumsFeatureSection({ data, anchorId }) {
+  const { albums: albumLibrary = [] } = useContext(ContentCtx);
+  const layout = data.layout || 'latest';  // latest | byYear | timeline | mosaic
+  const linkBase = data.linkBase || '';
+  const linkMode = data.linkMode || 'query';  // query | hash | page
+
+  // Build year-link URL for a given year
+  const yearUrl = (year) => {
+    if (!linkBase) return '';
+    if (linkMode === 'hash') {
+      // /albums#year-2026
+      return linkBase.includes('#') ? `${linkBase.split('#')[0]}#year-${year}` : `${linkBase}#year-${year}`;
+    }
+    if (linkMode === 'page') {
+      // /albums-2026 or /albums/2026 — admin builds a separate page per year
+      const sep = linkBase.endsWith('/') ? '' : '/';
+      return `${linkBase}${sep}${year}`;
+    }
+    // default: query
+    const sep = linkBase.includes('?') ? '&' : '?';
+    return `${linkBase}${sep}year=${year}`;
+  };
+
+  if (!albumLibrary || albumLibrary.length === 0) {
+    return (
+      <section id={anchorId} className="albums-feat-section">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+          <div className="albums-feat-header reveal">
+            {data.eyebrow && <div className="eyebrow mb-3" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml
+              ? <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light" html={data.titleHtml} />
+              : <h2 className="font-serif-tc text-4xl lg:text-5xl font-light">影像紀實</h2>}
+          </div>
+          <div className="albums-feat-empty reveal">尚未建立相簿</div>
+        </div>
+      </section>
+    );
+  }
+
+  // Sort by year desc + sortOrder
+  const sorted = [...albumLibrary].sort((a, b) => {
+    const ay = parseInt(a.year, 10) || 0;
+    const by = parseInt(b.year, 10) || 0;
+    if (ay !== by) return by - ay;
+    return (a.sortOrder || 0) - (b.sortOrder || 0);
+  });
+
+  return (
+    <section id={anchorId} className={`albums-feat-section albums-feat-${layout}`}>
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+        <div className="albums-feat-header reveal">
+          <div>
+            {data.eyebrow && <div className="eyebrow mb-3" style={{ display: 'inline-block' }}>{data.eyebrow}</div>}
+            {data.titleHtml
+              ? <HtmlContent className="font-serif-tc text-4xl lg:text-5xl font-light" html={data.titleHtml} />
+              : <h2 className="font-serif-tc text-4xl lg:text-5xl font-light">影像紀實</h2>}
+            {data.description && <p className="albums-feat-desc">{data.description}</p>}
+          </div>
+          {linkBase && <a href={linkBase} className="albums-feat-more">所有相簿 →</a>}
+        </div>
+
+        {layout === 'latest' && <AlbumsFeatLatest albums={sorted} limit={parseInt(data.limit, 10) || 4} linkBase={linkBase} />}
+        {layout === 'byYear' && <AlbumsFeatByYear albums={sorted} yearUrl={yearUrl} limit={parseInt(data.limit, 10) || 4} />}
+        {layout === 'timeline' && <AlbumsFeatTimeline albums={sorted} yearUrl={yearUrl} />}
+        {layout === 'mosaic' && <AlbumsFeatMosaic albums={sorted} yearUrl={yearUrl} limit={parseInt(data.limit, 10) || 8} />}
+      </div>
+    </section>
+  );
+}
+
+// === Helper: get cover image url ===
+function albumCover(album) {
+  if (album.source === 'drive' && album.driveCoverUrl) return album.driveCoverUrl;
+  if (album.coverImage) return album.coverImage;
+  if (album.photos && album.photos[0]) {
+    const p = album.photos[0];
+    return p.url || p.thumbUrl || '';
+  }
+  return '';
+}
+
+// === Layout 1: Latest 3-4 cards ===
+function AlbumsFeatLatest({ albums, limit, linkBase }) {
+  const featured = albums.slice(0, limit);
+  return (
+    <div className="albums-feat-latest reveal">
+      {featured.map(a => (
+        <a key={a.id} href={linkBase ? `${linkBase}#album-${a.id}` : `#album-${a.id}`} className="albums-feat-card">
+          <div className="albums-feat-cover" style={{ backgroundImage: `url('${albumCover(a)}')` }}>
+            {a.year && <span className="albums-feat-year-badge">{a.year}</span>}
+          </div>
+          <div className="albums-feat-meta">
+            <h3 className="albums-feat-title">{a.title || '未命名相簿'}</h3>
+            {a.eventDate && <div className="albums-feat-date">{a.eventDate}</div>}
+            {a.description && <p className="albums-feat-blurb">{a.description}</p>}
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+}
+
+// === Layout 2: Group by year (collapsible) ===
+function AlbumsFeatByYear({ albums, yearUrl, limit }) {
+  // Group by year
+  const grouped = useMemo(() => {
+    const map = {};
+    albums.forEach(a => {
+      const y = a.year || '其他';
+      if (!map[y]) map[y] = [];
+      map[y].push(a);
+    });
+    return Object.entries(map).sort((a, b) => {
+      const ay = parseInt(a[0], 10) || 0;
+      const by = parseInt(b[0], 10) || 0;
+      return by - ay;
+    });
+  }, [albums]);
+
+  return (
+    <div className="albums-feat-by-year reveal">
+      {grouped.map(([year, list]) => (
+        <div key={year} className="albums-feat-year-group">
+          <div className="albums-feat-year-header">
+            <h3 className="albums-feat-year-title">
+              <span className="albums-feat-year-num">{year}</span>
+              <span className="albums-feat-year-label">{list.length} 個相簿</span>
+            </h3>
+            {yearUrl(year) && /^\d{4}$/.test(year) && (
+              <a className="albums-feat-year-link" href={yearUrl(year)}>查看全部 {year} 年 →</a>
+            )}
+          </div>
+          <div className="albums-feat-year-grid">
+            {list.slice(0, limit).map(a => (
+              <a key={a.id} href={`#album-${a.id}`} className="albums-feat-mini-card">
+                <div className="albums-feat-mini-cover" style={{ backgroundImage: `url('${albumCover(a)}')` }}></div>
+                <div className="albums-feat-mini-title">{a.title}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// === Layout 3: Horizontal timeline (year cards) ===
+function AlbumsFeatTimeline({ albums, yearUrl }) {
+  // Group: each year card shows year + cover image of first album + count
+  const groupedByYear = useMemo(() => {
+    const map = {};
+    albums.forEach(a => {
+      const y = a.year;
+      if (!y) return;
+      if (!map[y]) map[y] = { year: y, count: 0, cover: '' };
+      map[y].count++;
+      if (!map[y].cover) map[y].cover = albumCover(a);
+    });
+    return Object.values(map).sort((a, b) => parseInt(b.year, 10) - parseInt(a.year, 10));
+  }, [albums]);
+
+  return (
+    <div className="albums-feat-timeline reveal">
+      <div className="albums-feat-timeline-track">
+        {groupedByYear.map((g, i) => (
+          <a key={g.year} href={yearUrl(g.year) || `#year-${g.year}`} className="albums-feat-year-card">
+            <div className="albums-feat-year-card-cover" style={{ backgroundImage: `url('${g.cover}')` }}>
+              <div className="albums-feat-year-card-overlay">
+                <div className="albums-feat-year-card-num">{g.year}</div>
+                <div className="albums-feat-year-card-count">{g.count} 個相簿</div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// === Layout 4: Mosaic / pinterest-style ===
+function AlbumsFeatMosaic({ albums, yearUrl, limit }) {
+  const [yearFilter, setYearFilter] = useState('all');
+  const years = useMemo(() => {
+    const set = new Set();
+    albums.forEach(a => { if (a.year) set.add(String(a.year)); });
+    return Array.from(set).sort((a, b) => parseInt(b, 10) - parseInt(a, 10));
+  }, [albums]);
+  const filtered = (yearFilter === 'all' ? albums : albums.filter(a => String(a.year) === yearFilter)).slice(0, limit);
+  return (
+    <div className="albums-feat-mosaic-wrap reveal">
+      {years.length > 0 && (
+        <div className="albums-feat-mosaic-tabs">
+          <button className={`albums-feat-mosaic-tab ${yearFilter === 'all' ? 'active' : ''}`} onClick={() => setYearFilter('all')}>全部</button>
+          {years.map(y => (
+            <button key={y} className={`albums-feat-mosaic-tab ${yearFilter === y ? 'active' : ''}`} onClick={() => setYearFilter(y)}>{y}</button>
+          ))}
+          {yearFilter !== 'all' && yearUrl(yearFilter) && (
+            <a className="albums-feat-mosaic-jump" href={yearUrl(yearFilter)}>看完整 {yearFilter} 年 →</a>
+          )}
+        </div>
+      )}
+      <div className="albums-feat-mosaic">
+        {filtered.map((a, i) => (
+          <a key={a.id} href={`#album-${a.id}`} className={`albums-feat-mosaic-tile albums-feat-mosaic-tile-${(i % 5) + 1}`}>
+            <div className="albums-feat-mosaic-bg" style={{ backgroundImage: `url('${albumCover(a)}')` }}></div>
+            <div className="albums-feat-mosaic-cap">
+              {a.year && <span className="albums-feat-mosaic-year">{a.year}</span>}
+              <div className="albums-feat-mosaic-title">{a.title}</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function AlbumsSection({ data, anchorId }) {
   const { albums: albumLibrary = [] } = useContext(ContentCtx);
   const selectedIds = data.selectedAlbumIds || [];
@@ -4311,6 +4852,21 @@ function AlbumsSection({ data, anchorId }) {
   const [lightbox, setLightbox] = useState(null);
   const [driveImagesCache, setDriveImagesCache] = useState({}); // { albumId: [images] }
   const [loadingAlbumId, setLoadingAlbumId] = useState(null);
+
+  // Initialize year filter from URL query string (?year=2026) or hash anchor (#year-2026)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const yearParam = params.get('year');
+      if (yearParam && /^\d{4}$/.test(yearParam)) {
+        setYearFilter(yearParam);
+        return;
+      }
+      const hash = (window.location.hash || '').replace(/^#/, '');
+      const m = hash.match(/^year-(\d{4})$/);
+      if (m) setYearFilter(m[1]);
+    } catch (e) {}
+  }, []);
 
   // Collect unique years
   const years = useMemo(() => {
@@ -7561,6 +8117,7 @@ const SECTION_RENDERERS = {
   'calendar-feature': CalendarFeatureSectionWrapper,
   'calendar-full': CalendarFullSectionWrapper,
   albums: AlbumsSection,
+  'albums-feature': AlbumsFeatureSection,
   'cards-corner': CardsCornerSection,
   timeline: TimelineSection,
   'cards-gradient': CardsGradientSection,

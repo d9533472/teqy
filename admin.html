@@ -1620,6 +1620,37 @@ const SECTION_SCHEMAS = {
       ]},
       { key: 'selectedAlbumIds', label: '選擇要顯示的相簿', type: 'albums-picker', help: '只有上方「展示模式」設為「只顯示選取相簿」時才會生效。順序就是公開頁顯示順序,可拖拉調整' }
     ]
+  },
+  'albums-feature': {
+    label: '相簿 - 首頁工具(精選版)',
+    icon: '🖼',
+    summary: (d) => {
+      const labels = {
+        latest: '最新精選',
+        byYear: '按年分組',
+        timeline: '時光輪播',
+        mosaic: '馬賽克牆'
+      };
+      return d.eyebrow || labels[d.layout || 'latest'];
+    },
+    fields: [
+      { key: 'eyebrow', label: '小標', type: 'text', placeholder: 'Photography' },
+      { key: 'titleHtml', label: '標題 (留空用預設「影像紀實」)', type: 'html' },
+      { key: 'description', label: '說明文字', type: 'textarea' },
+      { key: 'layout', label: '佈局風格', type: 'select', options: [
+        { value: 'latest', label: '🌟 最新精選 — 顯示最新 3-4 個相簿大卡片' },
+        { value: 'byYear', label: '🗓 按年分組 — 每年一個區塊,各自有「查看全部」連結' },
+        { value: 'timeline', label: '🎬 時光輪播 — 橫向年份卡片,點任年跳到該年' },
+        { value: 'mosaic', label: '📐 馬賽克牆 — 不規則磚塊,有年份篩選 chips' }
+      ]},
+      { key: 'limit', label: '顯示幾個相簿?', type: 'text', placeholder: '依佈局自動 (最新精選=4, 按年=4, 馬賽克=8)', help: '時光輪播會自動顯示所有有年份的相簿(每年一張)' },
+      { key: 'linkBase', label: '完整相簿頁連結', type: 'link', help: '建議:設成站內含「相簿展示」區塊的頁面 anchor (如 #albums)。設定後右上會出現「所有相簿 →」按鈕,且點任年份會跳到該頁並自動篩選該年份' },
+      { key: 'linkMode', label: '年份連結模式', type: 'select', options: [
+        { value: 'query', label: '查詢字串 — /albums?year=2026 (推薦,可分享)' },
+        { value: 'hash', label: '錨點哈希 — /albums#year-2026 (最輕量,純前端)' },
+        { value: 'page', label: '獨立頁面 — /albums/2026 (你需要為每年建獨立頁面)' }
+      ], help: '前兩種會自動讓相簿展示區塊跳到該年並篩選 — 不用做任何額外設定' }
+    ]
   }
 };
 
