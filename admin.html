@@ -105,6 +105,71 @@
   .sidebar-link.active { background: rgba(139,36,33,0.08); color: var(--temple-red); font-weight: 500; }
   .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-mute); padding: 0 14px; margin: 16px 0 6px; font-weight: 600; }
 
+  /* Visitor stats chart */
+  .stats-tab {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink-light);
+    transition: all 0.2s;
+  }
+  .stats-tab:hover { color: var(--ink); }
+  .stats-tab.active {
+    background: var(--bg-card);
+    color: var(--temple-red);
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .stats-chart {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .stats-bar-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .stats-bar-label {
+    color: var(--ink-mute);
+    text-align: right;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+  .stats-bar-track {
+    height: 28px;
+    background: rgba(184,134,11,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .stats-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--temple-red) 0%, #b34a47 100%);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 10px;
+    min-width: 28px;
+    transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+    color: var(--paper-warm);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 0.05em;
+  }
+  .stats-bar-value {
+    white-space: nowrap;
+  }
+  @media (max-width: 480px) {
+    .stats-bar-row { grid-template-columns: 70px 1fr; gap: 8px; }
+    .stats-bar-label { font-size: 12px; }
+  }
+
   /* Section card in editor */
   .section-card {
     background: var(--bg-card);
@@ -3334,8 +3399,9 @@ function BackupsView({ password, showToast, onRestore }) {
 // Visitor stats view
 // ============================================================
 function VisitorStatsView({ password, showToast }) {
-  const [visits, setVisits] = useState(null);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [range, setRange] = useState('monthly'); // daily | monthly | quarterly | yearly
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
@@ -3343,98 +3409,178 @@ function VisitorStatsView({ password, showToast }) {
   const refresh = async () => {
     setLoading(true);
     try {
-      const r = await gasPost({ action: 'getVisits', password });
-      if (r.ok) setVisits(r.visits);
-      else showToast('無法載入訪客統計: ' + (r.error || ''), 'error');
+      const r = await gasPost({ action: 'getVisitStats', password, range });
+      if (r.ok) setStats(r.stats);
+      else showToast('無法載入統計: ' + (r.error || ''), 'error');
     } catch (e) {
       showToast('載入失敗: ' + e.message, 'error');
     }
     setLoading(false);
   };
 
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => { refresh(); }, [range]);
 
   const startEdit = () => {
-    setEditValue(String(visits || 0));
+    setEditValue(String(stats?.quick?.allTime || 0));
     setEditing(true);
   };
-
-  const save = async () => {
+  const saveEdit = async () => {
     const n = parseInt(editValue, 10);
-    if (isNaN(n) || n < 0) {
-      showToast('請輸入大於等於 0 的整數', 'error');
-      return;
-    }
+    if (isNaN(n) || n < 0) { showToast('請輸入大於等於 0 的整數', 'error'); return; }
     setSaving(true);
     try {
       const r = await gasPost({ action: 'setVisits', password, value: n });
-      if (r.ok) {
-        setVisits(r.visits);
-        setEditing(false);
-        showToast('訪客數已更新', 'success');
-      } else {
-        showToast('更新失敗: ' + (r.error || ''), 'error');
-      }
-    } catch (e) {
-      showToast('更新失敗: ' + e.message, 'error');
-    }
+      if (r.ok) { setEditing(false); showToast('已更新', 'success'); refresh(); }
+      else showToast('更新失敗: ' + (r.error || ''), 'error');
+    } catch (e) { showToast(e.message, 'error'); }
     setSaving(false);
   };
 
+  if (loading) return (
+    <div className="card p-6"><div style={{ color: 'var(--ink-mute)' }}>載入中⋯</div></div>
+  );
+  if (!stats) return null;
+
+  const buckets = stats.buckets || [];
+  const maxCount = Math.max(1, ...buckets.map(b => b.count));
+
+  // Format bucket label for display
+  const labelFor = (key) => {
+    if (range === 'daily') {
+      const [y, m, d] = key.split('-');
+      return `${parseInt(m,10)}/${parseInt(d,10)}`;
+    }
+    if (range === 'monthly') {
+      const [y, m] = key.split('-');
+      return `${y}年${parseInt(m,10)}月`;
+    }
+    if (range === 'quarterly') return key.replace('-', ' ');  // 2026 Q1
+    return key;  // year as-is
+  };
+
+  // For daily, show only last 30; for monthly, last 24; quarterly last 16; yearly all
+  const visibleBuckets = (() => {
+    if (range === 'daily') return buckets.slice(-30);
+    if (range === 'monthly') return buckets.slice(-24);
+    if (range === 'quarterly') return buckets.slice(-16);
+    return buckets;
+  })();
+
+  const visibleTotal = visibleBuckets.reduce((s, b) => s + b.count, 0);
+
   return (
     <div>
-      <div className="card p-6 mb-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-serif text-2xl font-medium">訪客統計</h2>
-          <button className="btn btn-secondary btn-sm" onClick={refresh}>重新整理</button>
-        </div>
-
-        {loading ? (
-          <div style={{ color: 'var(--ink-mute)' }}>載入中⋯</div>
-        ) : (
-          <div>
-            <div className="text-center py-8" style={{ background: 'var(--bg)', borderRadius: 8 }}>
-              <div className="text-xs uppercase tracking-widest mb-3" style={{ color: 'var(--ink-mute)', letterSpacing: '0.2em' }}>Total Visits</div>
-              {!editing ? (
-                <>
-                  <div className="font-serif text-6xl font-light mb-2" style={{ color: 'var(--temple-red)' }}>
-                    {(visits || 0).toLocaleString()}
-                  </div>
-                  <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>累計訪問人次</div>
-                  <button className="btn btn-secondary btn-sm mt-6" onClick={startEdit}>手動修改數字</button>
-                </>
-              ) : (
-                <div style={{ maxWidth: 320, margin: '0 auto' }}>
-                  <label className="field-label">設定新的累計數</label>
-                  <input
-                    type="number"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    min="0"
-                    className="text-center"
-                    style={{ fontSize: 24, padding: 12 }}
-                    autoFocus
-                  />
-                  <div className="flex gap-2 mt-4 justify-center">
-                    <button className="btn btn-primary" onClick={save} disabled={saving}>
-                      {saving ? '儲存中⋯' : '確認儲存'}
-                    </button>
-                    <button className="btn btn-secondary" onClick={() => setEditing(false)}>取消</button>
-                  </div>
-                </div>
-              )}
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div>
+          <h2 className="font-serif text-2xl font-medium" style={{ marginBottom: 4 }}>👁 訪客統計</h2>
+          {stats.trackingStartedAt && (
+            <div className="text-xs" style={{ color: 'var(--ink-mute)' }}>
+              詳細統計從 {stats.trackingStartedAt} 開始記錄,共 {stats.quick.trackedDays} 天
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        <button className="btn btn-secondary btn-sm" onClick={refresh}>↻ 重新整理</button>
       </div>
 
+      {/* Quick stat cards */}
+      <div className="grid mb-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
+        <div className="card p-4">
+          <div className="text-xs mb-1" style={{ color: 'var(--ink-mute)' }}>今日</div>
+          <div className="font-cormorant" style={{ fontSize: 32, fontWeight: 500, color: 'var(--temple-red)' }}>{stats.quick.today}</div>
+        </div>
+        <div className="card p-4">
+          <div className="text-xs mb-1" style={{ color: 'var(--ink-mute)' }}>本月</div>
+          <div className="font-cormorant" style={{ fontSize: 32, fontWeight: 500, color: 'var(--ink)' }}>{stats.quick.thisMonth}</div>
+        </div>
+        <div className="card p-4">
+          <div className="text-xs mb-1" style={{ color: 'var(--ink-mute)' }}>本季</div>
+          <div className="font-cormorant" style={{ fontSize: 32, fontWeight: 500, color: 'var(--ink)' }}>{stats.quick.thisQuarter}</div>
+        </div>
+        <div className="card p-4">
+          <div className="text-xs mb-1" style={{ color: 'var(--ink-mute)' }}>本年</div>
+          <div className="font-cormorant" style={{ fontSize: 32, fontWeight: 500, color: 'var(--ink)' }}>{stats.quick.thisYear}</div>
+        </div>
+        <div className="card p-4" style={{ background: 'var(--paper-warm)', borderColor: 'rgba(184,134,11,0.3)' }}>
+          <div className="text-xs mb-1" style={{ color: 'var(--ink-mute)' }}>累計總計</div>
+          <div className="font-cormorant" style={{ fontSize: 32, fontWeight: 500, color: 'var(--gold)' }}>
+            {(stats.quick.allTime || 0).toLocaleString()}
+          </div>
+        </div>
+      </div>
+
+      {/* Time range selector */}
+      <div className="card p-6 mb-6">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div className="flex gap-1 flex-wrap" style={{ background: 'var(--bg)', borderRadius: 6, padding: 3 }}>
+            {[
+              { v: 'daily', l: '📅 日' },
+              { v: 'monthly', l: '🗓 月' },
+              { v: 'quarterly', l: '📊 季' },
+              { v: 'yearly', l: '📈 年' }
+            ].map(({ v, l }) => (
+              <button key={v} className={`stats-tab ${range === v ? 'active' : ''}`} onClick={() => setRange(v)}>
+                {l}
+              </button>
+            ))}
+          </div>
+          <div className="text-sm" style={{ color: 'var(--ink-mute)' }}>
+            顯示中: <strong style={{ color: 'var(--ink)' }}>{visibleTotal.toLocaleString()}</strong> 次訪問
+          </div>
+        </div>
+
+        {visibleBuckets.length === 0 ? (
+          <div className="text-center py-12" style={{ color: 'var(--ink-mute)', fontStyle: 'italic' }}>
+            此範圍內尚無資料
+          </div>
+        ) : (
+          <div className="stats-chart">
+            {visibleBuckets.map(b => {
+              const pct = (b.count / maxCount) * 100;
+              return (
+                <div key={b.key} className="stats-bar-row">
+                  <div className="stats-bar-label">{labelFor(b.key)}</div>
+                  <div className="stats-bar-track">
+                    <div className="stats-bar-fill" style={{ width: pct + '%' }}>
+                      <span className="stats-bar-value">{b.count.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="text-xs mt-4 text-right" style={{ color: 'var(--ink-mute)' }}>
+          {range === 'daily' && '顯示最近 30 天'}
+          {range === 'monthly' && '顯示最近 24 個月'}
+          {range === 'quarterly' && '顯示最近 16 季'}
+          {range === 'yearly' && '顯示所有年度'}
+        </div>
+      </div>
+
+      {/* Manual edit + info */}
       <div className="card p-6">
-        <h3 className="font-serif text-lg font-medium mb-3">關於訪客計數</h3>
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <h3 className="font-serif text-lg font-medium">累計總數調整</h3>
+          {!editing && <button className="btn btn-secondary btn-sm" onClick={startEdit}>手動修改累計數</button>}
+        </div>
+        {editing && (
+          <div className="flex gap-2 items-end mb-4 flex-wrap">
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <label className="field-label">設定新的累計數</label>
+              <input type="number" value={editValue} onChange={(e) => setEditValue(e.target.value)} min="0" />
+            </div>
+            <button className="btn btn-primary btn-sm" onClick={saveEdit} disabled={saving}>{saving ? '儲存中⋯' : '儲存'}</button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setEditing(false)}>取消</button>
+          </div>
+        )}
+
         <ul className="text-sm space-y-2" style={{ color: 'var(--ink-soft)' }}>
-          <li>• 同一個瀏覽分頁(session)只計數一次,不會因為按 F5 重整就一直加</li>
-          <li>• 計數獨立儲存在 GAS Properties,即使重置內容也不會歸零</li>
-          <li>• 想隱藏不顯示計數,到「頁尾設定」取消勾選即可</li>
-          <li>• 想從某個起始數開始(例如要承接舊網站的數字),點「手動修改數字」直接設定</li>
+          <li>· 同一瀏覽分頁(session)只計數一次,F5 重整不會重複加</li>
+          <li>· <strong>「累計總計」</strong>從網站建立至今所有訪問,可手動調整(承接舊站數字)</li>
+          <li>· <strong>「日/月/季/年」分組統計</strong>從詳細記錄啟用後開始,只能往前看 ~2 年(系統自動清掉超過 730 天的舊每日數)</li>
+          <li>· 想隱藏首頁的計數,到「頁尾設定」取消勾選即可</li>
         </ul>
       </div>
     </div>
