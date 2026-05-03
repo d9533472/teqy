@@ -3247,9 +3247,15 @@ function FooterEditor({ footer, onUpdate }) {
             <input type="text" value={footer.instagramUrl || ''} onChange={(e) => update('instagramUrl', e.target.value)} placeholder="https://www.instagram.com/your-account" className="font-mono" style={{ fontSize: 12 }} />
           </div>
         </div>
-        <div className="mt-3">
-          <label className="field-label">🎬 YouTube 頻道網址</label>
-          <input type="text" value={footer.youtubeUrl || ''} onChange={(e) => update('youtubeUrl', e.target.value)} placeholder="https://www.youtube.com/@your-channel" className="font-mono" style={{ fontSize: 12 }} />
+        <div className="grid-2 mt-3">
+          <div>
+            <label className="field-label">🎬 YouTube 頻道網址</label>
+            <input type="text" value={footer.youtubeUrl || ''} onChange={(e) => update('youtubeUrl', e.target.value)} placeholder="https://www.youtube.com/@your-channel" className="font-mono" style={{ fontSize: 12 }} />
+          </div>
+          <div>
+            <label className="field-label">📍 Google 地圖網址</label>
+            <input type="text" value={footer.googleMapUrl || ''} onChange={(e) => update('googleMapUrl', e.target.value)} placeholder="https://maps.app.goo.gl/... 或 https://goo.gl/maps/..." className="font-mono" style={{ fontSize: 12 }} />
+          </div>
         </div>
         <div className="mt-3 p-3" style={{ background: 'var(--bg-card)', borderRadius: 4 }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
