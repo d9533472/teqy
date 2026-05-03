@@ -3251,6 +3251,17 @@ function FooterEditor({ footer, onUpdate }) {
           <label className="field-label">🎬 YouTube 頻道網址</label>
           <input type="text" value={footer.youtubeUrl || ''} onChange={(e) => update('youtubeUrl', e.target.value)} placeholder="https://www.youtube.com/@your-channel" className="font-mono" style={{ fontSize: 12 }} />
         </div>
+        <div className="mt-3 p-3" style={{ background: 'var(--bg-card)', borderRadius: 4 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+            <input type="checkbox"
+                   checked={!!footer.showSocialsInNav}
+                   onChange={(e) => update('showSocialsInNav', e.target.checked)} />
+            <span style={{ fontSize: 14 }}>同時在<strong>頂部導覽列</strong>顯示小圖示</span>
+          </label>
+          <div className="text-xs mt-1" style={{ color: 'var(--ink-mute)', paddingLeft: 24 }}>
+            只在桌機(寬度 ≥ 1024px)顯示,平板/手機自動藏起避免擁擠。會出現在登入按鈕的左邊
+          </div>
+        </div>
       </div>
     </div>
   );

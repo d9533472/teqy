@@ -308,6 +308,35 @@
 
   .brush { height: 2px; width: 64px; background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); }
 
+  /* Nav social mini-icons (between nav links and auth button) */
+  .nav-socials {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding-right: 4px;
+    border-right: 1px solid rgba(184,134,11,0.2);
+    margin-right: 4px;
+  }
+  .nav-social-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent;
+    color: var(--ink-mute);
+    transition: all 0.25s;
+    flex-shrink: 0;
+  }
+  .nav-social-icon:hover {
+    transform: scale(1.15);
+  }
+  .nav-social-facebook:hover { color: #1877f2; }
+  .nav-social-instagram:hover { color: #e6683c; }
+  .nav-social-youtube:hover { color: #ff0000; }
+  /* Hide nav socials on smaller screens (avoid clutter) */
+  @media (max-width: 1024px) {
+    .nav-socials { display: none; }
+  }
+
   /* === Social icons (footer + floating) === */
   .social-icons-label {
     font-size: 12px;
@@ -3264,15 +3293,25 @@
   }
 
   @media (max-width: 640px) {
-    .cal-cell { min-height: 64px; padding: 4px; }
-    .cal-cell-day { font-size: 12px; }
-    .cal-cell-event { font-size: 9px; padding: 1px 4px; }
+    .cal-cell { min-height: 72px; padding: 4px 3px; }
+    .cal-cell-day { font-size: 11px; margin-bottom: 1px; }
+    .cal-cell-event {
+      font-size: 9px; padding: 1px 4px;
+      max-height: 14px; line-height: 12px;
+    }
+    .cal-cell-events { gap: 1px; }
+    .cal-cell-more { font-size: 9px; padding: 0 2px; }
     .cal-week { grid-template-columns: 1fr; }
     .cal-week-day { min-height: auto; }
     .cal-mini-card { gap: 12px; padding: 12px; }
     .cal-mini-date { width: 56px; }
     .cal-mini-day { font-size: 1.7rem; }
     .cal-modal-body { padding: 20px; }
+    /* On mobile, hint to user to tap the day for full list */
+    .cal-day-detail {
+      border: 1px solid var(--temple-red);
+      box-shadow: 0 4px 16px -8px rgba(94,23,20,0.2);
+    }
   }
 
   /* Universal "Read more" link — appears at the bottom of various sections */
@@ -8023,12 +8062,15 @@ function CalendarMonthGrid({ cursor, eventsByDate, categories, selectedDate, onS
           const evs = eventsByDate[d.dateStr] || [];
           const isToday = d.dateStr === todayStr;
           const isSelected = d.dateStr === selectedDate;
+          // On narrow screens (≤ 640px) show only 2 events; on desktop show 3
+          const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+          const maxShow = isMobile ? 2 : 3;
           return (
             <div key={i} className={`cal-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
                  onClick={() => onSelectDate(d.dateStr)}>
               <div className="cal-cell-day">{d.day}</div>
               <div className="cal-cell-events">
-                {evs.slice(0, 3).map(ev => {
+                {evs.slice(0, maxShow).map(ev => {
                   const cat = calCategoryById(categories, ev.categoryId);
                   return (
                     <div key={ev.id} className="cal-cell-event" style={{ background: cat.color }}
@@ -8038,7 +8080,7 @@ function CalendarMonthGrid({ cursor, eventsByDate, categories, selectedDate, onS
                     </div>
                   );
                 })}
-                {evs.length > 3 && <div className="cal-cell-more">+{evs.length - 3} 場</div>}
+                {evs.length > maxShow && <div className="cal-cell-more">+{evs.length - maxShow} 場</div>}
               </div>
             </div>
           );
@@ -8291,8 +8333,9 @@ function PageRenderer({ page }) {
 // Layout: Nav + Footer
 // ============================================================
 
-function Nav({ site, navigation, ctaButton, onMobileToggle, onOpenAuth }) {
+function Nav({ site, navigation, ctaButton, onMobileToggle, onOpenAuth, footer }) {
   const { user } = useContext(UserCtx);
+  const showSocialsInNav = footer && footer.showSocialsInNav;
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-backdrop">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
@@ -8320,6 +8363,9 @@ function Nav({ site, navigation, ctaButton, onMobileToggle, onOpenAuth }) {
               <a key={item.id} href={navTargetUrl(item)} className="nav-link" target={item.type === 'external' ? '_blank' : '_self'}>{item.label}</a>
             )
           ))}
+
+          {/* Social mini-icons in nav (optional) */}
+          {showSocialsInNav && <NavSocials footer={footer} />}
 
           {/* Auth circle button — sits BEFORE the CTA button as requested */}
           <button
@@ -8352,6 +8398,28 @@ function Nav({ site, navigation, ctaButton, onMobileToggle, onOpenAuth }) {
         </button>
       </div>
     </nav>
+  );
+}
+
+// Compact social icons for nav bar
+function NavSocials({ footer }) {
+  const items = [
+    { key: 'facebook', url: footer.facebookUrl, label: 'Facebook',
+      svg: <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24h11.494v-9.294H9.692v-3.622h3.127V8.413c0-3.099 1.893-4.785 4.659-4.785 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.764v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/> },
+    { key: 'instagram', url: footer.instagramUrl, label: 'Instagram',
+      svg: <><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></> },
+    { key: 'youtube', url: footer.youtubeUrl, label: 'YouTube',
+      svg: <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/> }
+  ].filter(b => b.url && b.url.trim());
+  if (items.length === 0) return null;
+  return (
+    <div className="nav-socials">
+      {items.map(b => (
+        <a key={b.key} href={b.url} target="_blank" rel="noreferrer" className={`nav-social-icon nav-social-${b.key}`} aria-label={b.label} title={b.label}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">{b.svg}</svg>
+        </a>
+      ))}
+    </div>
   );
 }
 
@@ -8703,12 +8771,12 @@ function App() {
     <ContentCtx.Provider value={{ albums: content.albums || [] }}>
     <UserCtx.Provider value={{ user, login: userLogin, logout: userLogout, refresh: refreshUser }}>
     <>
-      <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} onOpenAuth={() => setAuthOpen(true)} />
+      <Nav site={content.site} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onMobileToggle={() => setMobileOpen(v => !v)} onOpenAuth={() => setAuthOpen(true)} footer={content.footer} />
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} navigation={content.navigation} ctaButton={{ label: content.site.ctaButtonLabel, url: content.site.ctaButtonUrl }} onOpenAuth={() => setAuthOpen(true)} />
       <AuthDrawer open={authOpen} onClose={() => setAuthOpen(false)} />
       <PageRenderer page={currentPage} />
       <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
-      <SocialFloating footer={content.footer} />
+      {!authOpen && !mobileOpen && <SocialFloating footer={content.footer} />}
       <ResetPasswordModal />
       {showVisitBadge && typeof visits === 'number' && (
         <div className="visit-fab" title={`${visitLabel}: ${visits.toLocaleString()}`}>
