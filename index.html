@@ -308,6 +308,126 @@
 
   .brush { height: 2px; width: 64px; background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); }
 
+  /* === Social icons (footer + floating) === */
+  .social-icons-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+  .social-icons-row {
+    display: flex; gap: 10px;
+    flex-wrap: wrap;
+  }
+  .social-circle {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+  /* Footer variant — over dark BG */
+  .social-icons-footer .social-circle {
+    background: rgba(184,134,11,0.12);
+    border: 1px solid rgba(184,134,11,0.3);
+    color: var(--gold-light);
+  }
+  .social-icons-footer .social-circle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -6px rgba(184,134,11,0.4);
+  }
+  /* Floating variant — clean circle on light BG */
+  .social-icons-floating .social-circle {
+    background: var(--paper-warm);
+    border: 1px solid rgba(184,134,11,0.4);
+    color: var(--ink-light);
+    box-shadow: 0 4px 12px -4px rgba(94,23,20,0.15);
+  }
+  .social-icons-floating .social-circle:hover {
+    transform: translateY(-2px) scale(1.08);
+  }
+  /* Brand colors on hover */
+  .social-circle.social-facebook:hover { background: #1877f2; color: white; border-color: #1877f2; }
+  .social-circle.social-instagram:hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white; border-color: transparent;
+  }
+  .social-circle.social-youtube:hover { background: #ff0000; color: white; border-color: #ff0000; }
+
+  /* === Floating dock (right-bottom) === */
+  .social-floating {
+    position: fixed;
+    right: 24px; bottom: 24px;
+    z-index: 40;
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .social-floating-stack {
+    display: flex; flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .social-floating.open .social-floating-stack {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  /* Stagger the icons fan-out */
+  .social-floating-stack .social-icons-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .social-floating-stack .social-circle {
+    transform: scale(0.7);
+    transition-delay: 0s;
+  }
+  .social-floating.open .social-floating-stack .social-circle {
+    transform: scale(1);
+  }
+  .social-floating.open .social-floating-stack .social-circle:nth-child(1) { transition-delay: 0.05s; }
+  .social-floating.open .social-floating-stack .social-circle:nth-child(2) { transition-delay: 0.10s; }
+  .social-floating.open .social-floating-stack .social-circle:nth-child(3) { transition-delay: 0.15s; }
+  .social-floating-toggle {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--temple-red);
+    color: var(--paper-warm);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 20px -6px rgba(94,23,20,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .social-floating-toggle:hover {
+    transform: scale(1.08);
+    background: var(--temple-red-deep);
+    box-shadow: 0 12px 28px -8px rgba(94,23,20,0.5);
+  }
+  .social-floating.open .social-floating-toggle {
+    transform: rotate(180deg);
+    background: var(--ink);
+  }
+  .social-floating.open .social-floating-toggle:hover {
+    transform: rotate(180deg) scale(1.08);
+    background: var(--ink);
+  }
+
+  /* Mobile — smaller floating button, position higher up to clear browser nav */
+  @media (max-width: 640px) {
+    .social-floating { right: 16px; bottom: 16px; }
+    .social-floating-toggle { width: 44px; height: 44px; }
+    .social-floating-stack .social-circle { width: 36px; height: 36px; }
+  }
+
   .corner-frame { position: relative; }
   .corner-frame::before, .corner-frame::after {
     content: ''; position: absolute; width: 24px; height: 24px;
@@ -7173,13 +7293,15 @@ function calIsActive(ev, dateStr) {
 }
 
 function calMonthDays(year, month) {
-  // month is 0-indexed
+  // month is 0-indexed. Week starts on Monday (Taiwan convention).
   const days = [];
   const first = new Date(year, month, 1);
-  const startWeekday = first.getDay();
+  // JS getDay(): 0=Sun, 1=Mon, ..., 6=Sat
+  // For Monday-first calendars, leading blanks count = (getDay() + 6) % 7
+  // Sun(0)→6 blanks, Mon(1)→0, Tue(2)→1, ... Sat(6)→5
+  const leadingBlanks = (first.getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  // Add leading blanks
-  for (let i = 0; i < startWeekday; i++) days.push(null);
+  for (let i = 0; i < leadingBlanks; i++) days.push(null);
   for (let d = 1; d <= daysInMonth; d++) {
     const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     days.push({ day: d, dateStr: dStr });
@@ -7187,6 +7309,17 @@ function calMonthDays(year, month) {
   // Pad to multiple of 7
   while (days.length % 7) days.push(null);
   return days;
+}
+
+// Helper: shift a date to start-of-week (Monday-first).
+// Pure: returns new Date, doesn't mutate.
+function startOfWeekMon(date) {
+  const d = new Date(date);
+  // Days to subtract: Mon=0, Tue=1, ..., Sun=6
+  const back = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - back);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 function CalendarMiniSection({ data, anchorId }) {
@@ -7630,7 +7763,7 @@ function CalFeatMiniMonth({ events, allFutureEvents, cats, linkFor, has }) {
           {cursor.getFullYear()} 年 {cursor.getMonth() + 1} 月
         </div>
         <div className="cal-feat-mm-weekdays">
-          {['日','一','二','三','四','五','六'].map(d => <div key={d}>{d}</div>)}
+          {['一','二','三','四','五','六','日'].map(d => <div key={d}>{d}</div>)}
         </div>
         <div className="cal-feat-mm-grid">
           {days.map((d, i) => {
@@ -7779,8 +7912,7 @@ function CalendarFullSection({ data, anchorId }) {
 
   const titleStr = (() => {
     if (viewMode === 'week') {
-      const start = new Date(cursor);
-      start.setDate(start.getDate() - start.getDay());
+      const start = startOfWeekMon(cursor);
       const end = new Date(start);
       end.setDate(end.getDate() + 6);
       return `${start.getFullYear()}/${start.getMonth() + 1}/${start.getDate()} – ${end.getMonth() + 1}/${end.getDate()}`;
@@ -7883,7 +8015,7 @@ function CalendarMonthGrid({ cursor, eventsByDate, categories, selectedDate, onS
   return (
     <div className="cal-grid reveal">
       <div className="cal-weekdays">
-        {['日','一','二','三','四','五','六'].map(d => <div key={d}>{d}</div>)}
+        {['一','二','三','四','五','六','日'].map(d => <div key={d}>{d}</div>)}
       </div>
       <div className="cal-grid-body">
         {days.map((d, i) => {
@@ -7951,8 +8083,8 @@ function CalendarDayDetail({ date, events, categories, onSelectEvent }) {
 }
 
 function CalendarWeekView({ cursor, eventsByDate, categories, onSelectEvent }) {
-  const start = new Date(cursor);
-  start.setDate(start.getDate() - start.getDay());
+  // Start on Monday (Taiwan convention)
+  const start = startOfWeekMon(cursor);
   const days = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(start);
@@ -8302,6 +8434,84 @@ function MobileMenu({ open, onClose, navigation, ctaButton, onOpenAuth }) {
   );
 }
 
+// ============================================================
+// SocialIcons — reusable circle-icon component (3 brands)
+// variant: 'footer' (light text on dark BG) | 'floating' (always visible)
+// ============================================================
+function SocialIcons({ footer, variant }) {
+  const brands = [
+    { key: 'facebook', url: footer.facebookUrl, label: 'Facebook',
+      svg: <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24h11.494v-9.294H9.692v-3.622h3.127V8.413c0-3.099 1.893-4.785 4.659-4.785 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.764v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/> },
+    { key: 'instagram', url: footer.instagramUrl, label: 'Instagram',
+      svg: <><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></> },
+    { key: 'youtube', url: footer.youtubeUrl, label: 'YouTube',
+      svg: <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/> }
+  ];
+  const visible = brands.filter(b => b.url && b.url.trim());
+  if (visible.length === 0) return null;
+
+  return (
+    <div className={`social-icons social-icons-${variant}`}>
+      {variant === 'footer' && (
+        <div className="social-icons-label">關注我們</div>
+      )}
+      <div className="social-icons-row">
+        {visible.map(b => (
+          <a key={b.key} href={b.url} target="_blank" rel="noreferrer" className={`social-circle social-${b.key}`} aria-label={b.label} title={b.label}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">{b.svg}</svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// SocialFloating — right-bottom floating dock with 3 icons
+// Collapsed by default — click main button to expand fan-out
+// ============================================================
+function SocialFloating({ footer }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+
+  const hasAny = (footer.facebookUrl && footer.facebookUrl.trim())
+              || (footer.instagramUrl && footer.instagramUrl.trim())
+              || (footer.youtubeUrl && footer.youtubeUrl.trim());
+  if (!hasAny) return null;
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [open]);
+
+  return (
+    <div className={`social-floating ${open ? 'open' : ''}`} ref={wrapRef}>
+      <div className="social-floating-stack">
+        <SocialIcons footer={footer} variant="floating" />
+      </div>
+      <button type="button"
+              className="social-floating-toggle"
+              onClick={() => setOpen(!open)}
+              aria-label={open ? '收起社群連結' : '展開社群連結'}>
+        {open ? (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        ) : (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+          </svg>
+        )}
+      </button>
+    </div>
+  );
+}
+
 function Footer({ site, footer, navigation }) {
   const year = new Date().getFullYear();
   return (
@@ -8340,14 +8550,7 @@ function Footer({ site, footer, navigation }) {
             </ul>
           </div>
           <div className="md:col-span-4">
-            {footer.youtubeUrl && (
-              <a href={footer.youtubeUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm" style={{ color: 'var(--gold-light)' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M23 7.5c-.3-2-1.7-3.5-3.7-3.7C16.5 3.5 12 3.5 12 3.5s-4.5 0-7.3.3c-2 .2-3.4 1.7-3.7 3.7C.5 9.6.5 12 .5 12s0 2.4.5 4.5c.3 2 1.7 3.5 3.7 3.7 2.8.3 7.3.3 7.3.3s4.5 0 7.3-.3c2-.2 3.4-1.7 3.7-3.7.5-2.1.5-4.5.5-4.5s0-2.4-.5-4.5zM9.5 15.5v-7l6 3.5-6 3.5z"/>
-                </svg>
-                <span>YouTube 頻道</span>
-              </a>
-            )}
+            <SocialIcons footer={footer} variant="footer" />
           </div>
         </div>
         <div className="pt-8 border-t flex flex-col md:flex-row justify-between gap-4 text-xs" style={{ borderColor: 'rgba(184,134,11,0.2)', color: 'rgba(237,228,210,0.5)' }}>
@@ -8505,6 +8708,7 @@ function App() {
       <AuthDrawer open={authOpen} onClose={() => setAuthOpen(false)} />
       <PageRenderer page={currentPage} />
       <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
+      <SocialFloating footer={content.footer} />
       <ResetPasswordModal />
       {showVisitBadge && typeof visits === 'number' && (
         <div className="visit-fab" title={`${visitLabel}: ${visits.toLocaleString()}`}>

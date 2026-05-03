@@ -867,6 +867,19 @@
   .cover-pick:hover { transform: scale(1.05); }
   .cover-pick.active { border-color: var(--temple-red); box-shadow: 0 0 0 1px var(--temple-red); }
 
+  /* Drive cover thumbnail picker */
+  .drive-cover-thumb {
+    transition: all 0.2s;
+  }
+  .drive-cover-thumb:hover {
+    transform: scale(1.05);
+    border-color: var(--gold) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  .drive-cover-thumb.selected:hover {
+    transform: scale(1.05);
+  }
+
   /* Albums picker (in section editor) */
   .albums-picker {
     border: 1px solid var(--border);
@@ -2618,6 +2631,7 @@ function AlbumsEditor({ value, onChange, password, showToast }) {
 function DriveSourceEditor({ album, onUpdate, password, showToast }) {
   const [previewing, setPreviewing] = useState(false);
   const [previewImages, setPreviewImages] = useState(null);
+  const [showAll, setShowAll] = useState(false);
 
   const fetchPreview = async () => {
     if (!album.driveFolderId) {
@@ -2640,28 +2654,98 @@ function DriveSourceEditor({ album, onUpdate, password, showToast }) {
     setPreviewing(false);
   };
 
+  const setCover = (img) => {
+    onUpdate({ driveCoverUrl: img.url, driveCoverFileId: img.fileId, driveCoverFilename: img.filename });
+    showToast(`封面已設定: ${img.filename}`, 'success');
+  };
+
+  const clearCover = () => {
+    onUpdate({ driveCoverUrl: '', driveCoverFileId: '', driveCoverFilename: '' });
+    showToast('已清除封面 — 將使用第一張照片', 'success');
+  };
+
+  const visibleImages = previewImages
+    ? (showAll ? previewImages : previewImages.slice(0, 12))
+    : [];
+
   return (
     <div>
       <label className="field-label">Drive 資料夾 ID</label>
       <input type="text" value={album.driveFolderId || ''} onChange={(e) => onUpdate({ driveFolderId: e.target.value })}
              placeholder="例: 1B4t4jFK37OxhPVec7HLd9oIAHF1bQMT8" className="font-mono" style={{ fontSize: 12 }}/>
       <div className="field-help">資料夾網址末段 /folders/ 後面那串。資料夾必須在 GAS 帳號可存取的 Drive 中。所有圖片會自動設成「知道連結的人可檢視」</div>
+
       <div className="mt-3 flex gap-2 items-center flex-wrap">
         <button type="button" className="btn btn-secondary btn-sm" onClick={fetchPreview} disabled={previewing}>
-          {previewing ? '載入中⋯' : '🔍 預覽資料夾照片'}
+          {previewing ? '載入中⋯' : (previewImages ? '↻ 重新載入' : '🔍 載入資料夾照片')}
         </button>
         {previewImages && <span className="text-sm" style={{ color: 'var(--ink-light)' }}>共 {previewImages.length} 張照片</span>}
       </div>
+
+      {/* Current cover preview */}
+      {album.driveCoverUrl && (
+        <div className="mt-3 p-3 flex items-center gap-3" style={{ background: 'rgba(184,134,11,0.08)', border: '1px solid rgba(184,134,11,0.3)', borderRadius: 6 }}>
+          <div style={{ width: 60, height: 60, backgroundImage: `url('${album.driveCoverUrl}')`, backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: 4, flexShrink: 0 }}></div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="text-xs" style={{ color: 'var(--ink-mute)' }}>目前封面</div>
+            <div className="text-sm" style={{ color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {album.driveCoverFilename || '已設定'}
+            </div>
+          </div>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={clearCover} title="清除封面">✕</button>
+        </div>
+      )}
+
+      {/* Thumbnail grid — click any to set as cover */}
       {previewImages && previewImages.length > 0 && (
         <div className="mt-3" style={{ background: 'var(--bg)', padding: 12, borderRadius: 6 }}>
-          <div className="text-xs mb-2" style={{ color: 'var(--ink-mute)' }}>前 12 張預覽:</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
-            {previewImages.slice(0, 12).map((img, i) => (
-              <div key={i} style={{ aspectRatio: '1', background: `url('${img.thumbUrl}') center/cover`, borderRadius: 3 }} />
-            ))}
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-xs" style={{ color: 'var(--ink)', fontWeight: 500 }}>
+              ⭐ 點擊任一張縮圖設為封面 (顯示 {visibleImages.length} / {previewImages.length})
+            </div>
+            {previewImages.length > 12 && (
+              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setShowAll(!showAll)} style={{ fontSize: 11 }}>
+                {showAll ? '只顯示前 12 張' : `顯示全部 ${previewImages.length} 張`}
+              </button>
+            )}
           </div>
-          <div className="text-xs mt-2" style={{ color: 'var(--ink-mute)' }}>
-            ✓ 公開頁開啟此相簿時會即時從 Drive 讀取最新照片(加新照片進資料夾就會自動出現,不用回後台)
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: 6 }}>
+            {visibleImages.map((img, i) => {
+              const isSelected = album.driveCoverUrl === img.url;
+              return (
+                <button
+                  key={img.fileId}
+                  type="button"
+                  onClick={() => setCover(img)}
+                  className={`drive-cover-thumb ${isSelected ? 'selected' : ''}`}
+                  title={`點擊設為封面 — ${img.filename}`}
+                  style={{
+                    aspectRatio: '1',
+                    background: `url('${img.thumbUrl}') center/cover`,
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    border: isSelected ? '3px solid var(--temple-red)' : '2px solid transparent',
+                    padding: 0,
+                    position: 'relative',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {isSelected && (
+                    <div style={{
+                      position: 'absolute', top: 2, right: 2,
+                      width: 22, height: 22, borderRadius: '50%',
+                      background: 'var(--temple-red)', color: 'white',
+                      fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                    }}>★</div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="text-xs mt-3" style={{ color: 'var(--ink-mute)' }}>
+            ✓ 公開頁開啟此相簿時會即時從 Drive 讀取最新照片(加新照片進資料夾就會自動出現,不用回後台)<br/>
+            ✓ 沒設定封面時,自動用資料夾第一張(依檔名排序)
           </div>
         </div>
       )}
@@ -3142,13 +3226,31 @@ function FooterEditor({ footer, onUpdate }) {
           <input type="text" value={footer.accentText || ''} onChange={(e) => update('accentText', e.target.value)} />
         </div>
         <div>
-          <label className="field-label">YouTube 頻道網址</label>
-          <input type="text" value={footer.youtubeUrl || ''} onChange={(e) => update('youtubeUrl', e.target.value)} />
+          <label className="field-label">版權所有人</label>
+          <input type="text" value={footer.copyrightOwner || ''} onChange={(e) => update('copyrightOwner', e.target.value)} />
         </div>
       </div>
-      <div className="mt-4">
-        <label className="field-label">版權所有人</label>
-        <input type="text" value={footer.copyrightOwner || ''} onChange={(e) => update('copyrightOwner', e.target.value)} />
+
+      {/* Social media URLs */}
+      <div className="mt-5 p-4" style={{ background: 'var(--bg)', borderRadius: 6, border: '1px solid var(--border)' }}>
+        <div className="text-sm font-medium mb-1" style={{ color: 'var(--ink)' }}>🌐 社群媒體連結</div>
+        <div className="text-xs mb-3" style={{ color: 'var(--ink-mute)' }}>
+          填了哪個就會顯示哪個圖示。同時出現在<strong>頁尾的「關注我們」區</strong>跟<strong>右下角懸浮按鈕</strong>。沒填就完全不顯示。
+        </div>
+        <div className="grid-2">
+          <div>
+            <label className="field-label">📘 Facebook 粉專網址</label>
+            <input type="text" value={footer.facebookUrl || ''} onChange={(e) => update('facebookUrl', e.target.value)} placeholder="https://www.facebook.com/your-page" className="font-mono" style={{ fontSize: 12 }} />
+          </div>
+          <div>
+            <label className="field-label">📷 Instagram 網址</label>
+            <input type="text" value={footer.instagramUrl || ''} onChange={(e) => update('instagramUrl', e.target.value)} placeholder="https://www.instagram.com/your-account" className="font-mono" style={{ fontSize: 12 }} />
+          </div>
+        </div>
+        <div className="mt-3">
+          <label className="field-label">🎬 YouTube 頻道網址</label>
+          <input type="text" value={footer.youtubeUrl || ''} onChange={(e) => update('youtubeUrl', e.target.value)} placeholder="https://www.youtube.com/@your-channel" className="font-mono" style={{ fontSize: 12 }} />
+        </div>
       </div>
     </div>
   );
