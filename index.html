@@ -11,7 +11,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <style>
   :root {
     --ink: #1a1410;
@@ -4021,7 +4021,7 @@
 
 <div id="root"></div>
 
-<script type="text/babel" data-presets="env,react">
+<script type="text/babel" data-presets="react">
 
 // ============================================================
 // CONFIG — change this to your GAS Web App URL
@@ -8344,8 +8344,8 @@ function CalendarFullSection({ data, anchorId }) {
           />
         )}
 
-        {/* Complete month event list — TEMP DISABLED to find render bug */}
-        {false && viewMode === 'month' && (
+        {/* Complete month event list — ensures nothing gets hidden behind cell truncation */}
+        {viewMode === 'month' && (
           <CalendarMonthAllEvents
             cursor={cursor}
             eventsByDate={eventsByDate}
@@ -8909,8 +8909,8 @@ function MobileMenu({ open, onClose, navigation, ctaButton, onOpenAuth, footer }
           </a>
         )}
 
-        {/* Social icons at bottom of mobile menu — TEMP DISABLED to find render bug */}
-        {false && footer && (
+        {/* Social icons at bottom of mobile menu */}
+        {footer && (
           <MobileMenuSocials footer={footer} />
         )}
       </div>
@@ -9413,7 +9413,7 @@ function App() {
       <AuthDrawer open={authOpen} onClose={() => setAuthOpen(false)} />
       <PageRenderer page={currentPage} />
       <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
-      {false && !authOpen && !mobileOpen && <ShareFloating />}
+      {!authOpen && !mobileOpen && <ShareFloating />}
       <ResetPasswordModal />
       {showVisitBadge && typeof visits === 'number' && (
         <div className="visit-fab" title={`${visitLabel}: ${visits.toLocaleString()}`}>
