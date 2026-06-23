@@ -8344,8 +8344,8 @@ function CalendarFullSection({ data, anchorId }) {
           />
         )}
 
-        {/* Complete month event list — ensures nothing gets hidden behind cell truncation */}
-        {viewMode === 'month' && (
+        {/* Complete month event list — TEMP DISABLED to find render bug */}
+        {false && viewMode === 'month' && (
           <CalendarMonthAllEvents
             cursor={cursor}
             eventsByDate={eventsByDate}
@@ -8909,8 +8909,8 @@ function MobileMenu({ open, onClose, navigation, ctaButton, onOpenAuth, footer }
           </a>
         )}
 
-        {/* Social icons at bottom of mobile menu */}
-        {footer && (
+        {/* Social icons at bottom of mobile menu — TEMP DISABLED to find render bug */}
+        {false && footer && (
           <MobileMenuSocials footer={footer} />
         )}
       </div>
@@ -9413,7 +9413,7 @@ function App() {
       <AuthDrawer open={authOpen} onClose={() => setAuthOpen(false)} />
       <PageRenderer page={currentPage} />
       <Footer site={content.site} footer={content.footer} navigation={content.navigation} />
-      {!authOpen && !mobileOpen && <ShareFloating />}
+      {false && !authOpen && !mobileOpen && <ShareFloating />}
       <ResetPasswordModal />
       {showVisitBadge && typeof visits === 'number' && (
         <div className="visit-fab" title={`${visitLabel}: ${visits.toLocaleString()}`}>
